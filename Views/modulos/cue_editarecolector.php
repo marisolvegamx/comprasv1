@@ -37,3 +37,25 @@
               </div></div>
               </div>
             </section>
+            
+            <script src="js/jquery.cascading-drop-down.js"></script>
+    <script>
+    $('.cascada').ssdCascadingDropDown({
+        nonFinalCallback: function(trigger, props, data, self) {
+            trigger.closest('form')
+                    .find('input[type="submit"]')
+                    .attr('disabled', true);
+        },
+        finalCallback: function(trigger, props, data) {
+            if (props.isValueEmpty()) {
+                trigger.closest('form')
+                        .find('input[type="submit"]')
+                        .attr('disabled', true);
+            } else {
+                trigger.closest('form')
+                        .find('input[type="submit"]')
+                        .attr('disabled', false);
+            }
+        }
+    });
+</script>

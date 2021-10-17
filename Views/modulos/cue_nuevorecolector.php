@@ -38,7 +38,13 @@
 
                   <div class="col-4">
                     <label>PAIS</label>
-                    <select class="form-control" name="paisrec">
+                    <select class="form-control cascada" name="paisrec"
+                        data-group="category"
+                        data-id="pais"
+                        data-target="ciudad"
+                        data-url="getPaisesCiudades.php?recol=1&"
+                        data-replacement="container1"
+                        data-default-label="Seleccione una opción"  >
                     <option value="">Seleccione una opción</option>
                   <?php echo $recContoller->getListaPais();
                   ?>
@@ -47,7 +53,11 @@
 
                   <div class="col-4">
                     <label>CIUDAD</label>
-                    <select class="form-control" name="ciudadrec">
+                    <select class="form-control cascada" name="ciudadrec"
+                       data-group="category"
+                        data-id="ciudad"
+                        data-replacement="container1"
+                        data-default-label="Seleccione una opción"  >
                     <option value="">Seleccione una opción</option>
                   <?php echo $recContoller->getListaCiudad();
                   ?>
@@ -154,3 +164,24 @@
               </div></div>
               </div>
             </section>
+<script src="js/jquery.cascading-drop-down.js"></script>
+    <script>
+    $('.cascada').ssdCascadingDropDown({
+        nonFinalCallback: function(trigger, props, data, self) {
+            trigger.closest('form')
+                    .find('input[type="submit"]')
+                    .attr('disabled', true);
+        },
+        finalCallback: function(trigger, props, data) {
+            if (props.isValueEmpty()) {
+                trigger.closest('form')
+                        .find('input[type="submit"]')
+                        .attr('disabled', true);
+            } else {
+                trigger.closest('form')
+                        .find('input[type="submit"]')
+                        .attr('disabled', false);
+            }
+        }
+    });
+</script>
