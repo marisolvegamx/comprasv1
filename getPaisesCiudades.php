@@ -11,7 +11,10 @@ include "Models/crud_catalogoDetalle.php";
       //  echo $asignacion;
     }
     //$nivel = filter_input(INPUT_GET, "ni", FILTER_SANITIZE_SPECIAL_CHARS);
-   
+    if (isset($recol)&&$recol==1) { //vengo de recolector
+        $res = DatosCiudadesResidencia::listaCiudadesxPais($paisrec, "ca_ciudadesresidencia");
+        
+    }
     if (isset($paisuneg)) {
         $res = DatosCiudadesResidencia::listaCiudadesxPais($paisuneg, "ca_ciudadesresidencia");
       
