@@ -235,27 +235,30 @@ public function insertar(){
 
 
 public function editaRecolector(){
+    $nrec = $_GET["id"];
+    $respuesta = DatosRecolector::vistarecolectorDetalle($nrec, "ca_recolectores");
+   // var_dump($respuesta);
 			$rs = DatosCatalogoDetalle::listaCatalogoDetalle(10, "ca_catalogosdetalle");
           
 			$this->listaPaise = null;
 
 			foreach ($rs as $row) {
-				if (($row["cad_idopcion"]) == 1) {
-				$this->listaPaise[] = "<option value='" . $row["cad_idopcion"] . "' selected>" . $row["cad_descripcionesp"] . "</option>";
+			    if (($row["cad_idopcion"]) == $respuesta["rec_pais"]) {
+				$this->listaPaise .= "<option value='" . $row["cad_idopcion"] . "' selected>" . $row["cad_descripcionesp"] . "</option>";
 				} else {
-				$this->listaPaise[] = "<option value='" . $row["cad_idopcion"] . "'>" . $row["cad_descripcionesp"] . "</option>";
+				$this->listaPaise.= "<option value='" . $row["cad_idopcion"] . "'>" . $row["cad_descripcionesp"] . "</option>";
 				}
 			}
 
-			$rs = DatosCatalogoDetalle::listaCatalogoDetalle(11, "ca_catalogosdetalle");
-          
+			//$rs = DatosCatalogoDetalle::listaCatalogoDetalle(11, "ca_catalogosdetalle");
+			$rs = DatosCiudadesResidencia::listaCiudadesxPais($respuesta["rec_pais"], "ca_ciudadesresidencia");
 			$this->listaciudade = null;
 
 			foreach ($rs as $row) {
-				if (($row["cad_idopcion"]) == 1) {
-				$this->listaciudade[] = "<option value='" . $row["cad_idopcion"] . "' selected>" . $row["cad_descripcionesp"] . "</option>";
+			    if (($row["ciu_id"]) == $respuesta["rec_ciudad"]) {
+				$this->listaciudade.= "<option value='" . $row["ciu_id"] . "' selected>" . $row["ciu_descripcionesp"] . "</option>";
 				} else {
-				$this->listaciudade[] = "<option value='" . $row["cad_idopcion"] . "'>" . $row["cad_descripcionesp"] . "</option>";
+				$this->listaciudade.= "<option value='" . $row["ciu_id"] . "'>" . $row["ciu_descripcionesp"] . "</option>";
 				}
 			}
   		
@@ -273,8 +276,7 @@ public function editaRecolector(){
 				}
 			}
   		
-  $nrec = $_GET["id"];
-  $respuesta = DatosRecolector::vistarecolectorDetalle($nrec, "ca_recolectores");
+  
 		
 
    echo '
@@ -301,35 +303,27 @@ public function editaRecolector(){
 
                   <div class="col-4">
                     <label>PAIS</label>
-                    <select class="form-control" name="paisrec">
+                    <select class="form-control cascada" name="paisrec"   data-group="category"
+                        data-id="pais"
+                        data-target="ciudad"
+                        data-url="getPaisesCiudades.php?recol=1&"
+                        data-replacement="container1"  >
                     <option value="">Seleccione una opción</option>';
-                  $rs = DatosCatalogoDetalle::listaCatalogoDetalle(10, "ca_catalogosdetalle");
-     
-                          foreach ($rs as $row) {
-                              if (($row["cad_idopcion"]) == $respuesta["rec_pais"]) {
-                              $opcion = "<option value='" . $row["cad_idopcion"] . "' selected>" . $row["cad_descripcionesp"] . "</option>";
-                              } else {
-                              $opcion = "<option value='" . $row["cad_idopcion"] . "'>" . $row["cad_descripcionesp"] . "</option>";
-                              }
-                          echo $opcion; }
-                          echo'
+                   
+   echo $this->listaPaise;
+   echo'
                   </select>
                   </div>
 
 
  				<div class="col-4">
                     <label>CIUDAD</label>
-                    <select class="form-control" name="ciudadrec">
+                    <select class="form-control cascada" name="ciudadrec"  data-group="category"
+                        data-id="ciudad"
+                        data-replacement="container1"
+                       data-default-label="Seleccione una opción"  >
                     <option value="">Seleccione una opción</option>';
-                  $rs = DatosCatalogoDetalle::listaCatalogoDetalle(11, "ca_catalogosdetalle");
-     
-                          foreach ($rs as $row) {
-                              if (($row["cad_idopcion"]) == $respuesta["rec_ciudad"]) {
-                              $opcion = "<option value='" . $row["cad_idopcion"] . "' selected>" . $row["cad_descripcionesp"] . "</option>";
-                              } else {
-                              $opcion = "<option value='" . $row["cad_idopcion"] . "'>" . $row["cad_descripcionesp"] . "</option>";
-                              }
-                          echo $opcion; }
+   echo $this->listaciudade;
                           echo'
                   </select>
                   </div>

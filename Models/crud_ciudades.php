@@ -5,7 +5,8 @@ class DatosCiudadesResidencia{
      public function listaCiudadesxPais($datosModel, $tabla){
 		$stmt = Conexion::conectar()-> prepare("SELECT ciu_id, ciu_descripcionesp, ciu_descripcioning, ciu_paisid
 FROM $tabla
-where ciu_paisid=:id");
+where ciu_paisid=:id
+order by ciu_descripcionesp");
          
 		$stmt->bindParam(":id", $datosModel, PDO::PARAM_INT);
 		
