@@ -14,8 +14,9 @@ FROM $tabla where ca_catalogosdetalle.cad_idcatalogo= :id");
 		$stmt->bindParam(":id", $datosModel, PDO::PARAM_INT);
 		
 		$stmt-> execute();
+		//return $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-		return $stmt->fetchAll();
+		return $stmt->fetchAll(PDO::FETCH_ASSOC);
 	}
         
         
