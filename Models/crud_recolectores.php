@@ -57,7 +57,7 @@ class DatosRecolector extends Conexion{
         $stmt->execute();
 
 
-
+      //  $stmt->debugDumpParams();
         return $stmt->fetch();
     }
        
