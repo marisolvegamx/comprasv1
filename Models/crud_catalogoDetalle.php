@@ -14,9 +14,8 @@ FROM $tabla where ca_catalogosdetalle.cad_idcatalogo= :id");
 		$stmt->bindParam(":id", $datosModel, PDO::PARAM_INT);
 		
 		$stmt-> execute();
-		//return $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-		return $stmt->fetchAll(PDO::FETCH_ASSOC);
+		return $stmt->fetchAll();
 	}
         
         
@@ -329,5 +328,20 @@ FROM `ca_tipomercado` where  tm_clavetipo=:id";
   		return $res;
   	
   }
- 
+    
+  public function listaCatalogo($idcatalogo, $tabla){
+      $stmt = Conexion::conectar()-> prepare("SELECT ca_idcatalogo,ca_nombrecatalogo,
+  `cad_idopcion`,
+  `cad_descripcionesp`,
+  `cad_descripcioning`,
+  `cad_otro`
+FROM $tabla inner join ca_catalogos on ca_catalogos.ca_idcatalogo=cad_idcatalogo
+where ca_catalogosdetalle.cad_idcatalogo=:id");
+      
+      $stmt->bindParam(":id", $idcatalogo, PDO::PARAM_INT);
+      
+      $stmt-> execute();
+      
+      return $stmt->fetchAll(PDO::FETCH_ASSOC); //para que solo devuelva los nombres de columnas
+  }
 }
