@@ -1,5 +1,5 @@
 <?php
-require_once "Models/conexion.php";
+//require_once "Models/conexion.php";
 class DatosAtrib extends Conexion{
 
 	# CLASE NIVEL 1n1
@@ -76,4 +76,23 @@ class DatosAtrib extends Conexion{
             }
             
     }
+    
+    public function getAtributos($tabla){
+        
+        $stmt = Conexion::conectar()-> prepare("SELECT id_tipoempaque, cad_descripcionesp as nombre_empaqueesp,
+    cad_descripcioning as nombre_empaque_ing,
+    id_atributo, at_nombre
+    FROM $tabla
+    inner join ca_catalogosdetalle
+    on cad_idopcion=id_tipoempaque and cad_idcatalogo=12");
+        
+        $stmt-> execute();
+        echo $stmt->debugDumpParams();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC); //para que solo devuelva los nombres de columnas
+        
+        
+    }
+    
+    
+    
 }	
