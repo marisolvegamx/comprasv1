@@ -1,6 +1,6 @@
 <?php
 
-require_once "Models/conexion.php";
+//require_once "Models/conexion.php";
 
 class DatosUnegocio extends Conexion {
 #vistaservicios
@@ -755,7 +755,67 @@ SET
             //}
             
     }
+    public function getUnegocioxFiltros($pais,$ciudad, $cadenacomercial,$unedescripcion){
+        
+        $sql="SELECT une_id,une_descripcion, une_direccion, une_dir_referencia, une_cla_pais, une_cla_ciudad,
+ une_estatus, une_coordenadasxy, une_puntocardinal,
+une_tipotienda, une_cadenacomercial FROM ca_unegocios WHERE 1=1 ";
+        
+        // agregando filtros
+        if(isset($pais)&&$pais!="") {
+            $sql.=" and ca_unegocios.une_cla_pais=:pais";
+            
+        }
+        // agregando filtros
+        if(isset($unedescripcion)&&$unedescripcion!="") {
+            $sql.=" and ca_unegocios.une_descripcion like :descripcion";
+            
+        }
+        
+        // agregando filtros
+        if(isset($cadenacomercial)&&$cadenacomercial!="") {
+            $sql.=" and ca_unegocios.une_cadenacomercial=:cadena";
+            
+        }
+        if(isset($ciudad)){
+            
+            if($ciudad!="") {
+                $sql.=" and ca_unegocios.une_cla_ciudad=:ciudad";
+                
+            }
+        }
+        $stmt = Conexion::conectar()-> prepare($sql." order by une_descripcion" );
+        if(isset($unedescripcion)&&$unedescripcion!="") {
+            $stmt-> bindValue(":descripcion", "%".$unedescripcion."%", PDO::PARAM_STR);
+            
+        }
+        
+        if(isset($ciudad)){
+            
+            if($ciudad!="") {
+                
+                $stmt-> bindParam(":ciudad", $ciudad, PDO::PARAM_STR);
+            }
+        }
+        if(isset($cadenacomercial)){
+            
+            if($cadenacomercial!="") {
+                
+                $stmt-> bindParam(":cadena", $cadenacomercial, PDO::PARAM_STR);
+            }
+        }
+        if(isset($pais)){
+            
+            if($pais!="") {
+                
+                $stmt-> bindParam(":pais", $pais, PDO::PARAM_INT);
+            }
+        }
+        
+        $stmt->execute();
+        // echo $stmt->debugDumpParams();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
 
 }
-
-?>	

@@ -87,7 +87,7 @@ class DatosAtrib extends Conexion{
     on cad_idopcion=id_tipoempaque and cad_idcatalogo=12");
         
         $stmt-> execute();
-        echo $stmt->debugDumpParams();
+    //    echo $stmt->debugDumpParams();
         return $stmt->fetchAll(PDO::FETCH_ASSOC); //para que solo devuelva los nombres de columnas
         
         
