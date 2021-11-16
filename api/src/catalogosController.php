@@ -1,7 +1,7 @@
 <?php
 require_once '../../Models/conexion.php';
 require '../../Models/crud_catalogoDetalle.php';
-require '../../Models/crud_atributos.php';
+//require '../../Models/crud_atributos.php';
 
 
 //para devolver los catalogos en json
@@ -10,13 +10,15 @@ class CatalogosController{
     private $listaCatalogos; //para poner los catalogos que devuelvo
     private $resultCat;
     private $resultAtr;
+    private $datosCatdet;
+    private $datosInf;
     function __construct(){
         
         $this->listaCatalogos=[2=>"TIPO DE TIENDA",8=>"UBICACION DE LA MUESTRA",
             15=>"TIPO DE MUESTRA"
         ];
-        
-        
+        $this->datosCatdet=new DatosCatalogoDetalle();
+        $this->datosInf=new DatosInforme();
     }
     
     public function getCatalogos(){
@@ -24,7 +26,7 @@ class CatalogosController{
         foreach ($this->listaCatalogos as $key=>$catalogo)
         {
             //echo "*****".$key;
-            $rs = DatosCatalogoDetalle::listaCatalogo($key, "ca_catalogosdetalle");
+            $rs = $this->datosCatdet->listaCatalogo($key, "ca_catalogosdetalle");
             
         
         //return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -37,7 +39,7 @@ class CatalogosController{
     }
     
     public function getAtributos(){
-        $rs = DatosAtrib::getAtributos( "ca_atributo");
+        $rs = $this->datosInf->getAtributos( "ca_atributo");
         
         
         //return $stmt->fetchAll(PDO::FETCH_ASSOC);
