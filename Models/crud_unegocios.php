@@ -667,7 +667,7 @@ AND cer_solicitud.sol_idsolicitud =:reporte";
             $stmt->bindParam(":tipouneg", $datosModel["tipouneg"], PDO::PARAM_INT);
 
             $res = $stmt->execute();
-
+          //  echo $stmt->debugDumpParams();
            if($res)
               return "success";
         } catch (Exception $ex) {

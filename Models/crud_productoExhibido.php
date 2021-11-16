@@ -1,25 +1,27 @@
 <?php
 class DatosProductoExhibido{
     
-    public static function insertar($datosModel,$tabla){
+    public static function insertar($datosModel,$usuario,$indice,$tabla){
         try{
-            
+           // var_dump($datosModel);
             $sSQL= " INSERT INTO $tabla
-(pe_idlocal, pe_visitasId, pe_imagenId, pe_clienteId)
-VALUES(:pe_idlocal, :pe_visitasId, :pe_imagenId, :pe_clienteId); ";
+(pe_idlocal, pe_visitasId, pe_imagenId, pe_clienteId,pe_recolector,pe_indice)
+VALUES(:pe_idlocal, :pe_visitasId, :pe_imagenId, :pe_clienteId,:pe_recolector,:pe_indice); ";
             
             $stmt=Conexion::conectar()->prepare($sSQL);
-            $stmt->bindParam(":pe_idlocal", $datosModel["pe_idlocal"],PDO::PARAM_INT);
-            $stmt->bindParam(":pe_visitasId", $datosModel["pe_visitasId"], PDO::PARAM_INT);
-            $stmt->bindParam(":pe_imagenId", $datosModel["pe_imagenId"], PDO::PARAM_INT);
-            $stmt->bindParam(":pe_clienteId", $datosModel["pe_clienteId"], PDO::PARAM_INT);
-           // $stmt->bindParam(":pd_usuario", $datosModel["pd_usuario"], PDO::PARAM_STR);
-           // $stmt->bindParam(":pd_indice", $datosModel["pd_indice"], PDO::PARAM_STR);
+            $stmt->bindParam(":pe_idlocal", $datosModel[ContratoProductoEx::ID],PDO::PARAM_INT);
+            $stmt->bindParam(":pe_visitasId", $datosModel[ContratoProductoEx::VISITASID], PDO::PARAM_INT);
+            $stmt->bindParam(":pe_imagenId", $datosModel[ContratoProductoEx::IMAGENID], PDO::PARAM_INT);
+            $stmt->bindParam(":pe_clienteId", $datosModel[ContratoProductoEx::CLIENTESID], PDO::PARAM_INT);
+            $stmt->bindParam(":pe_recolector", $usuario, PDO::PARAM_STR);
+            $stmt->bindParam(":pe_indice", $indice, PDO::PARAM_STR);
             
             $stmt-> execute();
-            
+            if(sizeof($stmt->errorInfo())){
+                throw new Exception($stmt->errorInfo()[2]);
+            }
         }catch(PDOException $ex){
-            Utilerias::guardarError("DatosInformeDetalle.inesertar "+$ex->getMessage());
+            Utilerias::guardarError("DatosInformeDetalle.inesertar ".$ex->getMessage());
             throw new Exception("Hubo un error al insertar el informe");
         }
         

@@ -2,7 +2,7 @@
 
 
 
-require_once "Models/conexion.php";
+//require_once "Models/conexion.php";
 
 
 
@@ -60,7 +60,7 @@ class Datosnsei extends Conexion{
 
 
 
-        return $stmt->fetch();
+        return $stmt->fetchAll();
 
        
 

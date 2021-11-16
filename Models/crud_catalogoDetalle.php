@@ -330,7 +330,8 @@ FROM `ca_tipomercado` where  tm_clavetipo=:id";
   }
     
   public function listaCatalogo($idcatalogo, $tabla){
-      $stmt = Conexion::conectar()-> prepare("SELECT ca_idcatalogo,ca_nombrecatalogo,
+      $stmt = Conexion::conectar()-> prepare("SELECT ca_idcatalogo as cad_idcatalogo,
+ca_nombrecatalogo as cad_nombreCatalogo,
   `cad_idopcion`,
   `cad_descripcionesp`,
   `cad_descripcioning`,
