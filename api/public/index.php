@@ -1,6 +1,6 @@
 <?php
-error_reporting(E_ERROR);
-ini_set("display_errors", 1);
+//error_reporting(E_ERROR);
+//ini_set("display_errors", 1);
 
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
