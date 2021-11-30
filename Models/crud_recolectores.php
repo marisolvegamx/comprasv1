@@ -16,7 +16,6 @@ class DatosRecolector extends Conexion{
     public function insertarRec($datosModel,$tabla){
           	//try{
           		
-
               $sSQL= "INSERT INTO $tabla(rec_nombre, rec_tipo, rec_pais, rec_ciudad, rec_direccion, rec_direccion_eti, rec_celular, rec_telefono_casa, rec_telefono_trabajo, rec_telefono_familia, rec_email_personal, rec_email_oficina, rec_tarjeta, rec_ser_pepsi, rec_ser_penafiel, rec_ser_electro) VALUES (:nomrec,:tiporec, :paisrec, :ciudadrec, :dircasa, :direti, :numcel, :telcasa, :telofi, :telfam, :emailper, :emailtrab,:numtarjeta, :chkpepsi, :chkpenaf, :chkelectro);";
           		
           		$stmt=Conexion::conectar()->prepare($sSQL);
@@ -57,7 +56,7 @@ class DatosRecolector extends Conexion{
         $stmt->execute();
 
 
-      //  $stmt->debugDumpParams();
+
         return $stmt->fetch();
     }
        
@@ -112,6 +111,14 @@ public function eliminaRec($idrec,$tabla){
             
     }
 
+public function vistarecdetModel($numrec, $tabla){
+
+    $stmt = Conexion::conectar()-> prepare("SELECT rec_id, rec_nombre FROM $tabla where rec_id=:recid");
+    $stmt->bindParam(":recid", $numrec,PDO::PARAM_INT);      
+    $stmt-> execute();
+    return $stmt->fetchAll();
+
+  }
 
 
 }

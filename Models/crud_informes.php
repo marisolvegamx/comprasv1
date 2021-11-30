@@ -152,7 +152,7 @@ where cn.n6_idn5 =:idplan";
     public function getNvaLisComprDetxRecol($idrecolector,$fecha,$indice,$tabla){
         $econexion=self::getInstance();
         //me faltan las siglas
-        $sSQL="SELECT lid_idlistacompra as id, lid_idprodcompra as listaId, 
+        $sSQL="SELECT lid_idlistacompra as listaId, lid_idprodcompra as id , 
             lid_idproducto as productosId, 
             cp.pro_producto as productoNombre,
             cc.cad_descripcionesp as tamanio, lid_idempaque as empaquesId,
@@ -185,7 +185,7 @@ where cn.n6_idn5 =:idplan";
     public function getActLisComprDetxRecol($idrecolector,$fecha,$indice,$tabla){
         $econexion=self::getInstance();
         //me faltan las siglas
-        $sSQL="SELECT lid_idlistacompra as id, lid_idprodcompra as listaId,
+        $sSQL="SELECT lid_idlistacompra as listaId, lid_idprodcompra as id,
             lid_idproducto as productosId,
             cp.pro_producto as productoNombre,
             cc.cad_descripcionesp as tamanio, lid_idempaque as empaquesId,

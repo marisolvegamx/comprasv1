@@ -362,7 +362,7 @@ class EstructuraController {
 							$data['n3_idn1']=$clanivel1;
 							$data['n3_nombre']=$nombre;
 							$data["n3_id"]=$id;
-							//var_dump($data);
+						
 							$resultado=Datosntres::update($data, "ca_nivel3");
 							$this->regresar="index.php?action=listan3&admin=lis&idnd=".$referencia;
 							break;

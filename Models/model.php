@@ -27,16 +27,16 @@ class EnlacesPaginas{
 			$enlacesModel == "editaatributo" ||
 			$enlacesModel == "listaatributos" ||
 			$enlacesModel == "nuevoatributo" ||
-			//$enlacesModel == "nuevaestandar" ||
-			//$enlacesModel == "editaestandar" ||
-			//$enlacesModel == "nuevaabierta" ||
-			//$enlacesModel == "editaabierta" ||
-			//$enlacesModel == "nvaabdetalle" ||
-			//$enlacesModel == "editaabdetalle" ||
+			$enlacesModel == "listacompra" ||
+			$enlacesModel == "nuevalistaCompra" ||
+			$enlacesModel == "listacompradet" ||
+			$enlacesModel == "nuevalistaCompraDetalle" ||
+			$enlacesModel == "listasustitucion" ||
+			$enlacesModel == "nuevasustitucion" ||
 			//$enlacesModel == "nuevaestdetalle" ||
-			//$enlacesModel == "editaestdetalle" ||
+			$enlacesModel == "editasustitucion" ||
 			//$enlacesModel == "nuevageneral" ||
-			//$enlacesModel == "editageneral" ||
+			$enlacesModel == "editacompradetalle" ||
 			//$enlacesModel == "nuevoproducto" ||
 			//$enlacesModel == "editaproducto" ||
 			//$enlacesModel == "ponderaseccion" ||

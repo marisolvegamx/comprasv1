@@ -45,10 +45,12 @@ Private $admin;
 			foreach($respuesta as $row => $item){
 					$numc= $item["pro_cliente"];
 					
-					$rc =Datosnuno::vistaN1opcionModel($numc, "ca_nivel1");
+					$rc =Datosnuno::vistaN1opcionModel($numc, "ca_nivel1");			
+					foreach($rc as $row => $itemc){
+               			$cliente=$itemc["n1_nombre"];
+          			 } 
 					
-					$cliente=$rc["n1_nombre"];
-					
+
 				    $numte = $item["pro_categoria"];
 				    $categoria = DatosCatalogoDetalle::getCatalogoDetalle("ca_catalogosdetalle",5,$numte);	
 	
