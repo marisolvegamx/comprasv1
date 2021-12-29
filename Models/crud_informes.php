@@ -14,10 +14,10 @@ class DatosInforme{
         
         return self::$conexion;
     }
-    public  function insertar($datosModel,$cveusuario,$indice,$tabla){
+    public  function insertar($datosModel,$cveusuario,$indice,$tabla,$pdo){
         try{
          
-            $econexion=self::getInstance();
+           
             $sSQL= "INSERT INTO $tabla
 ( inf_id,inf_consecutivo, inf_visitasIdlocal, inf_segunda_muestra, inf_tercera_muestra,
 inf_indice, inf_usuario,
@@ -29,15 +29,15 @@ VALUES(:inf_id,:inf_consecutivo, :inf_visitasIdlocal, :inf_segunda_muestra, :inf
 :inf_ticket_compra, :inf_condiciones_traslado);
 ";
             
-            $stmt=$econexion->prepare($sSQL);
+            $stmt=$pdo->prepare($sSQL);
             $stmt->bindParam(":inf_id", $datosModel[ContratoInformes::ID],PDO::PARAM_INT);
-            
-            $stmt->bindParam(":inf_consecutivo", $datosModel[ContratoInformes::CONSECUTIVO],PDO::PARAM_INT);
+             $stmt->bindParam(":inf_consecutivo", $datosModel[ContratoInformes::CONSECUTIVO],PDO::PARAM_INT);
             $stmt->bindParam(":inf_visitasIdlocal", $datosModel[ContratoInformes::VISITASID], PDO::PARAM_INT);
             $stmt->bindParam(":inf_segunda_muestra", $datosModel[ContratoInformes::SEGUNDAMUESTRA], PDO::PARAM_INT);
             $stmt->bindParam(":inf_tercera_muestra", $datosModel[ContratoInformes::TERCERAMUESTRA], PDO::PARAM_INT);
+           
             $stmt->bindParam(":inf_indice", $indice, PDO::PARAM_STR);
-            $stmt->bindParam(":inf_usuario", $cveusuario, PDO::PARAM_STR);
+            $stmt->bindParam(":inf_recolector", $cveusuario, PDO::PARAM_STR);
             $stmt->bindParam(":inf_comentarios", $datosModel[ContratoInformes::COMENTARIOS], PDO::PARAM_STR);
             
             $stmt->bindParam(":inf_estatus", $datosModel[ContratoInformes::ESTATUS], PDO::PARAM_INT);
@@ -45,13 +45,15 @@ VALUES(:inf_id,:inf_consecutivo, :inf_visitasIdlocal, :inf_segunda_muestra, :inf
             //$stmt->bindParam(":inf_updated_at", $datosModel[ContratoInformes::"inf_updated_at"], PDO::PARAM_STR);
             $stmt->bindParam(":inf_primera_muestra", $datosModel[ContratoInformes::PRIMERAMUESTRA],PDO::PARAM_INT);
             $stmt->bindParam(":inf_plantasid", $datosModel[ContratoInformes::PLANTASID], PDO::PARAM_INT);
+          
             $stmt->bindParam(":inf_ticket_compra", $datosModel[ContratoInformes::TICKETCOMPRA], PDO::PARAM_INT);
             $stmt->bindParam(":inf_condiciones_traslado", $datosModel[ContratoInformes::CONDICIONESTRASLADO], PDO::PARAM_INT);
                
-           $stmt-> execute();
-           if(sizeof($stmt->errorInfo())){
-               throw new Exception($stmt->errorInfo()[2]);
-           }
+            if(!$stmt-> execute())
+            {
+                
+                throw new Exception($stmt->errorCode()."-".$stmt->errorInfo()[2]);
+            }
        //     echo $stmt->debugDumpParams();
         }catch(PDOException $ex){
             Utilerias::guardarError("DatosInforme.inesertar "+$ex->getMessage());
@@ -124,7 +126,7 @@ VALUES(:inf_id,:inf_consecutivo, :inf_visitasIdlocal, :inf_segunda_muestra, :inf
              inner join ca_nivel1 cn on lis_idcliente=cn.n1_id
              inner join ca_nivel5 cc on lis_idplanta=cc.n5_id
              inner join ca_nivel4 cn2 on cn2.n4_id =cc.n5_idn4
-            where lisfechaactualizacion >:fechareq
+            where lis_fechaactualizacion >:fechareq
             and lis_idrecolector =:recolector
             and lis_idindice=:indice";
         $stmt = $econexion-> prepare($sSQL);
@@ -132,7 +134,7 @@ VALUES(:inf_id,:inf_consecutivo, :inf_visitasIdlocal, :inf_segunda_muestra, :inf
         $stmt->bindParam(":fechareq", $fecha,PDO::PARAM_STR);
         $stmt->bindParam(":indice", $indice,PDO::PARAM_STR);
         $stmt-> execute();
-      //  echo $stmt->debugDumpParams();
+       // echo $stmt->debugDumpParams();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
         
     }
@@ -162,7 +164,8 @@ where cn.n6_idn5 =:idplan";
             lid_cantidad as cantidad, lid_tipo as tipoMuestra,
              ctp.cad_descripcionesp  as nombreTipoMuestra,
             lid_fechapermitida , lid_fecharestringida,
-            cp.pro_categoria as categoriaid, ccp.cad_descripcionesp as categoria
+            cp.pro_categoria as categoriaid, ccp.cad_descripcionesp as categoria,
+            pl.lis_idplanta as planta
             FROM $tabla
             inner join pr_listacompra pl on pl.lis_idlistacompra =lid_idlistacompra
             inner join ca_productos cp on cp.pro_id =lid_idproducto 
@@ -178,6 +181,7 @@ where cn.n6_idn5 =:idplan";
         $stmt->bindParam(":fechareq", $fecha,PDO::PARAM_STR);
         $stmt->bindParam(":indice", $indice,PDO::PARAM_STR);
         $stmt-> execute();
+       // $stmt->debugDumpParams();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
         
     }
@@ -195,7 +199,8 @@ where cn.n6_idn5 =:idplan";
             lid_cantidad as cantidad, lid_tipo as tipoMuestra,
              ctp.cad_descripcionesp  as nombreTipoMuestra,
             lid_fechapermitida , lid_fecharestringida,
-            cp.pro_categoria as categoriaid, ccp.cad_descripcionesp as categoria
+            cp.pro_categoria as categoriaid, ccp.cad_descripcionesp as categoria,
+  pl.lis_idplanta as planta
             FROM $tabla
             inner join pr_listacompra pl on pl.lis_idlistacompra =lid_idlistacompra
             inner join ca_productos cp on cp.pro_id =lid_idproducto
@@ -204,18 +209,19 @@ where cn.n6_idn5 =:idplan";
             inner join ca_catalogosdetalle cem on cem.cad_idopcion =lid_idempaque and cem.cad_idcatalogo =12
              inner join ca_catalogosdetalle cta on cta.cad_idopcion =lid_idtipoanalisis and cta.cad_idcatalogo =7
              inner join ca_catalogosdetalle ctp on ctp.cad_idopcion =lid_tipo and ctp.cad_idcatalogo =15
-            where pl.lis_idrecolector =:recolector and pl.lisfechaactualizacion>:fechareq
+            where pl.lis_idrecolector =:recolector and pl.lis_fechaactualizacion>:fechareq
             and pl.lis_idindice=:indice";
         $stmt = $econexion-> prepare($sSQL);
         $stmt->bindParam(":recolector", $idrecolector,PDO::PARAM_INT);
         $stmt->bindParam(":fechareq", $fecha,PDO::PARAM_STR);
         $stmt->bindParam(":indice", $indice,PDO::PARAM_STR);
         $stmt-> execute();
+      //  $stmt->debugDumpParams();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
         
     }
     
-    public function getCodigosNoPer($fechaini,$fechafin,$prod,$tamanio,$empaque,$tabla){
+    public function getCodigosNoPer($fechaini,$fechafin,$prod,$tamanio,$empaque,$ana,$planta,$tabla){
         $econexion=self::getInstance();
             //me faltan las siglas
         $sSQL="SELECT ind_id, ind_informes_id, ind_productos_id, ind_tamanio, ind_empaque, 
@@ -228,28 +234,31 @@ and inf_visitasId=v.vi_idlocal
 where
 ind_productos_id =:producto
 and ind_tamanio =:tamanio
-and ind_empaque =:empaque
-and v.vi_createdat<=:fechafin and v.vi_createdat >=:fechaini";
+and ind_empaque =:empaque and ind_tipoanalisis=:tipoanalisis and inf_plantasid=:planta
+and v.vi_createdat<=:fechafin and v.vi_createdat >=:fechaini order by ind_caducidad desc";
         $stmt = $econexion-> prepare($sSQL);
         $stmt->bindParam(":fechaini", $fechaini,PDO::PARAM_STR);
         $stmt->bindParam(":fechafin", $fechafin,PDO::PARAM_STR);
         $stmt->bindParam(":tamanio", $tamanio,PDO::PARAM_STR);
         $stmt->bindParam(":empaque", $empaque,PDO::PARAM_INT);
         $stmt->bindParam(":producto", $prod,PDO::PARAM_INT);
+        $stmt->bindParam(":tipoanalisis", $ana,PDO::PARAM_INT);
+        $stmt->bindParam(":planta", $planta,PDO::PARAM_INT);
+        
        
         $stmt-> execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
         
     }
     
-    public function insertarUnegocio($datosModel, $tabla) {
+    public function insertarUnegocio($datosModel, $tabla,$pdo) {
         try {
-            $econexion=self::getInstance();
+           
             
             $stmt = null;
             //procedimiento de insercion de  la cuenta
             $sSQL = "INSERT INTO ca_unegocios(une_descripcion, une_direccion, une_dir_referencia, une_cla_pais, une_cla_ciudad, une_estatus, une_coordenadasxy, une_puntocardinal, une_tipotienda, une_cadenacomercial) VALUES (:nomuneg, :dirtien, :refer, :paisuneg, :ciudaduneg, :estatusuneg, :cxy, :puncaruneg,:tipouneg,:cadcomuneg)";
-            $stmt = Conexion::conectar()->prepare($sSQL);
+            $stmt = $pdo->prepare($sSQL);
             
             $stmt->bindParam(":nomuneg", $datosModel["nomuneg"], PDO::PARAM_STR);
             $stmt->bindParam(":dirtien", $datosModel["dirtien"], PDO::PARAM_STR);
@@ -267,11 +276,13 @@ and v.vi_createdat<=:fechafin and v.vi_createdat >=:fechaini";
             
             //  echo $stmt->debugDumpParams();
             if($res)
-            { $sql2="select max(id) from $tabla";
-               $stmt=$econexion->prepare($sql2);
+            { $sql2="select max(une_id) from $tabla";
+              $stmt=$pdo->prepare($sql2);
               $stmt->execute();
               $res2=$stmt->fetch();
-              return $res2;
+            //  var_dump($res2);
+            //  echo "<br>tienda nva";
+              return $res2[0];
             }
           else 
               throw new Exception("error al insertar tienda");

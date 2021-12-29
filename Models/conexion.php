@@ -13,14 +13,16 @@ class Conexion {
 
 
 try {
-        $link = new PDO("mysql:host=localhost;dbname=muesmerc_comprasdata;charset=UTF8", "muesmerc_admincom", "adMues21%%_");
+      //  $link = new PDO("mysql:host=localhost;dbname=muesmerc_comprasdata;charset=UTF8", "muesmerc_admincom", "adMues21%%_");
+        $link = new PDO("mysql:host=localhost;dbname=comprasdata;charset=UTF8", "root", "root");
+        
         return $link;
         print "Conexión exitosa!";
         }
         catch (PDOException $e) {
         print "¡Error!: " . $e->getMessage();
         
-        throw new MyDBException($Exception->getMessage()); echo "¡Error!: ";
+        throw new Exception($Exception->getMessage()); echo "¡Error!: ";
         //die();
         }
 
@@ -102,7 +104,7 @@ try {
     $stmt->execute();
  $respuesta = $stmt->fetchAll();
 
-            //   $stmt->debugDumpParams();
+        //    echo   $stmt->debugDumpParams();
 
             if ($stmt->errorInfo()[1] != null) {
 
@@ -118,10 +120,4 @@ try {
             throw new Exception("Hubo un error al ejecutar la consulta");
         }
     }
-
 }
-
-
-
-
-?>
