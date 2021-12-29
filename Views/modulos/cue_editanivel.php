@@ -3,7 +3,7 @@
   $estructuraController=new EstructuraController();
   $estructuraController->vistaEditar();
   $nivel=$estructuraController->resultado;
-  //var_dump($nivel);
+
   $idc = filter_input(INPUT_GET, "id",FILTER_SANITIZE_NUMBER_INT);
   $niv = filter_input(INPUT_GET, "niv",FILTER_SANITIZE_NUMBER_INT);
 
@@ -32,9 +32,10 @@ echo $estructuraController->listanivel3;
 echo $estructuraController->listanivel4;
 echo $estructuraController->listanivel5;
 echo $estructuraController->listanivel6;
+
 ?>
         <div class="form-group ">
-            <label >NOMBRE</label>   
+            <label >NOMBRE</label>  
             <input name="nombre" class="form-control" type="text"  size="70" value="<?php echo $nivel["n".$niv."_nombre"]?>">
          </div>   
          </div> 
