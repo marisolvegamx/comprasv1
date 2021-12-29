@@ -36,9 +36,9 @@ class Subefotos{
      //   var_dump($_POST);
        // var_dump($_FILES);
     //     die();
-        
+        $ind_ruta=str_replace('.', '_', $indice);
         try{
-             $carpeta = "../../fotografias" . "/" . $indice ;
+            $carpeta = "../../fotografias" . "/" . $ind_ruta ;
              $this->crearCarpeta($carpeta);
          //si traigo archivos
         if(isset($_FILES))

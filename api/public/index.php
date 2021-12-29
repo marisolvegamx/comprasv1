@@ -11,6 +11,7 @@ include "../src/tiendasController.php";
 include '../src/informePostController.php';
 include '../src/Subirfotos.php';
 include "../src/listaComController.php";
+include "../src/usuarioController.php";
 use api\Subefotos;
 // Create and configure Slim app
 $config = ['settings' => [
@@ -29,10 +30,7 @@ $container['logger'] = function($c) {
     $logger->pushHandler($file_handler);
     return $logger;
 };
-//echo "ssssss".$request->getMethod();
-//echo "iuuuuuu".$request->getUri();
-//echo "ssssss".$app->request->getMethod();
-///echo "iuuuuuu".$app->request->getUri();
+
 
 // Define app routes
 $app->get('/', function ($request, $response, $args) {
@@ -45,6 +43,31 @@ $app->get('/catalogos', function ($request, $response, $args) {
     ->getBody()
     ->write( $cc->response());
 });
+    $app->post('/login', function(Request $request, Response $response)
+    {
+       
+        $campos = $request->getParsedBody();
+        $this->get('logger')->addInfo('login: Intento de inicio de sesion'.$request->getBody());
+        
+        try {
+            $ingreso = new UsuarioController();
+            if($ingreso ->validarUsuarioController())
+            {
+                $datos = array('status' => 'ok', 'data' => 'Inicio sesión');
+                return $response->withJson($datos, 200);
+            }else{
+                $datos = array('status' => 'error', 'data' => "Usuario o contraseña incorrectos");
+                
+                return $response->withJson($datos, 500);
+            }
+        } catch (Exception $e) {
+            $datos = array('status' => 'error', 'data' => $e->getMessage());
+            $this->get('logger')->addInfo('InforemesPend: hubo un error '.$e->getMessage());
+            
+            return $response->withJson($datos, 500);
+        }
+    }
+    );
     $app->get('/listacompras', function ($request, $response, $args) {
         $cc=new listaComController();
         $recolector= filter_input(INPUT_GET, "usuario",FILTER_SANITIZE_STRING) ;
@@ -75,9 +98,11 @@ $app->get('/catalogos', function ($request, $response, $args) {
             
             $campos = $request->getParsedBody();
             $this->get('logger')->addInfo('CrearInforme: Llegó un informe '.$request->getBody());
-            
+          
             try {
+               
                $informeContrl=new InformePostController();
+            
                $informeContrl->insertarTodo($campos);
                
                 $datos = array('status' => 'ok', 'data' => 'Informe dado de alta correctamente.');
@@ -145,7 +170,7 @@ $app->get('/catalogos', function ($request, $response, $args) {
             
             
           
-              echo "aqui";
+          //    echo "aqui";
           
             $this->get('logger')->addInfo('SubirFoto: Llegó una foto '.$request->getBody());
             

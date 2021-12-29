@@ -1,4 +1,6 @@
 <?php
+//error_reporting(E_ERROR);
+//ini_set("display_errors", 1);
 require_once '../../Models/conexion.php';
 require '../../Models/crud_visitas.php';
 require '../../Models/crud_informes.php';
@@ -12,56 +14,62 @@ class InformePostController{
     private $datosInf;
     
     public function __construct(){
-        $this->datosinf= new DatosInforme();
+        $this->datosInf= new DatosInforme();
     }
     //se inserta por primera vez
     public function insertarTodo($campos){
+        $pdo=Conexion::conectar();
         try{
         $visita=$campos["visita"];
         $informe=$campos["informeCompra"];
         $informe_det=$campos["informeCompraDetalles"]; //este es un array
-        $fotos_ex=$campos["fotos_ex"]; //es array
+        $fotos_ex=$campos["productosEx"]; //es array
         $imagenes_det=$campos["imagenDetalles"]; //es array
         $cverecolector=$visita[ContratoVisitas::CVEUSUARIO];
         $indice=$visita[ContratoVisitas::INDICE];
-        
-        //TODO lo pongo en una transaccion
-      //  $conexion=Conexion::conectar();
-     //TODO tengo problema con las fechas
-        DatosVisita::insertar($visita,"visitas");
       
-        DatosProductoExhibido::insertar($fotos_ex,$cverecolector,$indice,"producto_exhibido");
- 
+        //TODO lo pongo en una transaccion
+       
+        $pdo->beginTransaction();
+   
+        DatosVisita::insertar($visita,"visitas",$pdo);
+       foreach ($fotos_ex as $lisfotos_ex)
+           DatosProductoExhibido::insertar($lisfotos_ex,$cverecolector,$indice,"producto_exhibido",$pdo);
+        
+      //  echo "insertar imagenes";
+       
         foreach ($imagenes_det as $imagen)
-            DatosImagenDetalle::insertar($imagen,$cverecolector,$indice,"imagen_detalle");
+            DatosImagenDetalle::insertar($imagen,$cverecolector,$indice,"imagen_detalle",$pdo);
         $datosInfdet=new DatosInformeDetalle();
         
-    
+      
         foreach ($informe_det as $detalle)
-            $datosInfdet->insertar($detalle,$cverecolector,$indice,"informe_detalle");
+            $datosInfdet->insertar($detalle,$cverecolector,$indice,"informe_detalle",$pdo);
         
            
            
         
-            $this->datosInf->insertar($informe,$cverecolector,$indice,"informes");
-      //  echo "rrrrrrrrrr".$visita[ContratoVisitas::TIENDAID];
+            $this->datosInf->insertar($informe,$cverecolector,$indice,"informes",$pdo);
+       // echo "rrrrrrrrrr".$visita[ContratoVisitas::TIENDAID];
         //reviso si es una tienda nueva para insertarla
         if($visita[ContratoVisitas::TIENDAID]==null||$visita[ContratoVisitas::TIENDAID]==0){
-            //es tienda nueva
+        //      echo "estoy aqui"; 
+                //es tienda nueva
             $datostienda=$this->tiendaNueva($visita);
           
-            $idtienda=$this->datosInf->insertarUnegocio($datostienda, "ca_unegocios");
+            $idtienda=$this->datosInf->insertarUnegocio($datostienda, "ca_unegocios",$pdo);
          
-           
+          //  echo "estoy aqui"; 
                 //actualizo en la visita
-             DatosVisita::actualizar($visita, $idtienda, "visitas");
+            DatosVisita::actualizar($visita, $idtienda, "visitas",$pdo);
             
             
         }
-     
+        $pdo->commit();
         
         }catch(Exception $ex){
             throw new Exception("Hubo un error al insertar ".$ex->getMessage());
+            $pdo->rollBack();
         }
         
         
@@ -74,12 +82,12 @@ class InformePostController{
             $lisvisita=$campos["visita"]; //es array
             $lisinforme=$campos["informeCompra"]; //es array
             $lisinforme_det=$campos["informeCompraDetalles"]; //este es un array
-            $lisfotos_ex=$campos["fotos_ex"]; //es array
+            $lisfotos_ex=$campos["productosEx"]; //es array
             $cverecolector=$campos[ContratoVisitas::INDICE];
             $indice=$campos[ContratoVisitas::INDICE];
          //   $imagenes_det=$campos["imagenDetalles"]; //es array
           
-            
+         
             //TODO lo pongo en una transaccion
             //  $conexion=Conexion::conectar();
             foreach ($lisvisita as $visita){
