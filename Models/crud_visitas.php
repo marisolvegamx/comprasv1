@@ -31,12 +31,14 @@ VALUES( :vi_idlocal, :vi_indice,:vi_geolocalizacion, :vi_tiendaid, :vi_fotofacha
             $stmt->bindParam(":vi_updatedat", $datosModel[ContratoVisitas::UPDATEDAT], PDO::PARAM_STR);
             
            if(!$stmt-> execute())
-               throw new Exception("Hubo un error al insertar ".$stmt->errorInfo());
-            //echo $stmt->debugDumpParams();
+           { //$stmt->debugDumpParams();
+               throw new Exception("Hubo un error al insertar visita".$stmt->errorInfo());
+             
+           }
             
         }catch(PDOException $ex){
             Utilerias::guardarError("DatosVisita.insertar "+$ex->getMessage());
-           
+            echo "error";
             
             throw new Exception("Hubo un error al insertar el informe");
         }
@@ -47,10 +49,10 @@ VALUES( :vi_idlocal, :vi_indice,:vi_geolocalizacion, :vi_tiendaid, :vi_fotofacha
         try{
             
             $sSQL= " UPDATE $tabla
-SET vi_indice=:indice,  vi_geolocalizacion=:geo, vi_tiendaid=:tienda,
- vi_fotofachada=:fotofac,  vi_cverecolector=:reco, vi_createdat=:fcreated,
+SET  vi_geolocalizacion=:geo, vi_tiendaid=:tienda,
+ vi_fotofachada=:fotofac,   vi_createdat=:fcreated,
  vi_updatedat=:fupdated
-WHERE vi_idlocal=:idlocal;";
+WHERE vi_idlocal=:idlocal and  vi_indice=:indice and vi_cverecolector=:reco;";
             
             $stmt=$pdo->prepare($sSQL);
             $stmt->bindParam(":idlocal", $datosModel[ContratoVisitas::ID],PDO::PARAM_INT);
@@ -65,7 +67,7 @@ WHERE vi_idlocal=:idlocal;";
             
             if(!$stmt-> execute())
                 throw new Exception("Hubo un error al actualizar ".$stmt->errorInfo()[2]);
-                //echo $stmt->debugDumpParams();
+              //   $stmt->debugDumpParams();
                 
         }catch(PDOException $ex){
             Utilerias::guardarError("DatosVisita.actualizar "+$ex->getMessage());

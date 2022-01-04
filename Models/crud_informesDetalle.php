@@ -5,7 +5,7 @@ class DatosInformeDetalle{
         try{
             
             $sSQL= "INSERT INTO informe_detalle
-(ind_id,ind_informes_id, ind_productos_id, ind_tamanio, ind_empaque, ind_codigo, ind_caducidad,
+(ind_id,ind_informes_id, ind_productos_id, ind_tamanio_id, ind_empaque, ind_codigo, ind_caducidad,
  ind_tipomuestra, ind_origen, ind_costo, ind_foto_codigo_produccion, ind_energia, 
  ind_foto_num_tienda, ind_marca_traslape, ind_atributoa, 
 ind_foto_atributoa, ind_atributob, ind_foto_atributob, ind_etiqueta_evaluacion, 
@@ -27,7 +27,7 @@ VALUES(:ind_id,:ind_informes_id, :ind_productos_id, :ind_tamanio, :ind_empaque, 
             
             $stmt->bindParam(":ind_informes_id", $datosModel[ContratoInformesDet::INFORMESID],PDO::PARAM_INT);
             $stmt->bindParam(":ind_productos_id", $datosModel[ContratoInformesDet::PRODUCTOID], PDO::PARAM_INT);
-            $stmt->bindParam(":ind_tamanio", $datosModel[ContratoInformesDet::PRESENTACION], PDO::PARAM_STR);
+            $stmt->bindParam(":ind_tamanio", $datosModel[ContratoInformesDet::TAMANIOID], PDO::PARAM_INT);
             $stmt->bindParam(":ind_empaque", $datosModel[ContratoInformesDet::EMPAQUESID], PDO::PARAM_INT);
             $stmt->bindParam(":ind_codigo", $datosModel[ContratoInformesDet::CODIGO], PDO::PARAM_STR);
             $stmt->bindParam(":ind_caducidad", $datosModel[ContratoInformesDet::CADUCIDAD], PDO::PARAM_STR);

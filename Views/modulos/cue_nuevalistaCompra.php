@@ -22,10 +22,7 @@
                       
                       <select class="form-control cascada" name="clientelis"  
                         data-id="niv-1"
-                        data-group="niv-1"
-                        data-target="niv-2"
-                        data-url="getNivelUnegocio.php?op=lc&"
-                        data-replacement="container1">
+                       onchange="javascript:cargarCombobox(this.value)">
                          <option value="">Seleccione una opción</option>
 
                          <?php $listaCompraContoller->getListaCliente()?>
@@ -36,12 +33,10 @@
 
                       <div class="form-group col-md-12">
                       <label>PLANTA</label>
-                      <select class="form-control cascada" name="plantalis"  
-                        data-group="niv-1"
-                        data-id="niv-2"
-                        data-target="niv-3"
-                        data-replacement="container1"
-                        data-default-label="Seleccione una opcion" disabled>
+                      <select class="form-control" name="plantalis"  
+                       
+                        id="niv-2"
+                       disabled>
                          <option value="">Seleccione una opción</option>
 
                          <?php $listaCompraContoller->getListaPlanta()?>
@@ -62,16 +57,20 @@
 
                       <div class="form-group col-md-12">
                       <label>RECOLECTOR</label>
-                      <select class="form-control" name="recolectorlis">
+                      <select class="form-control" name="recolectorlis" id="recolectorlis" disabled>
                          <option value="">Seleccione una opción</option>
 
-                         <?php $listaCompraContoller->getListaRecolector()?>
+                     
                                     
                       </select>
                       </div>
-                   </div>   
+                   
 
-              
+               <div class="form-group col-md-12">
+                    <label>NOTA</label>
+                     <input type="text" class="form-control" placeholder="NOTA" name="notalis">
+                  </div>
+                  
                    <button type="submit" class="btn btn-info">GUARDAR</button>
              
                  <?php
@@ -84,25 +83,53 @@
 </div>
               </div></div>
               </div>
-               <script src="js/jquery.cascading-drop-down.js"></script>
+           
     <script>
-    $('.cascada').ssdCascadingDropDown({
-        nonFinalCallback: function(trigger, props, data, self) {
-            trigger.closest('form')
-                    .find('input[type="submit"]')
-                    .attr('disabled', true);
-        },
-        finalCallback: function(trigger, props, data) {
-            if (props.isValueEmpty()) {
-                trigger.closest('form')
-                        .find('input[type="submit"]')
-                        .attr('disabled', true);
-            } else {
-                trigger.closest('form')
-                        .find('input[type="submit"]')
-                        .attr('disabled', false);
-            }
-        }
-    });
+    function cargarCombobox(cli)
+    {
+    	if(cli>0){
+        	console.log(cli);
+    	var parametro={"clientelis":cli
+    			};
+
+    	$.ajax({
+    		data:parametro,
+    	url:"getPlantaRec.php",
+    	type:"post",
+    	beforeSend:function(){
+    		$("#niv-2").html("cargando...");
+    		$("#recolectorlis").html("cargando...");
+    	},
+    	success:function(response){
+    		var arr=response.split("¬¬");
+    	
+    		if(arr.length>0)
+    		{//	primera=arr[0];
+    		$("#niv-2").append("<option value=''>Seleccione una opción</option>");
+    		$("#niv-2").append(arr[0]);
+    		$("#niv-2").prop( "disabled", false );
+    		$("#recolectorlis").append(arr[1]);
+    		$("#recolectorlis").prop( "disabled", false );
+    	
+    		}
+    		else
+    		{	primera=response;
+    		//$("#recolectorlis").append("<option value='0'>- TODOS -</option>");
+    		$("#recolectorlis").append(primera);
+    		$("#recolectorlis").prop( "disabled", false );
+    		}
+    		
+    	
+    	}
+    	});
+    	}else
+    	{	
+    		$("#niv-2").prop( "disabled", true );
+    		$("#niv-2").html("<option value=''>Seleccione una opción</option>");
+    	
+    		$("#recolectorlis").prop( "disabled", true );
+    		$("#recolectorlis").html("<option value=''>Seleccione una opción</option>");
+    	}
+    }
 </script>
             </section>

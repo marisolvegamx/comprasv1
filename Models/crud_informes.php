@@ -22,11 +22,11 @@ class DatosInforme{
 ( inf_id,inf_consecutivo, inf_visitasIdlocal, inf_segunda_muestra, inf_tercera_muestra,
 inf_indice, inf_usuario,
  inf_comentarios, inf_estatus, inf_primera_muestra, inf_plantasid,
- inf_ticket_compra, inf_condiciones_traslado)
+ inf_ticket_compra, inf_condiciones_traslado,inf_causa_nocompra)
 VALUES(:inf_id,:inf_consecutivo, :inf_visitasIdlocal, :inf_segunda_muestra, :inf_tercera_muestra, 
 :inf_indice,:inf_recolector, 
 :inf_comentarios, :inf_estatus,  :inf_primera_muestra, :inf_plantasid,
-:inf_ticket_compra, :inf_condiciones_traslado);
+:inf_ticket_compra, :inf_condiciones_traslado, :inf_causa_nocompra);
 ";
             
             $stmt=$pdo->prepare($sSQL);
@@ -48,7 +48,8 @@ VALUES(:inf_id,:inf_consecutivo, :inf_visitasIdlocal, :inf_segunda_muestra, :inf
           
             $stmt->bindParam(":inf_ticket_compra", $datosModel[ContratoInformes::TICKETCOMPRA], PDO::PARAM_INT);
             $stmt->bindParam(":inf_condiciones_traslado", $datosModel[ContratoInformes::CONDICIONESTRASLADO], PDO::PARAM_INT);
-               
+            $stmt->bindParam(":inf_causa_nocompra", $datosModel[ContratoInformes::CAUSANOCOMPRA], PDO::PARAM_STR);
+            
             if(!$stmt-> execute())
             {
                 
@@ -157,7 +158,9 @@ where cn.n6_idn5 =:idplan";
         $sSQL="SELECT lid_idlistacompra as listaId, lid_idprodcompra as id , 
             lid_idproducto as productosId, 
             cp.pro_producto as productoNombre,
-            cc.cad_descripcionesp as tamanio, lid_idempaque as empaquesId,
+            cc.cad_descripcionesp as tamanio,
+            lid_idtamano as tamanioId,
+            lid_idempaque as empaquesId,
             cem.cad_descripcionesp  as empaque,
             lid_idtipoanalisis as analisisId,
             cta.cad_descripcionesp  as tipoAnalisis,
@@ -192,7 +195,9 @@ where cn.n6_idn5 =:idplan";
         $sSQL="SELECT lid_idlistacompra as listaId, lid_idprodcompra as id,
             lid_idproducto as productosId,
             cp.pro_producto as productoNombre,
-            cc.cad_descripcionesp as tamanio, lid_idempaque as empaquesId,
+            cc.cad_descripcionesp as tamanio,
+            lid_idtamano as tamanioId,
+             lid_idempaque as empaquesId,
             cem.cad_descripcionesp  as empaque,
             lid_idtipoanalisis as analisisId,
             cta.cad_descripcionesp  as tipoAnalisis,
