@@ -17,7 +17,9 @@ class ContratoInformes {
     const COMENTARIOS="comentarios";
     const TICKETCOMPRA="ticket_compra";
     const CONDICIONESTRASLADO="condiciones_traslado";
-  
+    const CAUSANOCOMPRA="inf_causa_nocompra";
+    
+    
   
     const ESTATUS="estatus";
   
@@ -34,7 +36,7 @@ class ContratoInformesDet {
     
     const  PRODUCTOID="productoId";
     const  PRODUCTO ="producto";
-    const  PRESENTACION="presentacion";
+    const  TAMANIOID="tamanioId";
   
     const  EMPAQUESID="empaquesId";
     const CODIGO="codigo";

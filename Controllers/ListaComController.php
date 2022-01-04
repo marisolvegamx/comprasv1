@@ -41,7 +41,7 @@ private $Planta;
                   <th style="width: 10%">PLANTA</th>
                   <th style="width: 15%">INDICE</th>
                   <th style="width: 15%">RECOLECTOR</th>
-                  <th style="width: 10%" colspan="4">OPCIONES</th>
+                  <th style="width: 10%" colspan="3">OPCIONES</th>
                   <th style="width: 35%">NOTAS</th></tr>
                   </thead>
                   <tbody>
@@ -59,9 +59,9 @@ private $Planta;
            }   
            $idplanta=$item["lis_idplanta"];
            $resplanta=Datosncin::vistancinOpcionModel($idplanta, "ca_nivel5");
-           //foreach($resplanta as $row => $regplan){
-           $nomplanta=$resplanta["n5_nombre"];
-          // }  
+           foreach($resplanta as $row => $regplanta){
+              $nomplanta=$regplanta["n5_nombre"];
+           }  
 				   $mes_asig= $item["lis_idindice"];
             // lee indice
       
@@ -132,8 +132,7 @@ private $Planta;
 </td>
 <td>  <a type="button" href="index.php?action=copialistacompra&id='.$item[0].'"><i class="fa fa-copy fa-lg"></i></a>
                     </td>	                  
-<td> <a type="button" href="index.php?action=listacompra&admin=eli&id='.$item[0].'" onclick="return dialogoEliminar();"><i class="fa fa-trash-alt fa-lg"></i></a>
-		                </td>
+
  <td>'.$notas.'</td> 
 
 	                </tr>';
@@ -292,6 +291,9 @@ public function insertar(){
         $this->Planta =  $rowp[1];  
         }
  
+      // lee nota
+        $this->nota =  $row["lis_nota"];
+ 
        // lee recolector
       $idrec = $row["lis_idrecolector"];
       $rs = DatosRecolector::vistarecdetModel($idrec, "ca_recolectores");
@@ -367,7 +369,8 @@ public function getIndice() {
       return $this->mesasignacion;
     }
 
-public function getnotas() { 
+public function getnotas() {
+      
       return $this->nota;
     }
 
@@ -401,8 +404,8 @@ public function vistaEditaListaCompra() {
         $idrecolector = $row["lis_idrecolector"];
         $indice= $row["lis_idindice"];
         $this->nota = $row["lis_nota"];
-
-        $rs = DatosRecolector::vistarecModel("ca_recolectores");
+        //echo  $this->nota;  
+        $rs = DatosRecolector::vistarecxCliente($idclien,"ca_recolectores");
         $this->listaRecolector = null;
         foreach ($rs as $row) {
           if ($idrecolector== $row["rec_id"]) {

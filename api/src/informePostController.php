@@ -33,6 +33,7 @@ class InformePostController{
         $pdo->beginTransaction();
    
         DatosVisita::insertar($visita,"visitas",$pdo);
+       
        foreach ($fotos_ex as $lisfotos_ex)
            DatosProductoExhibido::insertar($lisfotos_ex,$cverecolector,$indice,"producto_exhibido",$pdo);
         
@@ -49,7 +50,7 @@ class InformePostController{
            
            
         
-            $this->datosInf->insertar($informe,$cverecolector,$indice,"informes",$pdo);
+        $this->datosInf->insertar($informe,$cverecolector,$indice,"informes",$pdo);
        // echo "rrrrrrrrrr".$visita[ContratoVisitas::TIENDAID];
         //reviso si es una tienda nueva para insertarla
         if($visita[ContratoVisitas::TIENDAID]==null||$visita[ContratoVisitas::TIENDAID]==0){
@@ -68,7 +69,7 @@ class InformePostController{
         $pdo->commit();
         
         }catch(Exception $ex){
-            throw new Exception("Hubo un error al insertar ".$ex->getMessage());
+            throw new Exception("*Hubo un error al insertar ".$ex->getMessage());
             $pdo->rollBack();
         }
         
