@@ -14,10 +14,11 @@ class DatosInforme{
         
         return self::$conexion;
     }
+    
     public  function insertar($datosModel,$cveusuario,$indice,$tabla,$pdo){
         try{
          
-           
+            
             $sSQL= "INSERT INTO $tabla
 ( inf_id,inf_consecutivo, inf_visitasIdlocal, inf_segunda_muestra, inf_tercera_muestra,
 inf_indice, inf_usuario,
@@ -63,6 +64,51 @@ VALUES(:inf_id,:inf_consecutivo, :inf_visitasIdlocal, :inf_segunda_muestra, :inf
         }
         
     }
+    public function updateInforme($datosModel,$cveusuario,$indice,$tabla,$pdo){
+        $sSQL= "UPDATE $tabla
+SET inf_visitasIdlocal=:inf_visitasIdlocal, inf_consecutivo=:inf_consecutivo, 
+inf_segunda_muestra=:inf_segunda_muestra,
+inf_tercera_muestra=:inf_tercera_muestra, 
+inf_comentarios=:inf_comentarios, 
+inf_estatus=:inf_estatus, inf_primera_muestra=:inf_primera_muestra,
+inf_plantasid=:inf_plantasid,  inf_ticket_compra=:inf_ticket_compra,
+inf_condiciones_traslado=:inf_condiciones_traslado, inf_causa_nocompra=:inf_causa_nocompra
+WHERE inf_id=:inf_id and inf_indice=:inf_indice and inf_recolector=:inf_recolector ;
+";
+        try{
+        $stmt=$pdo->prepare($sSQL);
+        $stmt->bindParam(":inf_id", $datosModel[ContratoInformes::ID],PDO::PARAM_INT);
+        $stmt->bindParam(":inf_consecutivo", $datosModel[ContratoInformes::CONSECUTIVO],PDO::PARAM_INT);
+        $stmt->bindParam(":inf_visitasIdlocal", $datosModel[ContratoInformes::VISITASID], PDO::PARAM_INT);
+        $stmt->bindParam(":inf_segunda_muestra", $datosModel[ContratoInformes::SEGUNDAMUESTRA], PDO::PARAM_INT);
+        $stmt->bindParam(":inf_tercera_muestra", $datosModel[ContratoInformes::TERCERAMUESTRA], PDO::PARAM_INT);
+        
+        $stmt->bindParam(":inf_indice", $indice, PDO::PARAM_STR);
+        $stmt->bindParam(":inf_recolector", $cveusuario, PDO::PARAM_STR);
+        $stmt->bindParam(":inf_comentarios", $datosModel[ContratoInformes::COMENTARIOS], PDO::PARAM_STR);
+        
+        $stmt->bindParam(":inf_estatus", $datosModel[ContratoInformes::ESTATUS], PDO::PARAM_INT);
+        //  $stmt->bindParam(":inf_created_at", $datosModel[ContratoInformes::CREA], PDO::PARAM_STR);
+        //$stmt->bindParam(":inf_updated_at", $datosModel[ContratoInformes::"inf_updated_at"], PDO::PARAM_STR);
+        $stmt->bindParam(":inf_primera_muestra", $datosModel[ContratoInformes::PRIMERAMUESTRA],PDO::PARAM_INT);
+        $stmt->bindParam(":inf_plantasid", $datosModel[ContratoInformes::PLANTASID], PDO::PARAM_INT);
+        
+        $stmt->bindParam(":inf_ticket_compra", $datosModel[ContratoInformes::TICKETCOMPRA], PDO::PARAM_INT);
+        $stmt->bindParam(":inf_condiciones_traslado", $datosModel[ContratoInformes::CONDICIONESTRASLADO], PDO::PARAM_INT);
+        $stmt->bindParam(":inf_causa_nocompra", $datosModel[ContratoInformes::CAUSANOCOMPRA], PDO::PARAM_STR);
+        
+        if(!$stmt-> execute())
+        {
+            
+            throw new Exception($stmt->errorCode()."-".$stmt->errorInfo()[2]);
+        }
+        //     echo $stmt->debugDumpParams();
+    }catch(PDOException $ex){
+        Utilerias::guardarError("DatosInforme.actualizar "+$ex->getMessage());
+        
+        throw new Exception("Hubo un error al actualizar el informe");
+    }
+    }
     public  function getAtributos($tabla){
         $econexion=self::getInstance();
         $stmt =   $econexion-> prepare("SELECT id_tipoempaque, cad_descripcionesp as nombre_empaqueesp,
@@ -76,6 +122,16 @@ VALUES(:inf_id,:inf_consecutivo, :inf_visitasIdlocal, :inf_segunda_muestra, :inf
         //    echo $stmt->debugDumpParams();
         return $stmt->fetchAll(PDO::FETCH_ASSOC); //para que solo devuelva los nombres de columnas
         
+        
+    }
+    public function getCausas($tabla){
+        $econexion=self::getInstance();
+        $stmt = $econexion-> prepare("SELECT 100 as cad_idcatalogo, 'CAUSAS' as cad_nombreCatalogo,
+ID_causa as cad_idopcion, cau_descripcion as cad_descripcionesp, cau_estatus as cad_otro
+FROM $tabla;");
+        
+        $stmt-> execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
         
     }
     
@@ -168,7 +224,7 @@ where cn.n6_idn5 =:idplan";
              ctp.cad_descripcionesp  as nombreTipoMuestra,
             lid_fechapermitida , lid_fecharestringida,
             cp.pro_categoria as categoriaid, ccp.cad_descripcionesp as categoria,
-            pl.lis_idplanta as planta
+            pl.lis_idplanta as planta, lid_orden,lid_backup
             FROM $tabla
             inner join pr_listacompra pl on pl.lis_idlistacompra =lid_idlistacompra
             inner join ca_productos cp on cp.pro_id =lid_idproducto 
@@ -205,7 +261,7 @@ where cn.n6_idn5 =:idplan";
              ctp.cad_descripcionesp  as nombreTipoMuestra,
             lid_fechapermitida , lid_fecharestringida,
             cp.pro_categoria as categoriaid, ccp.cad_descripcionesp as categoria,
-  pl.lis_idplanta as planta
+  pl.lis_idplanta as planta, lid_orden,lid_backup
             FROM $tabla
             inner join pr_listacompra pl on pl.lis_idlistacompra =lid_idlistacompra
             inner join ca_productos cp on cp.pro_id =lid_idproducto
@@ -229,18 +285,24 @@ where cn.n6_idn5 =:idplan";
     public function getCodigosNoPer($fechaini,$fechafin,$prod,$tamanio,$empaque,$ana,$planta,$tabla){
         $econexion=self::getInstance();
             //me faltan las siglas
-        $sSQL="SELECT ind_id, ind_informes_id, ind_productos_id, ind_tamanio, ind_empaque, 
-ind_codigo, ind_caducidad
+        $sSQL="SELECT ind_id, ind_informes_id, ind_productos_id, ind_tamanio_id, ind_empaque, 
+	DATE_FORMAT(ind_caducidad,'%d-%m-%y')  as fec_caducidad, inf_plantasid
+
 FROM $tabla
-inner join informes
-on ind_informes_id =inf_id and inf_indice=ind_indice and ind_recolector =inf_recolector
-inner join visitas v on v.vi_cverecolector =inf_recolector and inf_indice=v.vi_indice 
-and inf_visitasId=v.vi_idlocal 
+inner join informes on
+	ind_informes_id = inf_id
+	and inf_indice = ind_indice
+	and ind_recolector = inf_usuario
+inner join visitas v on
+	v.vi_cverecolector = inf_usuario
+	and inf_indice = v.vi_indice
+	and inf_visitasIdlocal = v.vi_idlocal
 where
 ind_productos_id =:producto
-and ind_tamanio =:tamanio
+and ind_tamanio_id =:tamanio
 and ind_empaque =:empaque and ind_tipoanalisis=:tipoanalisis and inf_plantasid=:planta
-and v.vi_createdat<=:fechafin and v.vi_createdat >=:fechaini order by ind_caducidad desc";
+and v.vi_createdat<:fechafin and v.vi_createdat >=:fechaini group by ind_caducidad
+order by ind_caducidad desc";
         $stmt = $econexion-> prepare($sSQL);
         $stmt->bindParam(":fechaini", $fechaini,PDO::PARAM_STR);
         $stmt->bindParam(":fechafin", $fechafin,PDO::PARAM_STR);
@@ -252,6 +314,7 @@ and v.vi_createdat<=:fechafin and v.vi_createdat >=:fechaini order by ind_caduci
         
        
         $stmt-> execute();
+      //  $stmt->debugDumpParams();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
         
     }
@@ -295,6 +358,169 @@ and v.vi_createdat<=:fechafin and v.vi_createdat >=:fechaini order by ind_caduci
         } catch (Exception $ex) {
             return "error";
         }
+    }
+    
+    public function getUltVisita($recolector, $indice,$tabla){
+        $econexion=self::getInstance();
+        $stmt = $econexion-> prepare("select max(vi_idlocal ) as maxid from $tabla 
+        where vi_indice =:indice and vi_cverecolector =:recolector;");
+        $stmt->bindParam(":recolector", $recolector,PDO::PARAM_INT);
+       
+        $stmt->bindParam(":indice", $indice,PDO::PARAM_STR);
+        $stmt-> execute();
+        $res= $stmt->fetch();
+      //  var_dump($res);
+        $ultimo=0;
+        if($res)
+        {$id=$res["maxid"];
+        if($id==0||$id==null)
+            $ultimo=0;
+        else $ultimo=$id;
+        }
+        return $ultimo;
+        
+    }
+    
+    
+    
+    public function getUltInforme($recolector, $indice,$tabla,$planta){
+        $econexion=self::getInstance();
+        $stmt = $econexion-> prepare("select max(inf_id) as maxid, inf_consecutivo from $tabla
+where inf_indice =:indice and inf_usuario =:recolector ;");
+        $stmt->bindParam(":recolector", $recolector,PDO::PARAM_INT);
+        
+        $stmt->bindParam(":indice", $indice,PDO::PARAM_STR);
+        $stmt-> execute();
+        $res= $stmt->fetch();
+       // $stmt->debugDumpParams();
+        //var_dump($res);
+        $ultimo=0;
+        $cons=0;
+        if($res)
+        {$id=$res["maxid"];
+        if($id==0||$id==null)
+            $ultimo=0;
+            else{ $ultimo=$id;
+            //busco el consecutivo
+            $stmt2 = $econexion-> prepare("select max(inf_consecutivo) as consec from $tabla
+where inf_plantasid=:plantaid and inf_indice =:indice and inf_usuario =:recolector;");
+         
+            $stmt2->bindParam(":recolector", $recolector,PDO::PARAM_INT);
+            $stmt2->bindParam(":plantaid", $planta,PDO::PARAM_INT);
+            $stmt2->bindParam(":indice", $indice,PDO::PARAM_STR);
+            $stmt2-> execute();
+            $res2= $stmt2->fetch();
+          
+           
+            if($res2)
+            {$id=$res2["consec"];
+            if($id==0||$id==null)
+                $cons=0;
+                else $cons=$id;
+            }
+            }
+            
+        }
+        //busco el consecutivo $stmt = $econexion-> prepare("select max(inf_id) as maxid, inf_consecutivo from $tabla
+       
+        return $ultimo.",".$cons;
+        
+    }
+
+      public function getUltConsecutivo($recolector, $indice,$tabla,$planta){
+        $econexion=self::getInstance();
+       
+            //busco el consecutivo
+            $stmt2 = $econexion-> prepare("select max(inf_consecutivo) as consec from $tabla
+where inf_plantasid:plantaid and inf_indice =:indice and inf_usuario =:recolector;");
+            $stmt2->bindParam(":plantaid", $planta,PDO::PARAM_INT);
+            $stmt2->bindParam(":recolector", $recolector,PDO::PARAM_INT);
+            
+            $stmt2->bindParam(":indice", $indice,PDO::PARAM_STR);
+            $stmt2-> execute();
+            $res2= $stmt2->fetch();
+          
+           
+            if($res2)
+            {$id=$res2["consec"];
+            if($id==0||$id==null)
+                $cons=0;
+                else $cons=$id;
+            }
+            
+            
+        
+        //busco el consecutivo $stmt = $econexion-> prepare("select max(inf_id) as maxid, inf_consecutivo from $tabla
+       
+        return $cons;
+        
+    }
+    
+    public  function getSustitucion($tabla){
+        $econexion=self::getInstance();
+        $stmt =   $econexion-> prepare("Select   su_tipoempaque,
+id_sustitucion,
+su_producto,
+su_tamaño as su_tamanio,
+pro_cliente as clientesId,
+pro_producto as nomproducto,
+            cc.cad_descripcionesp as nomtamanio,
+             cem.cad_descripcionesp  as nomempaque,
+             pro_categoria as categoriasId, ccp.cad_descripcionesp as nomcategoria
+from $tabla 
+inner join ca_productos
+on su_producto =pro_id
+inner join ca_catalogosdetalle ccp on ccp.cad_idopcion =pro_categoria and ccp.cad_idcatalogo =5
+            inner join ca_catalogosdetalle cc on cc.cad_idopcion =su_tamaño and cc.cad_idcatalogo =13
+            inner join ca_catalogosdetalle cem on cem.cad_idopcion =su_tipoempaque and cem.cad_idcatalogo =12
+
+");
+        
+        $stmt-> execute();
+        //    echo $stmt->debugDumpParams();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC); //para que solo devuelva los nombres de columnas
+        
+        
+    }
+    
+    public function getUltImagenDet($recolector, $indice,$tabla){
+        $econexion=self::getInstance();
+        $stmt = $econexion-> prepare("select max(imd_idlocal) as maxid from $tabla id 
+where imd_indice =:indice and imd_usuario =:recolector ;");
+        $stmt->bindParam(":recolector", $recolector,PDO::PARAM_INT);
+        
+        $stmt->bindParam(":indice", $indice,PDO::PARAM_STR);
+        $stmt-> execute();
+        $res= $stmt->fetch();
+        $ultimo=0;
+        if($res)
+        {$id=$res["maxid"];
+        if($id==0||$id==null)
+            $ultimo=0;
+            else $ultimo=$id;
+        }
+        return $ultimo;
+        
+    }
+    
+    public function getPlantaPen($siglas,$cliente){
+        $econexion=self::getInstance();
+        $stmt = $econexion-> prepare("select n5_nombre cad_descripcionesp,
+n5_id cad_idopcion,
+ n5_idn1 cad_idcatalogo
+from ca_nivel6 inner join 
+ca_nivel5 on n6_idn5=n5_id
+where n6_idn1=:cliente
+and n6_nombre=:siglas");
+        $stmt->bindParam(":cliente", $cliente,PDO::PARAM_INT);
+        
+        $stmt->bindParam(":siglas", $siglas,PDO::PARAM_STR);
+        $stmt-> execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC); //para que solo devuelva los nombres de columnas
+        //  var_dump($res);
+       
+       
+        
     }
     
     

@@ -13,11 +13,12 @@ class UsuarioController{
         			"logpass"=>base64_decode($pass)); 
       
        	//var_dump($_POST);
+       //	var_dump($datoslogController);
 		$respuesta =$this->validaUsuarioModel($datoslogController, "cnfg_usuarios");	
 		//var_dump($respuesta);		
 	//	echo $respuesta;
 	
-		if ($respuesta>0) {
+		if ($respuesta!=null&&$respuesta["rec_id"]>0) {
 		 	 	#actualiza Estatus del usuario
 			date_default_timezone_set('America/Mexico_City');
 			$ultimacon= date('Y-M-d G:i:s');
@@ -53,10 +54,10 @@ class UsuarioController{
     		$_SESSION["idiomaus"] = $idioma;
 		
 			*/
-		return true;
+			return $respuesta["rec_id"];
 		} else {
 				//echo "El usuario o la contrasena son incorrectos";
-				return false;
+				return 0;
 		} 	    
 	       	 	
 	}
@@ -65,7 +66,10 @@ class UsuarioController{
 	    
 	    
 	    
-	    $stmt = Conexion::conectar()-> prepare("SELECT cus_usuario, cus_contrasena, cus_email  FROM $tabla WHERE cus_email=:email and cus_contrasena=:pass");
+	    $stmt = Conexion::conectar()-> prepare("SELECT cus_usuario, cus_contrasena, cus_email,rec_id
+          FROM $tabla inner join ca_recolectores on 
+            rec_usuario=cus_usuario
+            WHERE cus_email=:email and cus_contrasena=:pass");
 	    
 	    
 	    
@@ -79,11 +83,8 @@ class UsuarioController{
 	    
 	    
 	    
-	    return $stmt->rowCount();
+	    return $stmt->fetch(PDO::FETCH_ASSOC);
 	    
-	    
-	    
-	    $stmt->close();
 	    
 	}
 	

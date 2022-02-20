@@ -79,7 +79,7 @@ class InformePostController{
     //se inserta por primera vez
     public function insertarPend($campos){
         try{
-            
+            $pdo=Conexion::conectar();
             $lisvisita=$campos["visita"]; //es array
             $lisinforme=$campos["informeCompra"]; //es array
             $lisinforme_det=$campos["informeCompraDetalles"]; //este es un array
@@ -88,56 +88,61 @@ class InformePostController{
             $indice=$campos[ContratoVisitas::INDICE];
          //   $imagenes_det=$campos["imagenDetalles"]; //es array
           
-         
+            $pdo->beginTransaction();
             //TODO lo pongo en una transaccion
             //  $conexion=Conexion::conectar();
             foreach ($lisvisita as $visita){
-                DatosVisita::insertar($visita,"visitas");
-               
+                DatosVisita::insertar($visita,"visitas",$pdo);
+                if($visita[ContratoVisitas::TIENDAID]==null||$visita[ContratoVisitas::TIENDAID]==0){
+                    //es tienda nueva
+                    $datostienda=$this->tiendaNueva($visita);
+                    //   var_dump($datostienda);
+                    $idtienda=$this->datosInf->insertarUnegocio($datostienda, "ca_unegocios",$pdo);
+                    echo $idtienda;
+                    if($idtienda>0)
+                        //actualizo la visita
+                        DatosVisita::actualizar($visita, $idtienda, "visitas");
+                        
+                        
+                }
             }
             foreach ($lisfotos_ex as $fotos_ex)
-                DatosProductoExhibido::insertar($fotos_ex,$cverecolector,$indice,"producto_exhibido");
+                DatosProductoExhibido::insertar($fotos_ex,$cverecolector,$indice,"producto_exhibido",$pdo);
             
            // foreach ($imagenes_det as $imagen)
            //     DatosImagenDetalle::insertar($imagen,$cverecolector,$indice,"imagen_detalle");
             $datosInfdet=new DatosInformeDetalle();
                 
             foreach ($lisinforme_det as $detalle)
-                    $datosInfdet->insertar($detalle,"informe_detalle");
+                $datosInfdet->insertar($detalle,$cverecolector,$indice,"informe_detalle",$pdo);
                     
                     
                     
             foreach ($lisinforme as $informe)
-                $this->datosInf->insertar($informe,$cverecolector,$indice,"informes");
+                $this->datosInf->insertar($informe,$cverecolector,$indice,"informes",$pdo);
                     //  echo "rrrrrrrrrr".$visita[ContratoVisitas::TIENDAID];
                     //reviso si es una tienda nueva para insertarla
-            if($visita[ContratoVisitas::TIENDAID]==null||$visita[ContratoVisitas::TIENDAID]==0){
-                        //es tienda nueva
-                 $datostienda=$this->tiendaNueva($visita);
-                     //   var_dump($datostienda);
-                 $idtienda=$this->datosInf->insertarUnegocio($datostienda, "ca_unegocios");
-                 echo $idtienda;
-                 if($idtienda>0)
-                 //actualizo la visita
-                 DatosVisita::actualizar($visita, $idtienda, "visitas");
-                 
-                        
-            }
+           
                     
                     
+            $pdo->commit();
+            
         }catch(Exception $ex){
-            throw new Exception("Hubo un error al insertar ".$ex->getMessage());
+            throw new Exception("*Hubo un error al insertar ".$ex->getMessage());
+            $pdo->rollBack();
         }
+        
         
         
     }
     //se inserta por primera vez
     public function insertarVisita($campos){
         try{
+            $pdo=Conexion::conectar();
             $visita=$campos["visita"];
          
             
-            DatosVisita::insertar($visita,"visitas");
+            DatosVisita::insertar($visita,"visitas",$pdo);
            
             
         }catch(Exception $ex){

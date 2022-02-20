@@ -33,8 +33,8 @@ class Subefotos{
      //   $idusuario=null
         $contdes = 1; /* para los campos de descripcion */ // valida si hay archivo para ingresar
      //    guardarError(var_dump($_POST));
-        var_dump($_POST);
-        var_dump($_FILES);
+       // var_dump($_POST);
+        //var_dump($_FILES);
     //     die();
         $ind_ruta=str_replace('.', '_', $indice);
         try{
@@ -133,7 +133,7 @@ class Subefotos{
                 
     }
     public function crearCarpeta($ruta){
-        echo "revisando carpeta".$ruta;
+       // echo "revisando carpeta".$ruta;
         if (! is_dir (  $ruta )) {
           
             try {

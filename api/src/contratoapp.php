@@ -72,7 +72,8 @@ class ContratoInformesDet {
     
     const  UPDATEDAT="updatedAt";
     const ESTATUS="estatus";
-    
+    const  COMPRASIDBU="comprasIdbu";
+    const COMPRASDETIDBU="comprasDetIdbu";
     
    
     

@@ -12,6 +12,11 @@ include '../src/informePostController.php';
 include '../src/Subirfotos.php';
 include "../src/listaComController.php";
 include "../src/usuarioController.php";
+include "../src/idsInfController.php";
+include "../src/sustitucionController.php";
+
+include "../src/plantaPenController.php";
+
 use api\Subefotos;
 // Create and configure Slim app
 $config = ['settings' => [
@@ -43,6 +48,52 @@ $app->get('/catalogos', function ($request, $response, $args) {
     ->getBody()
     ->write( $cc->response());
 });
+    $app->get('/sustitucion', function ($request, $response, $args) {
+        $cc=new SustitucionController();
+        
+        return $response->withHeader('Content-type', 'application/json')
+        ->getBody()
+        ->write( $cc->response());
+    });
+    $app->get('/ultids', function ($request, $response, $args) {
+        $cc=new IdsInfController();
+        $recolector= filter_input(INPUT_GET, "usuario",FILTER_SANITIZE_STRING) ;
+       
+        $indice= filter_input(INPUT_GET, "indice",FILTER_SANITIZE_STRING);
+        $planta= filter_input(INPUT_GET, "planta",FILTER_SANITIZE_STRING);
+         $this->get('logger')->addInfo('ultids: Llegó una peticion'.$recolector."-".$indice."-".$planta);
+          
+          
+        return $response->withHeader('Content-type', 'application/json')
+        ->getBody()
+        ->write( $cc->response($recolector,$indice,$planta));
+    });
+    /****verificar las siglas para peñafiel*/ 
+    //llegan las siglas y el usuario 
+    //devuelve el nombre de la planta
+        $app->get('/plantapen', function ($request, $response, $args) {
+            $cc=new PlantaPenController();
+            $recolector= filter_input(INPUT_GET, "usuario",FILTER_SANITIZE_STRING) ;
+            
+            $siglas= filter_input(INPUT_GET, "siglas",FILTER_SANITIZE_STRING);
+           
+            $this->get('logger')->addInfo('plantapen: Llegó una peticion'.$recolector."-".$siglas);
+            
+            $resp= $cc->response($recolector,$siglas,6);
+          /*  return $response->withHeader('Content-type', 'application/json')
+            ->getBody()
+            ->write( $cc->response($recolector,$siglas,6));*/
+            if($resp!=null&&sizeof($resp)>0){
+                
+                $datos = array('status' => 'ok', 'data' =>$resp);
+                return $response->withJson($datos, 200);
+            }
+            else 
+            {   $datos = array('status' => 'error', 'data' => "No existe una planta con esas siglas");
+                
+                return $response->withJson($datos, 500);
+            }
+        });
     $app->post('/login', function(Request $request, Response $response)
     {
        
@@ -51,9 +102,10 @@ $app->get('/catalogos', function ($request, $response, $args) {
         
         try {
             $ingreso = new UsuarioController();
-            if($ingreso ->validarUsuarioController())
+            $resp=$ingreso ->validarUsuarioController();
+            if($resp>0)
             {
-                $datos = array('status' => 'ok', 'data' => 'Inicio sesión');
+                $datos = array('status' => 'ok', 'data' => 'cveusr='.$resp);
                 return $response->withJson($datos, 200);
             }else{
                 $datos = array('status' => 'error', 'data' => "Usuario o contraseña incorrectos");

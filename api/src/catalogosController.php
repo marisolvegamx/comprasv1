@@ -4,7 +4,7 @@ require '../../Models/crud_catalogoDetalle.php';
 //require '../../Models/crud_atributos.php';
 
 
-//para devolver los catalogos en json
+//para devolver los catalogos
 class CatalogosController{
     
     private $listaCatalogos; //para poner los catalogos que devuelvo
@@ -28,11 +28,11 @@ class CatalogosController{
             //echo "*****".$key;
             $rs = $this->datosCatdet->listaCatalogo($key, "ca_catalogosdetalle");
             
-        
-        //return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
-            foreach ($rs as $row) {
             
+            //return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            foreach ($rs as $row) {
+                
                 $this->resultCat[] = $row;
             }
         }
@@ -49,17 +49,32 @@ class CatalogosController{
             $this->resultAtr[] = $row;
         }
     }
+    public function getCausas(){
+        $rs = $this->datosInf->getCausas( "ca_causas");
+        
+        $resultAtr=array();
+        //return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        foreach ($rs as $row) {
+            
+            $resultAtr[] = $row;
+        }
+        return $resultAtr;
+    }
+    
+  
     
     public function response()
     {
         $response=array();
         $this->getCatalogos();
         $this->getAtributos();
+        
         $response["catalogos"]= $this->resultCat;
         $response["atributos"] = $this->resultAtr;
+        $response["causas"] =  $this->getCausas();
         
-    
+        
         return json_encode($response);
     }
 }
-  
