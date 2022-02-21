@@ -3,12 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <script scr="https://maps.googleapis.com/maps/api/js?key=AIzaSyBDaeWicvigtP9xPv919E-RNoxfvC-Hqik&callback=iniciarMap" async defer></script>
+
   <title>Muesmerc | Sistema de Compras</title>
 
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="Views/plugins/fontawesome-free/css/all.min.css">
   <!-- Theme style -->
   <link rel="stylesheet" href="Views/dist/css/adminlte.min.css">
   <!-- overlayScrollbars -->
@@ -165,7 +166,7 @@
               <li class="nav-item">
                 <a href="index.php?action=listan4&admin=lis" class="nav-link">
                   <i class="nav-icon far fa-circle text-info"></i>
-                  <p>Ciudades</p>
+                  <p>Ciudades de Muestreo</p>
                 </a>
               </li>
               <li class="nav-item">
@@ -186,6 +187,14 @@
                   <p>Indice</p>
                 </a>
               </li>
+
+               <li class="nav-item">
+                <a href="index.php?action=listaciures" class="nav-link">
+                  <i class="nav-icon far fa-circle text-info"></i>
+                  <p>Ciudad de Residencia</p>
+                </a>
+              </li>
+
               <li class="nav-item">
                 <a href="index.php?action=listarecolector" class="nav-link">
                   <i class="nav-icon far fa-circle text-info"></i>
@@ -216,6 +225,12 @@
                   <p>Sustitución</p>
                 </a>
               </li>
+               <li class="nav-item">
+                <a href="index.php?action=listacausas" class="nav-link">
+                  <i class="nav-icon far fa-circle text-info"></i>
+                  <p>Causa de NO Compra</p>
+                </a>
+              </li>
               <li class="nav-item">
                 <a href="index.php?action=listacatalogos&admin=1" class="nav-link">
                   <i class="nav-icon far fa-circle text-info"></i>
@@ -244,9 +259,9 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="pages/examples/profile.html" class="nav-link">
+                <a href="index.php?action=presentamapa" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Profile</p>
+                  <p>Geocerca</p>
                 </a>
               </li>
               <li class="nav-item">
