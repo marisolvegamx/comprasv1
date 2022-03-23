@@ -49,7 +49,7 @@ and pe_clienteId=$cliente;";
      $ind_ruta=str_replace('.', '_', $indice);
      foreach($rs1 as $row_max)
      {
-         $rutaFoto="fotografias/".$ind_ruta."/".$row_max["imd_ruta"];
+         $rutaFoto="../../fotografias/".$ind_ruta."/".$row_max["imd_ruta"];
          /* $html->asignar('imagen',"<td  class='$color' ><div align='center'>".
           "<a href='../fotografias/".$rutaFoto."' class='lytebox'   data-lyte-options='group:seccion".$cont."'>".
           "<img src='../img/agregar.gif' width='27' height='21' border='0'></a></div>");*/
@@ -69,8 +69,8 @@ and pe_clienteId=$cliente;";
  function buscarImagen($idimagen, $indice,$recolector) {
      
      $sql = "SELECT imd_idlocal, imd_descripcion, imd_ruta, imd_estatus, imd_indice, imd_usuario, imd_created_at, imd_updated_at
-FROM comprasdata.imagen_detalle
-where imd_idlocal =$idimagen  and  imd_indice =$indice and imd_usuario =$recolector;";
+FROM imagen_detalle
+where imd_idlocal =$idimagen  and  imd_indice ='$indice' and imd_usuario =$recolector;";
      
      // echo $sql;
      $rs1 = Conexion::ejecutarQuerysp ($sql );
@@ -78,7 +78,7 @@ where imd_idlocal =$idimagen  and  imd_indice =$indice and imd_usuario =$recolec
      $ind_ruta=str_replace('.', '_', $indice);
      foreach($rs1 as $row_max)
      {
-         $rutaFoto="fotografias/".$ind_ruta."/".$row_max["imd_ruta"];
+         $rutaFoto="../../fotografias/".$ind_ruta."/".$row_max["imd_ruta"];
          /* $html->asignar('imagen',"<td  class='$color' ><div align='center'>".
           "<a href='../fotografias/".$rutaFoto."' class='lytebox'   data-lyte-options='group:seccion".$cont."'>".
           "<img src='../img/agregar.gif' width='27' height='21' border='0'></a></div>");*/

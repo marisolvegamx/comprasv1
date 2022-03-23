@@ -26,3 +26,5 @@ $ingreso -> vistaliscController();
 ?>
 
 </section>
+
+ 

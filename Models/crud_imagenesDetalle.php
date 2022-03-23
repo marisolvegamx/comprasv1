@@ -1,6 +1,39 @@
 <?php
 class DatosImagenDetalle{
     
+    private static $conexion;
+    
+    public static function getInstance()
+    {
+        
+        if (!isset(self::$conexion)) {
+            $con=new Conexion();
+            self::$conexion=$con->conectar();
+        }
+        
+        return self::$conexion;
+    }
+    
+    public  function getImagenes($INDICE,$CVEUSUARIO,$tabla){
+        
+        
+        $sSQL= "SELECT imd_idlocal id, imd_descripcion descripcion, imd_ruta ruta,
+ imd_estatus estatus,2 estatusSync, imd_indice indice,
+imd_created_at createdAt, imd_updated_at updatedAt
+FROM $tabla
+where imd_indice=:indice and imd_usuario=:cverecolector";
+        
+        $stmt=DatosImagenDetalle::getInstance()->prepare($sSQL);
+        $stmt->bindParam(":indice", $INDICE, PDO::PARAM_STR);
+        
+        $stmt->bindParam(":cverecolector",  $CVEUSUARIO, PDO::PARAM_INT);
+        
+        $stmt-> execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC); //para que solo devuelva los nombres de columnas
+        
+        
+    }
+    
     public static function insertaru($datosModel,$cveusuario,$indice,$tabla,$pdo ){
         try{
             

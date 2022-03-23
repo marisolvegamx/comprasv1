@@ -30,6 +30,7 @@ Private $admin;
               <table class="table table-hover">
                 <tr>
                   <th style="width: 15%">ID</th>
+                  <th style="width: 20%">CLIENTE</th>
                   <th style="width: 20%">PRODUCTO</th>
                   <th style="width: 20%">TAMAÑO</th>
                   <th style="width: 20%">EMPAQUE</th>
@@ -40,6 +41,10 @@ Private $admin;
 
 			foreach($respuesta as $row => $item){
 				    $numsus = $item["id_sustitucion"];
+				    $numclien = $item["su_cliente"];
+				    $CLIENTE=Datosnuno::getNombre($numclien, "ca_nivel1");
+				    $nomclien= $CLIENTE["n1_nombre"];
+				    
 					$numprod= $item["su_producto"];
 					$producto = DatosProd::getnomprodModel($numprod, "ca_productos");
 
@@ -53,6 +58,8 @@ Private $admin;
 
             '  <tr>
 	               <td>'.$numsus.'</td>
+	               <td>'.$nomclien.'</td>
+	               
 	               <td>
 	                    <a href="index.php?action=editasustitucion&admin=li&id='.$numsus.'">'.$producto.'</a>
 	                  </td>               
@@ -79,14 +86,15 @@ Private $admin;
 	try{
 		$regresar="index.php?action=listasustitucion";
 
-    $datosController= array("tipoemp"=>$tipoemp,
+    $datosController= array("cliente"=>$clanivel1,
+    						"tipoemp"=>$tipoemp,
     						"tamano"=>$tamano,
       					    "idprod"=>$idprod
                                );
-
+      //   var_dump($datosController);
 		DatosSustit::insertarSustit($datosController, "ca_sustitucion");
 			
-		
+		//die();
 		echo "
             <script type='text/javascript'>
               window.location='$regresar'
@@ -103,8 +111,9 @@ Private $admin;
 	public function editaSustit() {
         $idsus=$_GET["id"];
 		$respuesta =DatosSustit::editasustitModel($idsus, "ca_sustitucion");
-
+         
 			foreach($respuesta as $row => $item){
+				    $this->numclien= $item["su_cliente"];
 					$this->numprod= $item["su_producto"];
 					$this->nomtam= $item["su_tamaño"];
 					$this->numtipemp= $item["su_tipoempaque"];
@@ -121,7 +130,8 @@ public function actualizar(){
 	try{
 		$regresar="index.php?action=listasustitucion";
 
-		$datosController= array("numprod"=> $numprod,
+		$datosController= array("cliente"=>$clanivel1,
+								"numprod"=> $numprod,
 								"nomtam"=>$nomtam,	
       					        "tipemp"=>$tipemp,
                                "idsus"=>$idsus
@@ -145,6 +155,9 @@ public function actualizar(){
       return $this->numprod;
     }
   
+  function getnumclien() {
+      return $this->numclien;
+    }
 
   function getnomtam() {
       return $this->nomtam;

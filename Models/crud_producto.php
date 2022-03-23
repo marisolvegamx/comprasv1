@@ -80,4 +80,32 @@ class DatosProd extends Conexion{
             }
             
     }
+
+
+public function listaprodModel($cliid, $tabla){
+
+    $stmt = Conexion::conectar()-> prepare("SELECT pro_id, pro_producto FROM `ca_productos` where pro_cliente=:cliid;");
+     $stmt->bindParam(":cliid", $cliid,PDO::PARAM_INT);
+
+    $stmt-> execute();
+    return $stmt->fetchAll();
+
+  }
+
+
+  public function getnomprodModel($proid, $tabla){
+
+    $stmt = Conexion::conectar()-> prepare("SELECT * FROM $tabla where pro_id=:proid");
+     $stmt->bindParam(":proid", $proid,PDO::PARAM_INT);
+
+    $stmt-> execute();
+    $result_cat=$stmt->fetchall();
+     foreach($result_cat as $row_cat) {        
+            $res= $row_cat["pro_producto"];
+     }
+     $stmt->closeCursor();     
+     $result_cat=$stmt=null;
+      return $res;
+  }
+
 }	

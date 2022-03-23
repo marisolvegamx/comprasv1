@@ -4,7 +4,7 @@ class UsuarioController{
 	public function validarUsuarioController(){
 		//var_dump(($_POST["g-recaptcha-response"]));
 			//echo "validausuario";
-		if(isset($_POST["g-recaptcha-response"]) && ($_POST["g-recaptcha-response"])){
+		/*if(isset($_POST["g-recaptcha-response"]) && ($_POST["g-recaptcha-response"])){
 			//echo "entre a validacion de captcha";
 						// validar el captcha
 			
@@ -38,7 +38,7 @@ class UsuarioController{
 	      
 	       if ($json ["success"]==TRUE)
 	       //IF ($json)
-	       {
+	       {*/
 	//			echo "TRUE";
 			    //   	echo "si eres humano, paso el captcha";
 		       		# vamos a validar el mail y el password
@@ -96,13 +96,13 @@ class UsuarioController{
 						echo "El usuario o la contrasena son incorrectos";
 				} 	    
 	       	 	
-	       }  else {
+	    /*   }  else {
 			   echo "FALSE no es correcto el jason";	
 	       		       }
 	     } else {
 	     	echo "no paso el captcha";
 			//echo "FALSE";	
-		}  // captcha
+		}  // captcha*/
 	}	
 
 	

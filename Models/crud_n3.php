@@ -65,7 +65,7 @@ class Datosntres extends Conexion{
     $stmt-> execute();
 
 
-   // echo $stmt->debugDumpParams();
+
     return $stmt->fetchAll();
 
   }   

@@ -16,7 +16,7 @@
         $op.= "<option value='" . $registro[0] . "' >" . $registro[1] . "</option>";
     }
     return  $op ;
-}                   
+}                 
   ?>
   <section class="content-header">
   <h1>  <?php echo $estructuraController->titulo2." ".$estructuraController->titulo1?></h1>

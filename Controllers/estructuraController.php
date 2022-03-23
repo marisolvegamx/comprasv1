@@ -119,7 +119,7 @@ class EstructuraController {
 //				$RS_SQM_TE = Datos::vistaClientesModel("ca_clientes");
 				
 				
-				$resultado=Datosnuno::vistaN1opcionModel($id, "ca_nivel1");
+				$resultado=Datosnuno::getNombre($id, "ca_nivel1");
 				//foreach ($RS_SQM_TE as $registro) {
 				//	if($registro [0]==$resultado["n1_idcliente"])
 				//		$op.= "<option value='" . $registro [0] . "' selected='selected'>" . $registro [1] . "</option>";
@@ -155,7 +155,7 @@ class EstructuraController {
 				$this->resultado=$resultado;
 				break;
 			case "5":
-				$resultado=Datosncin::vistancinOpcionModel($id, "ca_nivel5");
+				$resultado=Datosncin::getNombre($id, "ca_nivel5");
 				
 				$this->titulo=Datosncua::nombreNivel4($resultado["n5_idn4"], "ca_nivel4");
 				$this->resultado=$resultado;

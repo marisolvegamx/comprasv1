@@ -15,17 +15,18 @@ define ('RAIZ',getcwd());
 <script src="../../Views/plugins/jquery/jquery.min.js"></script>
 <link rel="stylesheet" href="../../js/fancybox/dist/jquery.fancybox.min.css" />
 <script src="../../js/fancybox/dist/jquery.fancybox.min.js"></script>
+
 <script type="text/javascript">
-function verFotos(idreporte,indice,rec, cli){
+function verFotos(idreporte,det,indice,rec){
 	   console.log(idreporte);
         $.ajax({
             type: 'POST',
-            url: 'detallefotosm.php',
+            url: 'detallefotosmue.php',
          
-            data: { rep: idreporte,
+            data: { rep: det,
             	 ind: indice, 
             	 rec: rec,
-            	 cli: cli   },
+            	 cli: idreporte   },
             dataType: 'json',
             success: function (data) {
                 $.fancybox.open(data);

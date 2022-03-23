@@ -72,7 +72,7 @@ class listaComController{
         	//var_dump($row2);
         	$listaperm=$listarestrin=array();
         	//armo un array con los no permitidos;  lid_fechapermitida , lid_fecharestringida,
-        	//echo "<br>mmmmmm". $row2["lid_fecharestringida"];
+//	echo "<br>mmmmmm". $row2["productoNombre"];
         	if(strlen($row2["lid_fecharestringida"])>1)
         	{$listarestrin=explode(",", $row2["lid_fecharestringida"]);
         	//var_dump($listarestrin);
@@ -143,7 +143,7 @@ class listaComController{
             $listanoper[]=$row["fec_caducidad"];
         }
         $todojunto=$listanoper;
-       // var_dump($todojunto);
+       // var_dump($listarestrin);
         if(sizeof($listarestrin)>0){
             if(sizeof($listanoper)<1){
                 $todojunto=$listarestrin;
@@ -151,27 +151,31 @@ class listaComController{
             $todojunto=$this->insertarRestringidos($listarestrin, $listanoper);
         }
        // echo "<br>**************restr";
-      //  var_dump($listapermitidos);
+       // var_dump($todojunto);
         //quito los permitidos
         if(sizeof($listapermitidos)>0)
             $todojunto=$this->eliminarPermitidos($listapermitidos, $todojunto);
      //   echo "<br>+++++++++++++restr+++++++++++";
-         //   var_dump($todojunto);
+        //    var_dump($todojunto);
        //ordeno todo
+        $ntodojunto=array();
         foreach($todojunto as $row){
                $fecha = DateTime::createFromFormat('d-m-y', $row);
+               if($fecha!=null)
                 $ntodojunto[]=$fecha->format("y-m-d");
                // $codigos.=$row.";";
             }
          //   var_dump($ntodojunto);
            // echo "<br>+++++++++++++restr+++++++++++";
-        rsort($ntodojunto, SORT_STRING);
+            if($ntodojunto)
+        {rsort($ntodojunto, SORT_STRING);
        // var_dump($ntodojunto);
          foreach($ntodojunto as $row){
              $fecha = DateTime::createFromFormat('y-m-d', $row);
              
             $codigos.=$fecha->format("d-m-y").";";
         }
+    }
       //  die();
         if(strlen($codigos)>0)
         return substr($codigos,0,strlen($codigos)-1);

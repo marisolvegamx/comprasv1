@@ -18,13 +18,51 @@ class Datosnuno extends Conexion{
 	public function vistaN1opcionModel($idn1, $tabla){
     //echo $idn1;
 
-		$stmt = Conexion::conectar()-> prepare("SELECT n1_id, n1_nombre FROM ca_nivel1 WHERE n1_id=:idn1");
+		$stmt = Conexion::conectar()-> prepare("SELECT  n1_id, n1_nombre FROM ca_nivel1 WHERE n1_id=:idn1");
 		$stmt-> bindParam(":idn1", $idn1, PDO::PARAM_INT);
 		$stmt-> execute();
-		return $stmt->fetch();
+		return $stmt->fetchall();
 		$stmt->close();
 
 	}	  
+	
+	public function getNombre($idn1, $tabla){
+	    //echo $idn1;
+	    
+	    $stmt = Conexion::conectar()-> prepare("SELECT  n1_id, n1_nombre FROM ca_nivel1 WHERE n1_id=:idn1");
+	    $stmt-> bindParam(":idn1", $idn1, PDO::PARAM_INT);
+	    $stmt-> execute();
+	    return $stmt->fetch();
+	    $stmt->close();
+	    
+	}	  
+
+  public function vistaN1opcionModelClien($idn1, $tabla){
+    //echo $idn1;
+
+    $stmt = Conexion::conectar()-> prepare("SELECT n1_nombre FROM ca_nivel1 WHERE n1_id=:idn1");
+    $stmt-> bindParam(":idn1", $idn1, PDO::PARAM_INT);
+    $stmt-> execute();
+    return $stmt->fetch();
+    $stmt->close();
+
+  }  
+
+  public function vistaN1nombreModel($idn1, $tabla){
+    //echo $idn1;
+
+    $stmt = Conexion::conectar()-> prepare("SELECT n1_id, n1_nombre FROM ca_nivel1 WHERE n1_id=:idn1");
+    $stmt-> bindParam(":idn1", $idn1, PDO::PARAM_INT);
+    $stmt-> execute();
+    $result_cat=$stmt->fetchall();
+     foreach($result_cat as $row_cat) {
+        $res = $row_cat["n1_nombre"];
+    }
+     $stmt->closeCursor();     
+     $result_cat=$stmt=null;
+      return $res;
+    
+  } 
 	
 	public function listaxCliente($idcli, $tabla){
 	    

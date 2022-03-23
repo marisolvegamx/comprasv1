@@ -14,6 +14,63 @@ class DatosInforme{
         
         return self::$conexion;
     }
+    public  function getInformesxVisita($INDICE,$CVEUSUARIO,$visita,$tabla){
+        
+        
+        $sSQL= "SELECT inf_visitasIdlocal visitasId, inf_id id,
+ inf_consecutivo consecutivo, inf_segunda_muestra segundaMuestra, 
+inf_tercera_muestra terceraMuestra,   inf_comentarios comentarios, 
+inf_estatus estatus,2 estatusSync,
+ inf_primera_muestra primeraMuestra, inf_plantasid plantasId, 
+ inf_ticket_compra ticket_compra, inf_condiciones_traslado condiciones_traslado, 
+inf_causa_nocompra causa_nocompra, cn.n4_nombre as plantaNombre  ,
+cn2.n1_nombre clienteNombre,
+inf_primera_muestra sinproducto
+FROM $tabla
+inner join ca_nivel4 cn on cn.n4_id =inf_plantasid
+inner join ca_nivel1 cn2 on cn2.n1_id =cn.n4_idn1 
+where inf_indice=:indice and inf_usuario=:cverecolector and inf_visitasIdlocal=:visita ";
+        
+        $stmt=DatosInforme::getInstance()->prepare($sSQL);
+        $stmt->bindParam(":indice", $INDICE, PDO::PARAM_STR);
+        $stmt->bindParam(":visita",  $visita, PDO::PARAM_INT);
+        
+        $stmt->bindParam(":cverecolector",  $CVEUSUARIO, PDO::PARAM_INT);
+        
+        $stmt-> execute();
+      //  $stmt->debugDumpParams();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC); //para que solo devuelva los nombres de columnas
+        
+        
+    }
+    public  function getInformes($INDICE,$CVEUSUARIO,$tabla){
+        
+        
+        $sSQL= "SELECT inf_visitasIdlocal visitasId, inf_id id,
+ inf_consecutivo consecutivo, inf_segunda_muestra segundaMuestra,
+inf_tercera_muestra terceraMuestra,   inf_comentarios comentarios,
+inf_estatus estatus,2 estatusSync
+ inf_primera_muestra primeraMuestra, inf_plantasid plantasId,
+ inf_ticket_compra ticket_compra, inf_condiciones_traslado condiciones_traslado,
+inf_causa_nocompra causa_nocompra, cn.n4_nombre as plantaNombre  ,cn2.n1_nombre clienteNombre
+1 estatus, 2 estatusSync,inf_primera_muestra sinproducto,
+FROM informes
+inner join ca_nivel4 cn on cn.n4_id =inf_plantasid
+inner join ca_nivel1 cn2 on cn2.n1_id =cn.n4_idn1
+FROM $tabla
+inner join ca_nivel4 cn on cn.n4_id =inf_plantasid
+inner join ca_nivel1 cn2 on cn2.n1_id =cn.n4_idn1
+where inf_indice=:indice and inf_usuario=:cverecolector ";
+        
+        $stmt=DatosInforme::getInstance()->prepare($sSQL);
+        $stmt->bindParam(":indice", $INDICE, PDO::PARAM_STR);
+        $stmt->bindParam(":cverecolector",  $CVEUSUARIO, PDO::PARAM_INT);
+        
+        $stmt-> execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC); //para que solo devuelva los nombres de columnas
+        
+        
+    }
     
     public  function insertar($datosModel,$cveusuario,$indice,$tabla,$pdo){
         try{
@@ -314,7 +371,8 @@ order by ind_caducidad desc";
         
        
         $stmt-> execute();
-      //  $stmt->debugDumpParams();
+       // $stmt->debugDumpParams();
+      //  echo "<br>--".$fechaini."--".$fechafin."--".$prod."--".$tamanio."--".$empaque."--".$ana."--".$planta;
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
         
     }
@@ -516,6 +574,7 @@ and n6_nombre=:siglas");
         
         $stmt->bindParam(":siglas", $siglas,PDO::PARAM_STR);
         $stmt-> execute();
+    // $stmt->debugDumpParams();
         return $stmt->fetch(PDO::FETCH_ASSOC); //para que solo devuelva los nombres de columnas
         //  var_dump($res);
        

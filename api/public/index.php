@@ -16,8 +16,9 @@ include "../src/idsInfController.php";
 include "../src/sustitucionController.php";
 
 include "../src/plantaPenController.php";
-
+include "../src/descargaRespController.php";
 use api\Subefotos;
+use api\src\DescargaRespController;
 // Create and configure Slim app
 $config = ['settings' => [
     'addContentLengthHeader' => false,
@@ -79,7 +80,7 @@ $app->get('/catalogos', function ($request, $response, $args) {
            
             $this->get('logger')->addInfo('plantapen: Llegó una peticion'.$recolector."-".$siglas);
             
-            $resp= $cc->response($recolector,$siglas,6);
+            $resp= $cc->response($recolector,$siglas,5);
           /*  return $response->withHeader('Content-type', 'application/json')
             ->getBody()
             ->write( $cc->response($recolector,$siglas,6));*/
@@ -254,6 +255,15 @@ $app->get('/catalogos', function ($request, $response, $args) {
             }
         }
         );
+        //descarga respaldo de los infromes x indice y recolector
+        $app->get('/descresp', function ($request, $response, $args) {
+            $cc=new DescargaRespController();
+            $recolector= filter_input(INPUT_GET, "usuario",FILTER_SANITIZE_STRING) ;
+            $indice= filter_input(INPUT_GET, "indice",FILTER_SANITIZE_STRING);
+            return $response->withHeader('Content-type', 'application/json')
+            ->getBody()
+            ->write( $cc->response($indice,$recolector));
+        });
       
 
     //$this->logger->addInfo('Something interesting happened');

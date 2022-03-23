@@ -120,5 +120,25 @@ public function vistarecdetModel($numrec, $tabla){
 
   }
 
+  public function vistarecxCliente($cliente, $tabla){
+      
+      $sql="SELECT rec_id, rec_nombre,
+      rec_ser_pepsi
+      FROM $tabla ";
+      if($cliente==4)
+        $sql.="where rec_ser_pepsi=-1";
+      if($cliente==5)
+         $sql.="where rec_ser_penafiel=-1";
+            
+      if($cliente==6)
+         $sql.="where rec_ser_electro=-1";
+       
+      
+      $stmt = Conexion::conectar()-> prepare($sql);
+     
+      $stmt-> execute();
+      return $stmt->fetchAll();
+      
+  }
 
 }

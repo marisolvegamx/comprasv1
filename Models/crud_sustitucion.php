@@ -17,9 +17,11 @@ class DatosSustit extends Conexion{
       // var_dump($datosModel);
           	try{
           		
-              $sSQL= "INSERT INTO `ca_sustitucion`(`su_tipoempaque`,  `su_producto`, `su_tamaño`) VALUES (:tipoemp,:idprod,:tamano)";
+              $sSQL= "INSERT INTO `ca_sustitucion`(`su_cliente`,`su_tipoempaque`,`su_producto`, `su_tamaño`) 
+VALUES (:idclien,:tipoemp,:idprod,:tamano)";
                               		
           	  $stmt=Conexion::conectar()->prepare($sSQL);
+              $stmt->bindParam(":idclien", $datosModel["cliente"],PDO::PARAM_INT);
               $stmt->bindParam(":idprod", $datosModel["idprod"],PDO::PARAM_INT);
           	  $stmt->bindParam(":tipoemp", $datosModel["tipoemp"],PDO::PARAM_INT);
           	  $stmt->bindParam(":tamano", $datosModel["tamano"], PDO::PARAM_STR);
@@ -45,9 +47,10 @@ class DatosSustit extends Conexion{
 	public function actualizarSus($datosModel,$tabla){
           	try{
                
-              $sSQL= "UPDATE $tabla SET `su_tipoempaque`=:tipemp,`su_producto`=:numprod,`su_tamaño`=:nomtam WHERE `id_sustitucion`=:idsus";
+              $sSQL= "UPDATE $tabla SET `su_cliente`=:idclien, `su_tipoempaque`=:tipemp,`su_producto`=:numprod,`su_tamaño`=:nomtam WHERE `id_sustitucion`=:idsus";
 
           	  $stmt=Conexion::conectar()->prepare($sSQL);
+              $stmt->bindParam(":idclien", $datosModel["cliente"],PDO::PARAM_INT);
           	  $stmt->bindParam(":numprod", $datosModel["numprod"],PDO::PARAM_INT);
               $stmt->bindParam(":nomtam", $datosModel["nomtam"],PDO::PARAM_INT);
           	  $stmt->bindParam(":tipemp", $datosModel["tipemp"], PDO::PARAM_INT);

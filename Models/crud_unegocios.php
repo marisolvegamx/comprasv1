@@ -23,7 +23,7 @@ inner join ca_ciudadesresidencia on ciu_id=une_cla_ciudad and ciu_paisid=une_cla
  ORDER BY une_id DESC;");
         
         $stmt->execute();
-        
+      //  $stmt->debugDumpParams();
         
         return $stmt->fetchAll();
     }
@@ -667,7 +667,7 @@ AND cer_solicitud.sol_idsolicitud =:reporte";
             $stmt->bindParam(":tipouneg", $datosModel["tipouneg"], PDO::PARAM_INT);
 
             $res = $stmt->execute();
-          //  echo $stmt->debugDumpParams();
+
            if($res)
               return "success";
         } catch (Exception $ex) {
@@ -757,7 +757,7 @@ SET
     }
     public function getUnegocioxFiltros($pais,$ciudad, $cadenacomercial,$unedescripcion){
         
-        $sql="SELECT une_id,une_descripcion, une_direccion, une_dir_referencia, une_cla_pais, une_cla_ciudad,
+        $sql="SELECT une_descripcion, une_direccion, une_dir_referencia, une_cla_pais, une_cla_ciudad,
  une_estatus, une_coordenadasxy, une_puntocardinal,
 une_tipotienda, une_cadenacomercial FROM ca_unegocios WHERE 1=1 ";
         

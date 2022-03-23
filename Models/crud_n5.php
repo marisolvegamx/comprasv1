@@ -33,17 +33,27 @@ class Datosncin extends Conexion{
 
 		$stmt-> bindParam(":idn", $datosModel, PDO::PARAM_INT);
 
-		
-
 		$stmt-> execute();
 
-
-
-		return $stmt->fetch();
+		return $stmt->fetchall();
 
 		$stmt->close();
 
 	}
+	
+	public function getNombre($datosModel,$tabla){
+	    
+	    $stmt = Conexion::conectar()-> prepare("SELECT n5_id, n5_nombre,n5_idn4,`n5_idn1`,`n5_idn2`,`n5_idn3`  FROM $tabla WHERE n5_id=:idn");
+	    
+	    $stmt-> bindParam(":idn", $datosModel, PDO::PARAM_INT);
+	    
+	    $stmt-> execute();
+	    
+	    return $stmt->fetch();
+
+	    
+	}
+	
 
     public function vistanN5Byn4($n4,$tabla){
 

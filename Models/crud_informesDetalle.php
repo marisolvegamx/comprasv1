@@ -1,5 +1,107 @@
 <?php
 class DatosInformeDetalle{
+    private static $conexion;
+    
+    public static function getInstance()
+    {
+        
+        if (!isset(self::$conexion)) {
+            $con=new Conexion();
+            self::$conexion=$con->conectar();
+        }
+        
+        return self::$conexion;
+    }
+    
+    public  function getInformesDet($INDICE,$CVEUSUARIO,$tabla){
+        
+        
+        $sSQL= "SELECT ind_id id, ind_informes_id informesId, 
+ind_productos_id productoId,
+pro_producto producto ,ind_tamanio_id tamanioId,
+      cc.cad_descripcionesp as presentacion,
+ind_empaque empaquesId, cem.cad_descripcionesp  empaque,
+   ctp.cad_descripcionesp  as nombreTipoMuestra,ind_codigo codigo, ind_caducidad caducidad
+, ind_tipomuestra tipoMuestra, 
+ind_origen origen, 
+ind_costo costo, ind_foto_codigo_produccion foto_codigo_produccion , 
+ind_energia energia, ind_foto_num_tienda foto_num_tienda,
+ind_marca_traslape marca_traslape, ind_atributoa atributoa,
+ind_foto_atributoa foto_atributoa, ind_atributob atributob, 
+ind_foto_atributob foto_atributob, ind_etiqueta_evaluacion etiqueta_evaluacion, 
+ind_segunda_muestra, ind_qr qr,
+ind_condiciones_traslado, ind_comentarios, ind_estatus estatus, 
+2  estatusSync, ind_atributoc atributoc,
+ind_foto_atributoc foto_atributoc, ind_azucares azucares,
+ind_tipoanalisis tipoAnalisis,
+            cta.cad_descripcionesp  as tipoAnalisis,
+ind_nummuestra numMuestra, ind_comprasid comprasId,
+ind_compraddetid comprasDetId, ind_comprasIdbu comprasIdbu, 
+ind_comprasDetIdbu comprasDetIdbu
+FROM $tabla
+inner join ca_productos cp on cp.pro_id =ind_productos_id
+            inner join ca_catalogosdetalle ccp on ccp.cad_idopcion =cp.pro_categoria and ccp.cad_idcatalogo =5
+            inner join ca_catalogosdetalle cc on cc.cad_idopcion =ind_tamanio_id and cc.cad_idcatalogo =13
+            inner join ca_catalogosdetalle cem on cem.cad_idopcion =ind_empaque and cem.cad_idcatalogo =12
+             inner join ca_catalogosdetalle cta on cta.cad_idopcion =ind_tipoanalisis and cta.cad_idcatalogo =7
+             inner join ca_catalogosdetalle ctp on ctp.cad_idopcion =ind_tipomuestra and ctp.cad_idcatalogo =15
+where ind_indice=:indice and ind_recolector=:cverecolector";
+        
+        $stmt=DatosInformeDetalle::getInstance()->prepare($sSQL);
+        $stmt->bindParam(":indice", $INDICE, PDO::PARAM_STR);
+        
+        $stmt->bindParam(":cverecolector",  $CVEUSUARIO, PDO::PARAM_INT);
+        
+        $stmt-> execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC); //para que solo devuelva los nombres de columnas
+        
+        
+    }
+    public  function getInformesDetxInf($INDICE,$CVEUSUARIO,$informe,$tabla){
+        
+        
+        $sSQL= "SELECT ind_id id, ind_informes_id informesId,
+ind_productos_id productoId,
+pro_producto producto ,ind_tamanio_id tamanioId,
+      cc.cad_descripcionesp as presentacion,
+ind_empaque empaquesId, cem.cad_descripcionesp  empaque,
+   ctp.cad_descripcionesp  as nombreTipoMuestra,ind_codigo codigo, ind_caducidad caducidad
+, ind_tipomuestra tipoMuestra,
+ind_origen origen,
+ind_costo costo, ind_foto_codigo_produccion foto_codigo_produccion ,
+ind_energia energia, ind_foto_num_tienda foto_num_tienda,
+ind_marca_traslape marca_traslape, ind_atributoa atributoa,
+ind_foto_atributoa foto_atributoa, ind_atributob atributob,
+ind_foto_atributob foto_atributob, ind_etiqueta_evaluacion etiqueta_evaluacion,
+ind_segunda_muestra, ind_qr qr,
+ind_condiciones_traslado, ind_comentarios, ind_estatus estatus,
+2  estatusSync, ind_atributoc atributoc,
+ind_foto_atributoc foto_atributoc, ind_azucares azucares,
+ind_tipoanalisis tipoAnalisis,
+            cta.cad_descripcionesp  as tipoAnalisis,
+ind_nummuestra numMuestra, ind_comprasid comprasId,
+ind_compraddetid comprasDetId, ind_comprasIdbu comprasIdbu,
+ind_comprasDetIdbu comprasDetIdbu
+FROM $tabla
+inner join ca_productos cp on cp.pro_id =ind_productos_id
+            inner join ca_catalogosdetalle ccp on ccp.cad_idopcion =cp.pro_categoria and ccp.cad_idcatalogo =5
+            inner join ca_catalogosdetalle cc on cc.cad_idopcion =ind_tamanio_id and cc.cad_idcatalogo =13
+            inner join ca_catalogosdetalle cem on cem.cad_idopcion =ind_empaque and cem.cad_idcatalogo =12
+             inner join ca_catalogosdetalle cta on cta.cad_idopcion =ind_tipoanalisis and cta.cad_idcatalogo =7
+             inner join ca_catalogosdetalle ctp on ctp.cad_idopcion =ind_tipomuestra and ctp.cad_idcatalogo =15
+where ind_indice=:indice and ind_recolector=:cverecolector and ind_id=:informe";
+        
+        $stmt=DatosInformeDetalle::getInstance()->prepare($sSQL);
+        $stmt->bindParam(":indice", $INDICE, PDO::PARAM_STR);
+        
+        $stmt->bindParam(":cverecolector",  $CVEUSUARIO, PDO::PARAM_INT);
+        $stmt->bindParam(":informe",  $informe, PDO::PARAM_INT);
+        
+        $stmt-> execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC); //para que solo devuelva los nombres de columnas
+        
+        
+    }
     
     public static function insertar($datosModel,$recolector,$indice,$tabla,$pdo){
         try{

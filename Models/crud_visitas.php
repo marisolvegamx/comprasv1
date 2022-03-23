@@ -5,9 +5,38 @@ class DatosVisita{
     
     private $conexion;
     public function __construct(){
-        $this->conexion=new Conexion();
+        $con=new Conexion();
+        $this->conexion=$con->conectar();
     }
-    
+    public  function getVisitas($INDICE,$CVEUSUARIO,$tabla){
+       
+            
+            $sSQL= " SELECT  vi_indice indice, vi_idlocal id,
+ vi_geolocalizacion as geolocalizacion, vi_tiendaid as tiendaId,
+ vi_fotofachada fotoFachada,
+vi_estatus estatus, vi_cverecolector claveUsuario,
+ vi_createdat createdAt, vi_updatedat updatedAt,
+cu.une_direccion direccion , 
+cu.une_cadenacomercial cadenaComercial ,vi_complementodir complementodireccion,
+cu.une_puntocardinal puntocardinal,
+cu.une_cla_ciudad ciudad
+FROM $tabla inner join ca_unegocios cu 
+on vi_tiendaid =cu.une_id 
+
+
+where vi_indice=:vi_indice and vi_cverecolector=:vi_cverecolector;";
+            
+            $stmt=$this->conexion->prepare($sSQL);
+            $stmt->bindParam(":vi_indice", $INDICE, PDO::PARAM_STR);
+            
+            $stmt->bindParam(":vi_cverecolector",  $CVEUSUARIO, PDO::PARAM_INT);
+            
+           $stmt-> execute();
+       //    $stmt->debugDumpParams();
+           return $stmt->fetchAll(PDO::FETCH_ASSOC); //para que solo devuelva los nombres de columnas
+            
+        
+    }
     public static function insertar($datosModel,$tabla,$pdo){
         try{
             

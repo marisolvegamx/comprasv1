@@ -21,6 +21,7 @@
                   <th style="width: 20%">REGION</th>
                   <th style="width: 20%">PAIS</th>
                   <th style="width: 20%">NOMBRE</th>
+                    <th style="width: 20%">ZONAS</th>
                   <th style="width: 10%">BORRAR</th>
                 </tr>
               

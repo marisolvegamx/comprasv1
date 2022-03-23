@@ -14,7 +14,7 @@ private $Planta;
     public function vistaliscController(){
 			include "Utilerias/leevar.php";
       $this->numliscomp=$_GET["id"];
-      echo  $id;
+      //echo  $id;
 			if(isset($_GET["admin"])){
           $admin=$_GET["admin"];
 	        if($admin=="ins"){
@@ -23,14 +23,122 @@ private $Planta;
 				      $this->actualizar();    			
 			    }else if($admin=="eli"){
 				      $this->eliminar();
+          }else if($admin=="reo"){
+              $this->reordena();  
+          }else if($admin=="dup"){
+              $this->duplicarlista();  
+          }else if($admin=="ord"){
+             $this->ordenalista();   
 			    }	
-			}
-
-
+			}   
 
 
         echo '<div class="card">
              
+<div>  
+<form role="form" method="post" action="index.php?action=listacompra">
+ <table id="example2" class="table table-bordered table-hover">
+      <tr>
+      <td style="width: 20%"> Cliente:  
+      <select class="form-control cascada" name="clientelis" >
+        <option value="">Seleccione una opción</option>';
+        // llamar a query
+        $rs = Datosnuno::vistaN1Model("ca_nivel1"); 
+        $this->listaCliente = null;
+        foreach ($rs as $row) {
+          $this->listaCliente[] = "<option value='" . $row [0] . "'>" . $row [1] . "</option>";
+        }
+        var_dump($this->listaCliente);
+
+        echo '
+    </select>
+     </td>
+        <td style="width: 25%">Planta:   
+          <select class="form-control" name="plantalis"    id="niv-2">  
+           <option value="">Seleccione una opción</option>';
+        $rs = Datosncin::vistancinModel( "ca_nivel5");
+            $this->listaPlanta = null;
+            foreach ($rs as $row) {     
+                $this->listaPlanta[] =  "<option value='" . $row [0] . "'>" . $row [1] . "</option>";  
+            }
+            var_dump($this->listaPlanta);
+
+                         echo '           
+                      </select>
+</td>
+        <td style="width: 20%">Indice :   <select class="form-control" name="indicelis">
+                         <option value="">Seleccione una opción</option>';
+
+                         
+        $rs = DatosMesasignacion::listaMesAsignacion("ca_mesasignacion");       
+        $this->listaIndice = null;
+        $sele="";
+        $mesnom="----";
+        foreach ($rs as $rowc) {
+           switch ($rowc["num_mes_asig"]) {
+                     case 1:
+                        $mesnom="ENERO";
+                      break;
+                     case 2:
+                        $mesnom="FEBRERO";
+                      break;
+                     case 3:
+                        $mesnom="MARZO";
+                      break;   
+                     case 4:
+                        $mesnom="ABRIL";
+                      break;   
+                     case 5:
+                        $mesnom="MAYO";
+                      break;   
+                     case 6:
+                        $mesnom="JUNIO";
+                      break;   
+                     case 7:
+                        $mesnom="JULIO";
+                      break;   
+                     case 8:
+                        $mesnom="AGOSTO";
+                      break;   
+                     case 9:
+                        $mesnom="SEPTIEMBRE";
+                      break;   
+                     case 10:
+                        $mesnom="OCTUBRE";
+                      break;   
+                     case 11:
+                        $mesnom="NOVIEMBRE";
+                      break;   
+                     case 12:
+                        $mesnom="DICIEMBRE";
+                      break;
+                     }
+
+           $this->listaIndice[] = "<option value=".$rowc["num_mes_asig"].".".$rowc["num_per_asig"]." ".$sele.">".$mesnom."-".$rowc["num_per_asig"]."</option>";
+        } 
+
+          var_dump($this->listaIndice);                           
+              echo '
+                      </select></td>
+                  <td style="width: 35%">Recolector :    <select class="form-control" name="recolectorlis">
+                         <option value="">Seleccione una opción</option>';
+                          $rs = DatosRecolector::vistarecModel("ca_recolectores");
+                          $this->listaRecolector = null;
+                          foreach ($rs as $row) {
+                              $this->listaRecolector[] = "<option value='" . $row["rec_id"] . "'>" . $row["rec_nombre"] . "</option>";
+                          }
+                         var_dump($this->listaRecolector);
+
+                  echo '                                    
+                      </select>
+                      </br>
+
+                      <button type="submit" class="btn btn-info float-sm-right" style="margin-right: 10px; margin-top:0px; margin-bottom:10px; "> Filtrar </button></td>
+      </tr>
+  </table>
+</div>
+</form>
+
               <!-- /.card-header -->
               <div class="card-body">
                 <table id="example2" class="table table-bordered table-hover">
@@ -47,12 +155,30 @@ private $Planta;
                   <tbody>
                   ';
   
+      // llemos las variables seleccionadas
+      include "Utilerias/leevar.php";
+      if ($clientelis) {
+          $condi1= " and lis_idcliente=".$clientelis; 
+      }
+      if ($plantalis) {
+          $condi2= " and lis_idplanta=".$plantalis;
+      }
+      if ($indicelis) {
+          $condi3= " and lis_idindice=".$indicelis;   
+      }
+      if ($recolectorlis) {
+          $condi4= " and lis_idrecolector=".$recolectorlis; 
+      }
+      
+      $condic= $condi1.$condi2.$condi3.$condi4;
+      //echo $condic;
+      //// elaboramos criterios de busqueda
 
 
-			$respuesta =DatosListaCompra::vistalistacomModel("pr_listacompra");
+			$respuesta =DatosListaCompra::vistalistacomModel($condic, "pr_listacompra");
 			foreach($respuesta as $row => $item){
-           // var_dump($item);
-          $idcliente=$item["lis_idcliente"];
+           
+           $idcliente=$item["lis_idcliente"];
            $resclien=Datosnuno::vistaN1opcionModel($idcliente, "ca_nivel1");
            foreach($resclien as $row => $itemc){
                $nomcliente=$itemc["n1_nombre"];
@@ -124,9 +250,9 @@ private $Planta;
 	                <td>'.$nomcliente.'</td>
 	                <td>'.$nomplanta.'</td>
                   <td>'.$mesasignacion.'</td>
-                  <td>'.$nomrecolector.'</td>
+                  <td >'.$nomrecolector.'</td>
                   <td> 
-<a type="button" href="index.php?action=editalistacompra&id='.$item[0].'"><i class="fa fa-edit fa-lg"></i></a>
+<a type="button"  href="index.php?action=editalistacompra&id='.$item[0].'"><i class="fa fa-edit fa-lg" ></i></a>
 </td>
 <td> <a type="button" href="index.php?action=listacompradet&admin=li&id='.$item[0].'"><i class="fa fa-plus fa-lg"></i></a>
 </td>
@@ -379,6 +505,14 @@ public function getnotas() {
       return $this->Lista;
     }
 
+ public function getidcliente() { 
+      return $this->idcliente;
+    }
+
+public function getidplanta() { 
+      return $this->idplanta;
+    }
+
 public function vistaEditaListaCompra() {
     $idlis=$_GET["id"]; 
     $this->Lista=$idlis; 
@@ -387,13 +521,16 @@ public function vistaEditaListaCompra() {
     foreach ($rs as $row) { 
      //lee cliente
      $idclien = $row["lis_idcliente"];
+     $this->idcliente = $idclien;
      $rs = Datosnuno::vistaN1opcionModel($idclien, "ca_nivel1");    
      foreach ($rs as $rowc) {
+      
         $this->Cliente= $rowc[1];
       }
-
+      //echo $this->Cliente; 
       // lee planta
       $idplanta = $row["lis_idplanta"];
+      $this->idplanta = $idplanta;
       $rs = Datosncin::encplantaClien($idclien, $idplanta, "ca_nivel5");
       $this->listaPlanta = null;
       foreach ($rs as $rowp) {     
@@ -402,10 +539,12 @@ public function vistaEditaListaCompra() {
  
        // lee recolector
         $idrecolector = $row["lis_idrecolector"];
+
         $indice= $row["lis_idindice"];
+        $this->indices = $indice;
         $this->nota = $row["lis_nota"];
         //echo  $this->nota;  
-        $rs = DatosRecolector::vistarecxCliente($idclien,"ca_recolectores");
+        $rs = DatosRecolector::vistarecModel("ca_recolectores");
         $this->listaRecolector = null;
         foreach ($rs as $row) {
           if ($idrecolector== $row["rec_id"]) {
@@ -489,15 +628,15 @@ public function actualizar(){
       				  "notalis"=>$notalis,
                 "idlis"=>$idlis,
                                );
-		 
+    //var_dump($datosController);		 
 	
 		DatosListaCompra::actualizalista($datosController, "pr_listacompra");
 		
-		echo "
-            <script type='text/javascript'>
-              window.location='$regresar'
-                </script>
-                  ";
+		//echo "
+    //        <script type='text/javascript'>
+    //          window.location='$regresar'
+    //            </script>
+    //              ";
                    // var_dump($datosController); 
 	}catch(Exception $ex){
 		echo Utilerias::mensajeError($ex->getMessage());
@@ -529,6 +668,100 @@ public function eliminar(){
 	//}
 		
 	}
+
+
+public function duplicarlista(){
+  // valida lista
+  include "Utilerias/leevar.php";
+ 
+      $datosController= array("idclien"=>$idclien,
+                "idplan"=>$idplan,
+                "indicelis"=>$indicelis,
+                               );     
+  $rs = DatosListaCompra::validanuevalistaModel($datosController,"pr_listacompra");
+     $i=0;
+    foreach ($rs as $rowc) {
+         //echo $rowc["lis_idcliente"];
+        $i=$i+1;
+      }
+  if ($i==0){
+    // realiza copia
+    //$regresar="index.php?action=listacompra";
+    $usuariolis=UsuarioController::Obten_NomUsuario();
+    $notalis="";
+    $datosController= array("clientelis"=>$idclien,
+                             "plantalis"=>$idplan,
+                             "indicelis"=>$indicelis,
+                         "recolectorlis"=>$recolectorlis,
+                               "notalis"=>$notalis,
+                            "usuariolis"=>$usuariolis
+                               );
+   //var_dump($datosController);
+    $rs= DatosListaCompra::insertarLista($datosController, "pr_listacompra");
+      $datosController= array("idclien"=>$idclien,
+                "idplan"=>$idplan,
+                "indicelis"=>$indicelis,
+                               );     
+  $rs = DatosListaCompra::validanuevalistaModel($datosController,"pr_listacompra");
+     $i=0;
+    foreach ($rs as $rowc) {
+         $idlis = $rowc["lis_idlistacompra"];
+      }    
+   //echo $idlis;
+    //inserta listacompradetalle
+   // lee lista de compra anterior
+   $fecres="";
+   $fechab ="";
+      
+       $respuesta =DatosListaCompraDet::vistalistacomModel($id,"pr_listacompradetalle");
+       foreach($respuesta as $row => $item){
+          
+          $datosController= array("idlis"=>$idlis,
+                            "claop"=>$item["lid_idprodcompra"],
+                            "numprod"=>$item["lid_idproducto"],
+                             "numtam"=>$item["lid_idtamano"],
+                             "numemp"=>$item["lid_idempaque"],
+                             "tipana"=>$item["lid_idtipoanalisis"],
+                            "cantidad"=>$item["lid_cantidad"],
+                            "tipomues"=>$item["lid_tipo"],
+                            "fecres"=>$fecres,
+                            "fechab"=>$fechab,
+                               );
+          $rs= DatosListaCompraDet::insertarProdLista($datosController, "pr_listacompradetalle");
+         
+       } 
+       
+       echo Utilerias::mensajeExito("Proceso Terminado");
+      
+  } else {
+    // presenta mensaje de duplicacion
+     echo Utilerias::mensajeError("Esta lista de compra ya existe, por favor revise");
+  }
+}
+
+
+public function ordenalista(){
+  // valida lista
+  include "Utilerias/leevar.php";
+  echo $ord1;
+  echo $ord2;
+  echo $ord3;
+  echo $ord4;
+  echo $ord5;
+  echo $ord6;
+
+  echo $chk1;
+  echo $chk2;
+  echo $chk3;
+  echo $chk4;
+  echo $chk5;
+  echo $chk6;
+   echo "entre a ordenacion";
+}
+
+
+
+
 
 
 

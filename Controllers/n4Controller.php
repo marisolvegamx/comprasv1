@@ -28,7 +28,8 @@ class NcuaController{
 	                  <td>
 	                    <a href="index.php?action=editan4&admin=lis&ref=ref&niv=4&id='.$item["n4_id"].'">'.$item["n4_nombre"].'</a>
 	                  </td>
-	                 
+	  <td> <a type="button" href="index.php?action=nuevogeocerca&ref='.$datosController.'&n4id='.$item["n4_id"].'"><i class="fa fa-plus"></i></a>
+		                </td>               
 <td> <a type="button" href="index.php?action=listan4&admin=eli&niv=4&id='.$item["n4_id"].'" onclick="return dialogoEliminar();"><i class="fa fa-times"></i></a>
 		                </td>
 	                </tr>';

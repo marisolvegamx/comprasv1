@@ -12,7 +12,7 @@ require 'contratoapp.php';
 //clase para manejar el json e insertarlo
 class InformePostController{
     private $datosInf;
-    
+    private $TAG="InformePostController";
     public function __construct(){
         $this->datosInf= new DatosInforme();
     }
@@ -25,13 +25,13 @@ class InformePostController{
         $informe_det=$campos["informeCompraDetalles"]; //este es un array
         $fotos_ex=$campos["productosEx"]; //es array
         $imagenes_det=$campos["imagenDetalles"]; //es array
-        $cverecolector=$visita[ContratoVisitas::CVEUSUARIO];
-        $indice=$visita[ContratoVisitas::INDICE];
+        $cverecolector=$campos[ContratoVisitas::CVEUSUARIO];
+        $indice=$campos[ContratoVisitas::INDICE];
       
         //TODO lo pongo en una transaccion
        
         $pdo->beginTransaction();
-   
+        if(isset($visita))
         DatosVisita::insertar($visita,"visitas",$pdo);
        
        foreach ($fotos_ex as $lisfotos_ex)
@@ -69,7 +69,7 @@ class InformePostController{
         $pdo->commit();
         
         }catch(Exception $ex){
-            throw new Exception("*Hubo un error al insertar ".$ex->getMessage());
+            throw new Exception($this->TAG." *Hubo un error al insertar ".$ex->getMessage());
             $pdo->rollBack();
         }
         
@@ -84,7 +84,7 @@ class InformePostController{
             $lisinforme=$campos["informeCompra"]; //es array
             $lisinforme_det=$campos["informeCompraDetalles"]; //este es un array
             $lisfotos_ex=$campos["productosEx"]; //es array
-            $cverecolector=$campos[ContratoVisitas::INDICE];
+            $cverecolector=$campos[ContratoVisitas::CVEUSUARIO];
             $indice=$campos[ContratoVisitas::INDICE];
          //   $imagenes_det=$campos["imagenDetalles"]; //es array
           
@@ -106,6 +106,7 @@ class InformePostController{
                         
                 }
             }
+            
             foreach ($lisfotos_ex as $fotos_ex)
                 DatosProductoExhibido::insertar($fotos_ex,$cverecolector,$indice,"producto_exhibido",$pdo);
             
@@ -128,7 +129,7 @@ class InformePostController{
             $pdo->commit();
             
         }catch(Exception $ex){
-            throw new Exception("*Hubo un error al insertar ".$ex->getMessage());
+            throw new Exception($this->TAG."*Hubo un error al insertar ".$ex->getMessage());
             $pdo->rollBack();
         }
         
@@ -146,7 +147,7 @@ class InformePostController{
            
             
         }catch(Exception $ex){
-            throw new Exception("Hubo un error al insertar "+$ex->getMessage());
+            throw new Exception($this->TAG."Hubo un error al insertar "+$ex->getMessage());
         }
         
         
@@ -163,7 +164,7 @@ class InformePostController{
             $this->datosInf->insertar($informe,"informes");
             
         }catch(Exception $ex){
-            throw new Exception("Hubo un error al insertar "+$ex->getMessage());
+            throw new Exception($this->TAG."Hubo un error al insertar "+$ex->getMessage());
         }
         
         
@@ -178,7 +179,7 @@ class InformePostController{
             
           
         }catch(Exception $ex){
-            throw new Exception("Hubo un error al insertar "+$ex->getMessage());
+            throw new Exception($this->TAG."Hubo un error al insertar "+$ex->getMessage());
         }
         
         
@@ -194,7 +195,7 @@ class InformePostController{
             
             
         }catch(Exception $ex){
-            throw new Exception("Hubo un error al insertar "+$ex->getMessage());
+            throw new Exception($this->TAG."Hubo un error al insertar "+$ex->getMessage());
         }
         
         
@@ -208,7 +209,7 @@ class InformePostController{
             DatosImagenDetalle::insertar($imagenes_det,"imagen_detalle");
                   
         }catch(Exception $ex){
-            throw new Exception("Hubo un error al insertar "+$ex->getMessage());
+            throw new Exception($this->TAG."Hubo un error al insertar "+$ex->getMessage());
         }
         
         
