@@ -16,14 +16,14 @@ class DatosVisita{
  vi_fotofachada fotoFachada,
 vi_estatus estatus, vi_cverecolector claveUsuario,
  vi_createdat createdAt, vi_updatedat updatedAt,
-cu.une_direccion direccion , 
+vi_direccion direccion ,
 cu.une_cadenacomercial cadenaComercial ,vi_complementodir complementodireccion,
 cu.une_puntocardinal puntocardinal,
-cu.une_cla_ciudad ciudad
-FROM $tabla inner join ca_unegocios cu 
-on vi_tiendaid =cu.une_id 
-
-
+cu.une_cla_ciudad ciudadId, '' ciudad,une_descripcion as tiendaNombre,
+une_tipotienda tipoId,cad_descripcionesp tipoTienda, 2 as estatusSync
+FROM $tabla inner join ca_unegocios cu
+ on vi_tiendaid =cu.une_id
+left join ca_catalogosdetalle on  une_tipotienda=cad_idopcion and cad_idcatalogo=2
 where vi_indice=:vi_indice and vi_cverecolector=:vi_cverecolector;";
             
             $stmt=$this->conexion->prepare($sSQL);
@@ -41,9 +41,9 @@ where vi_indice=:vi_indice and vi_cverecolector=:vi_cverecolector;";
         try{
             
             $sSQL= " INSERT INTO $tabla
-( vi_idlocal, vi_indice,vi_geolocalizacion, vi_tiendaid, vi_fotofachada,
+( vi_idlocal, vi_indice,vi_geolocalizacion, vi_direccion,vi_complementodir,vi_tiendaid, vi_fotofachada,
  vi_estatus, vi_cverecolector, vi_createdat, vi_updatedat)
-VALUES( :vi_idlocal, :vi_indice,:vi_geolocalizacion, :vi_tiendaid, :vi_fotofachada,
+VALUES( :vi_idlocal, :vi_indice,:vi_geolocalizacion,:vi_direccion,:vi_complementodir, :vi_tiendaid, :vi_fotofachada,
  :vi_estatus, :vi_cverecolector, :vi_createdat, :vi_updatedat);";
             
             $stmt=$pdo->prepare($sSQL);
@@ -51,6 +51,10 @@ VALUES( :vi_idlocal, :vi_indice,:vi_geolocalizacion, :vi_tiendaid, :vi_fotofacha
             $stmt->bindParam(":vi_indice", $datosModel[ContratoVisitas::INDICE], PDO::PARAM_STR);
             
             $stmt->bindParam(":vi_geolocalizacion", $datosModel[ContratoVisitas::GEOLOCALIZACION], PDO::PARAM_STR);
+            $stmt->bindParam(":vi_direccion", $datosModel[ContratoVisitas::DIRECCION], PDO::PARAM_STR);
+            $stmt->bindParam(":vi_complementodir", $datosModel[ContratoVisitas::COMPLEMENTODIR], PDO::PARAM_STR);
+            
+            
             $stmt->bindParam(":vi_tiendaid", $datosModel[ContratoVisitas::TIENDAID], PDO::PARAM_INT);
             $stmt->bindParam(":vi_fotofachada", $datosModel[ContratoVisitas::FOTOFACHADA], PDO::PARAM_INT);
            
@@ -60,8 +64,8 @@ VALUES( :vi_idlocal, :vi_indice,:vi_geolocalizacion, :vi_tiendaid, :vi_fotofacha
             $stmt->bindParam(":vi_updatedat", $datosModel[ContratoVisitas::UPDATEDAT], PDO::PARAM_STR);
             
            if(!$stmt-> execute())
-           { //$stmt->debugDumpParams();
-               throw new Exception("Hubo un error al insertar visita".$stmt->errorInfo());
+           { $stmt->debugDumpParams();
+               throw new Exception("Hubo un error al insertar visita".$stmt->errorInfo()[0]);
              
            }
             
@@ -80,7 +84,9 @@ VALUES( :vi_idlocal, :vi_indice,:vi_geolocalizacion, :vi_tiendaid, :vi_fotofacha
             $sSQL= " UPDATE $tabla
 SET  vi_geolocalizacion=:geo, vi_tiendaid=:tienda,
  vi_fotofachada=:fotofac,   vi_createdat=:fcreated,
- vi_updatedat=:fupdated
+ vi_updatedat=:fupdated,
+vi_direccion=:direccion,
+vi_complementodir=:vi_complementodir
 WHERE vi_idlocal=:idlocal and  vi_indice=:indice and vi_cverecolector=:reco;";
             
             $stmt=$pdo->prepare($sSQL);
@@ -93,6 +99,8 @@ WHERE vi_idlocal=:idlocal and  vi_indice=:indice and vi_cverecolector=:reco;";
             $stmt->bindParam(":reco",  $datosModel[ContratoVisitas::CVEUSUARIO], PDO::PARAM_STR);
             $stmt->bindParam(":fcreated",  $datosModel[ContratoVisitas::CREATEDAT], PDO::PARAM_STR);
             $stmt->bindParam(":fupdated", $datosModel[ContratoVisitas::UPDATEDAT], PDO::PARAM_STR);
+            $stmt->bindParam(":direccion", $datosModel[ContratoVisitas::DIRECCION], PDO::PARAM_STR);
+            $stmt->bindParam(":vi_complementodir", $datosModel[ContratoVisitas::COMPLEMENTODIR], PDO::PARAM_STR);
             
             if(!$stmt-> execute())
                 throw new Exception("Hubo un error al actualizar ".$stmt->errorInfo()[2]);

@@ -72,7 +72,7 @@ class listaComController{
         	//var_dump($row2);
         	$listaperm=$listarestrin=array();
         	//armo un array con los no permitidos;  lid_fechapermitida , lid_fecharestringida,
-//	echo "<br>mmmmmm". $row2["productoNombre"];
+	//echo "<br>mmmmmm". $row2["productoNombre"];
         	if(strlen($row2["lid_fecharestringida"])>1)
         	{$listarestrin=explode(",", $row2["lid_fecharestringida"]);
         	//var_dump($listarestrin);
@@ -134,8 +134,8 @@ class listaComController{
 
         $resp=$this->datosInf->getCodigosNoPer($this->fechaini,$this->fechafin,$datos["productosId"],$datos["tamanioId"],$datos["empaquesId"],$datos["analisisId"],$datos["planta"],"informe_detalle");
         $codigos="";
-        //echo "<br>";
-        //var_dump($resp);
+       // echo "<br>";
+       // var_dump($resp);
        // echo"<br> calculando codigos";
         //primero agrego los restringidos
         $listanoper=array();
@@ -143,7 +143,8 @@ class listaComController{
             $listanoper[]=$row["fec_caducidad"];
         }
         $todojunto=$listanoper;
-       // var_dump($listarestrin);
+      //  var_dump($listarestrin);
+       // var_dump($listapermitidos);
         if(sizeof($listarestrin)>0){
             if(sizeof($listanoper)<1){
                 $todojunto=$listarestrin;
@@ -151,7 +152,7 @@ class listaComController{
             $todojunto=$this->insertarRestringidos($listarestrin, $listanoper);
         }
        // echo "<br>**************restr";
-       // var_dump($todojunto);
+        //var_dump($todojunto);
         //quito los permitidos
         if(sizeof($listapermitidos)>0)
             $todojunto=$this->eliminarPermitidos($listapermitidos, $todojunto);
@@ -197,47 +198,65 @@ class listaComController{
     }
     //codigos restringidos y no permitidos llegan como array
     public function insertarRestringidos($listRest,$codnoper){
-        $todojunto=array();
+        $todojunto=$codnoper;
         foreach($listRest as $restringido){
-           $nuevoarray= $this->comparar($codnoper, $restringido, $todojunto);
+            $nuevoarray= $this->comparar($todojunto, $restringido);
            $todojunto=$nuevoarray;
           
         }
         return $todojunto;
     }
-    public function comparar($codnoper,$restringido, $todojunto){
+    public function comparar($codnoper,$restringido){
+        $ban=0;
+        $todojunto=array();
         for($i=0;$i<sizeof($codnoper);$i++){
             $fechares=strtotime($restringido);
             $fechanoper = strtotime($codnoper[$i]);
             
-            if($fechares > $fechanoper)
+            if($fechares < $fechanoper)
             {   $todojunto[]=$restringido;
-                $nuevoarray=array_merge($todojunto,array_slice($codnoper, $i));
-                return $nuevoarray;
+               $todojunto[]=$codnoper[$i];
+               $ban=1;
+               continue;
+               // $nuevoarray=array_merge($todojunto,array_slice($codnoper, $i));
+                //return $nuevoarray;
             }
+            if($fechares == $fechanoper)
+            {  
+                $todojunto[]=$codnoper[$i];
+            $ban=1;
+            continue;
+            // $nuevoarray=array_merge($todojunto,array_slice($codnoper, $i));
+            //return $nuevoarray;
+            }
+            
             $todojunto[]=$codnoper[$i];
         }
         //nunca fue mayor queda al final
-        $codnoper[]=$restringido;
-        return $codnoper;
+        if($ban==0)
+            $todojunto[]=$restringido;
+            return $todojunto;
     }
     public function eliminarPermitidos($listapermitidos,$codnoper){
         $nuevoarray=$codnoper;
         foreach ($listapermitidos as $permitido){
-         
+           //    echo "---".$permitido;
             $nuevoarray=$this->eliminardeArray($permitido, $nuevoarray);
-          //  var_dump($nuevoarray);
+        //    var_dump($nuevoarray);
         }
         return $nuevoarray;
     }
     public function eliminardeArray($valor, $codnoper){
-      //  echo "<br>borrando a ".$valor;
-     //   var_dump($codnoper);
+       // echo "<br>borrando a ".$valor;
+        //var_dump($codnoper);
         $pos=array_search($valor, $codnoper,false);
         
         if($pos>=0)
-        {  // echo "<br>esta en ".$pos;
-            return array_splice($codnoper, $pos, 1);
+        {  
+            //echo "<br>esta en ".$pos;
+        array_splice($codnoper, $pos);
+       // var_dump($codnoper);
+        return $codnoper;
         }
 
         else 

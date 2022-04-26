@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <script scr="https://maps.googleapis.com/maps/api/js?key=AIzaSyBDaeWicvigtP9xPv919E-RNoxfvC-Hqik&callback=iniciarMap" async defer></script>
+ <!--   <script scr="https://maps.googleapis.com/maps/api/js?key=AIzaSyBDaeWicvigtP9xPv919E-RNoxfvC-Hqik&callback=iniciarMap" async defer></script>-->
 
   <title>Muesmerc | Sistema de Compras</title>
 
@@ -19,7 +19,6 @@
 <script src="Views/plugins/jquery/jquery.min.js"></script>
  <!-- jQuery UI 1.11.4 -->
 <script src="Views/plugins/jquery-ui/jquery-ui.min.js"></script>
-<link rel="stylesheet" href="Views/bower_components/bootstrap/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="Views/plugins/select2/css/select2.min.css">
   <link rel="stylesheet" href="Views/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
  <link rel="stylesheet" href="Views/plugins/fontawesome-free/css/all.min.css">
@@ -69,7 +68,6 @@
           <a href="#" class="dropdown-item">
             <!-- Message Start -->
             <div class="media">
-              <img src="dist/img/user1-128x128.jpg" alt="User Avatar" class="img-size-50 mr-3 img-circle">
               
             </div>
             <!-- Message End -->
@@ -378,36 +376,25 @@
 <script src="Views/dist/js/adminlte.min.js"></script>
 <!-- AdminLTE App -->
 <script src="Views/dist/js/adminlte.js"></script>
-<script src="Views/bower_components/select2/dist/js/select2.full.min.js"></script>
+
 <!-- AdminLTE for demo purposes -->
 <script src="Views/dist/js/demo.js"></script>
-<script>
-  $(function () {
-    //Initialize Select2 Elements
-    $('.select2').select2()
-});
-</script>
 
 <!-- Bootstrap 3.3.7 -->
 <script src="Views/plugins/bootstrap/js/bootstrap.min.js"></script>
-<script src="Views/bower_components/select2/dist/js/select2.full.min.js"></script>
+
 <!-- AdminLTE App -->
-<script src="Views/plugins/input-mask/jquery.inputmask.js"></script>
-<script src="Views/plugins/input-mask/jquery.inputmask.date.extensions.js"></script>
-<script src="Views/plugins/input-mask/jquery.inputmask.extensions.js"></script>
+<script src="Views/plugins/inputmask/jquery.inputmask.js"></script>
+
 <script src="Views/dist/js/adminlte.min.js"></script>
 
-<script src="Views/bower_components/moment/min/moment.min.js"></script>
-<script src="Views/bower_components/bootstrap-daterangepicker/daterangepicker.js"></script>
-<!-- bootstrap datepicker -->
-<script src="Views/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
 <script src="Views/dist/js/demo.js"></script>
 <!-- Optionally, you can add Slimscroll and FastClick plugins.
      Both of these plugins are recommended to enhance the
      user experience. -->
 <script>
 
-
+/*
   
   $(function () {
     //Initialize Select2 Elements
@@ -436,9 +423,9 @@
 
 
    
-  })
+  })*/
 </script>
-<script src="Views/plugins/jquery/jquery.min.js"></script>
+
 <!-- Bootstrap 4 -->
 <script src="Views/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- DataTables  & Plugins -->

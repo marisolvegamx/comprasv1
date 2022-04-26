@@ -6,7 +6,14 @@ class DatosListaCompraDet extends Conexion{
 	# CLASE NIVEL 1n1
 	public function vistalistacomModel($idliscomp, $tabla){
     
-		$stmt = Conexion::conectar()-> prepare("SELECT * FROM $tabla inner join pr_listacompra ON lis_idlistacompra=lid_idlistacompra where lid_idlistacompra=:idliscomp order by lid_orden;");
+		//$stmt = Conexion::conectar()-> prepare("SELECT * FROM $tabla inner join pr_listacompra ON lis_idlistacompra=lid_idlistacompra where lid_idlistacompra=:idliscomp order by lid_orden;");
+
+    //
+    //SELECT lis_idplanta, lis_idindice, lid_idproducto, `lid_fechapermitida`,`lid_fecharestringida`,`lid_backup`, lid_idprodcompra, lid_cantidad, pro_producto, lid_idtamano, lid_idempaque, lid_idtipoanalisis, cad_descripcionesp, cad_otro, lid_tipo FROM (SELECT lis_idplanta, lid_idprodcompra, lis_idindice, `lid_fechapermitida`,`lid_fecharestringida`,`lid_backup`, lid_idproducto, lid_cantidad, pro_id, pro_producto, lid_idtamano, lid_idempaque, lid_idtipoanalisis, lid_tipo FROM $tabla inner join pr_listacompra ON lis_idlistacompra=lid_idlistacompra inner join ca_productos ON lid_idproducto=pro_id where lid_idlistacompra=:idliscomp) as a INNER JOIN (SELECT cad_idopcion, cad_descripcionesp, cad_otro FROM `ca_catalogosdetalle` WHERE cad_idcatalogo=13) as b ON lid_idtamano=cad_idopcion ORDER BY pro_id DESC, cad_otro ASC, lid_idempaque ASC, lid_idtipoanalisis ASC, lid_tipo;");
+
+
+    $stmt = Conexion::conectar()-> prepare("SELECT lis_idplanta, pro_id, lis_idindice, lid_idproducto, `lid_fechapermitida`,`lid_fecharestringida`,`lid_backup`, lid_idprodcompra, lid_cantidad, pro_producto, lid_idtamano, lid_idempaque, lid_idtipoanalisis, cad_descripcionesp, cad_otro, lid_tipo FROM (SELECT lis_idplanta, lid_idprodcompra, lis_idindice, `lid_fechapermitida`, `lid_fecharestringida`, `lid_backup`, lid_idproducto, lid_cantidad, pro_id, pro_producto, lid_idtamano, lid_idempaque, lid_idtipoanalisis, lid_tipo FROM $tabla inner join pr_listacompra ON lis_idlistacompra=lid_idlistacompra inner join ca_productos ON lid_idproducto=pro_id where lid_idlistacompra=:idliscomp) as a INNER JOIN (SELECT cad_idopcion, cad_descripcionesp, cad_otro FROM `ca_catalogosdetalle` WHERE cad_idcatalogo=13) as b ON lid_idtamano=cad_idopcion ORDER BY pro_id, cad_otro ASC, lid_idempaque ASC, lid_idtipoanalisis ASC, lid_tipo;");
+
     $stmt->bindParam(":idliscomp", $idliscomp,PDO::PARAM_INT);
               
 		$stmt-> execute();
@@ -17,12 +24,7 @@ class DatosListaCompraDet extends Conexion{
 
   public function vistacodigosnopermitidos($datosModel, $tabla){
     
-    $stmt = Conexion::conectar()-> prepare("SELECT inf_id, ind_caducidad, inf_indice, inf_plantasid, ind_productos_id, ind_tamanio_id, ind_empaque, ind_tipoanalisis FROM $tabla 
-inner join informes on
-ind_informes_id = inf_id
-	and inf_indice = ind_indice
-	and ind_recolector = inf_usuario
- where inf_indice=:indice and inf_plantasid= :planta and ind_productos_id=:producto and ind_tamanio_id =:tamanio and ind_empaque=:empaque and ind_tipoanalisis=:tipoanalisis 
+    $stmt = Conexion::conectar()-> prepare("SELECT inf_id, ind_caducidad, inf_indice, inf_plantasid, ind_productos_id, ind_tamanio_id, ind_empaque, ind_tipoanalisis FROM $tabla inner join informes where inf_indice=:indice and inf_plantasid= :planta and ind_productos_id=:producto and ind_tamanio_id =:tamanio and ind_empaque=:empaque and ind_tipoanalisis=:tipoanalisis 
       group by inf_indice, inf_plantasid, ind_productos_id, ind_tamanio_id, ind_caducidad desc;");
 
     $stmt->bindParam(":indice", $datosModel["cnpindi"],PDO::PARAM_STR);
@@ -33,7 +35,6 @@ ind_informes_id = inf_id
     $stmt->bindParam(":tipoanalisis", $datosModel["cnptipana"],PDO::PARAM_INT);      
     
     $stmt-> execute();
-  //  $stmt->debugDumpParams();
     return $stmt->fetchAll();
 
   }
@@ -77,7 +78,7 @@ ind_informes_id = inf_id
 
   public function vistalistacomdetModel($idliscomp, $idprodcom, $tabla){
     
-    $stmt = Conexion::conectar()-> prepare("SELECT * FROM pr_listacompradetalle where lid_idlistacompra=:idliscomp and `lid_idprodcompra`=:idprodcom;");
+    $stmt = Conexion::conectar()-> prepare("SELECT * FROM pr_listacompradetalle inner join pr_listacompra on lis_idlistacompra=lid_idlistacompra where lid_idlistacompra=:idliscomp and `lid_idprodcompra`=:idprodcom;");
 
     $stmt->bindParam(":idliscomp", $idliscomp, PDO::PARAM_INT);
     $stmt->bindParam(":idprodcom", $idprodcom, PDO::PARAM_INT);          
@@ -169,6 +170,24 @@ public function actualizaorden($datosModel,$tabla){
     }
             
     }
+
+public function actualizabackup($datosModel,$tabla){
+    try{
+      
+    $sSQL= "UPDATE `pr_listacompradetalle` SET `lid_backup`=:chkbac where lid_idlistacompra = :idlis AND lid_idprodcompra=:orden;";
+    
+      $stmt=Conexion::conectar()->prepare($sSQL);
+      $stmt->bindParam(":idlis", $datosModel["idlis"],PDO::PARAM_INT);
+      $stmt->bindParam(":orden", $datosModel["orden"], PDO::PARAM_INT);
+      $stmt->bindParam(":chkbac", $datosModel["chkbac"], PDO::PARAM_INT);
+      $stmt-> execute();
+      
+    }catch(PDOException $ex){
+      throw new Exception("Hubo un error al insertar la lista");
+    }
+            
+    }
+
 
 }
 ?>	

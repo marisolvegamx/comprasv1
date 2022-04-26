@@ -96,8 +96,9 @@ class ContratoVisitas{
     const  ESTATUS="estatus";
     const FOTOFACHADA="fotoFachada";
     const GEOLOCALIZACION="geolocalizacion";
-  
- 
+    const DIRECCION="direccion";
+    const TIPOTIENDAID="tipoId";
+    
   
     
 }

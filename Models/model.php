@@ -19,7 +19,7 @@ class EnlacesPaginas{
 			$enlacesModel == "nuevon3" ||
 			$enlacesModel == "editatienda" ||
 
-		     $enlacesModel == "editan3" ||
+  	        $enlacesModel == "editan3" ||
 		    $enlacesModel == "editanivel" ||
 
 			$enlacesModel == "nuevoproducto" ||
@@ -33,22 +33,26 @@ class EnlacesPaginas{
 			$enlacesModel == "nuevalistaCompraDetalle" ||
 			$enlacesModel == "listasustitucion" ||
 			$enlacesModel == "nuevasustitucion" ||
-			//$enlacesModel == "nuevaestdetalle" ||
+			$enlacesModel == "editalistacompra" ||
 			$enlacesModel == "editasustitucion" ||
-			//$enlacesModel == "nuevageneral" ||
+			$enlacesModel == "copialistacompra" ||
 			$enlacesModel == "editacompradetalle" ||
-			//$enlacesModel == "nuevoproducto" ||
-			//$enlacesModel == "editaproducto" ||
-			//$enlacesModel == "ponderaseccion" ||
-			//$enlacesModel == "listacoment" ||
-			//$enlacesModel == "nuevocoment" ||
-			//$enlacesModel == "editacoment" ||
-			//$enlacesModel == "reactivocoment" ||
-			//$enlacesModel == "nuevorcoment" ||
-			//$enlacesModel == "estandarcoment" ||
-			//$enlacesModel == "nuevoestcoment" ||
-			//$enlacesModel == "editaestcoment" ||
-			//$enlacesModel == "ponderareactivo" ||
+			$enlacesModel == "listacausas" ||
+			$enlacesModel == "editaproducto" ||
+			$enlacesModel == "presentamapa" ||
+			$enlacesModel == "listaciures" ||
+			$enlacesModel == "nuevaciures" ||
+			$enlacesModel == "editaciures" ||
+			$enlacesModel == "editacausa" ||
+			$enlacesModel == "nuevacausa" ||
+			$enlacesModel == "listauneghabil" ||
+			$enlacesModel == "nuevouneghabil" ||
+			$enlacesModel == "presentamapa" ||
+			$enlacesModel == "geocerca" ||
+		    $enlacesModel == "nuevogeocerca"||
+		
+			$enlacesModel == "suplistainformes" ||
+			$enlacesModel == "supinforme" ||
 
 			#AQUI INICIA SECCION REPORTE	
 			//$enlacesModel == "rlistaunegocio" ||

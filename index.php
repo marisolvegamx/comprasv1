@@ -2,8 +2,8 @@
 session_start();
 //echo $_SESSION['Usuario'];
 
-//error_reporting(E_ERROR|E_NOTICE|E_WARNING);
-//ini_set("display_errors", 1); 
+error_reporting(E_ERROR|E_NOTICE|E_WARNING);
+ini_set("display_errors", 1); 
 
 
 require_once "Controllers/usuarioController.php";
@@ -19,7 +19,7 @@ require_once "Controllers/clientescontroller.php";
 require_once "Controllers/prodController.php";
 require_once "Controllers/atributosController.php";
 require_once "Controllers/unegocioController.php";
-//require_once "Controllers/muestrasController.php";
+require_once "Controllers/ListaComController.php";
 
 require_once "Controllers/n1controller.php";
 require_once "Controllers/n2Controller.php";
@@ -27,11 +27,11 @@ require_once "Controllers/n3Controller.php";
 require_once "Controllers/n4Controller.php";
 require_once "Controllers/n5Controller.php";
 require_once "Controllers/n6Controller.php";
-//require_once "Controllers/subnivelController.php";
-//require_once "Controllers/ponderacionController.php";
-//require_once "Controllers/estandarController.php";
-//require_once "Controllers/abiertaController.php";
-//require_once "Controllers/generalController.php";
+require_once "Controllers/LisComDetController.php";
+require_once "Controllers/sustitucionController.php";
+require_once "Controllers/ciuresController.php";
+require_once "Controllers/causaController.php";
+//require_once "Controllers/causaModel.php";
 //require_once "Controllers/productoController.php";
 
  //require_once "Controllers/indpostmix/estadisticasController.php";
@@ -54,7 +54,7 @@ require_once "Models/crud_clientes.php";
 require_once "Models/crud_recolectores.php";
 require_once "Models/crud_atributos.php";
 
-//require_once "Models/crud_franquicias.php";
+require_once "Models/crud_listacompra.php";
 
 require_once "Models/crud_producto.php";
 
@@ -70,10 +70,10 @@ require_once "Models/crud_n5.php";
 require_once "Models/crud_n6.php";
 require_once "Models/crud_ciudades.php";
 
-//require_once "Models/crud_ponderacion.php";
-//require_once "Models/crud_estandar.php";
-//require_once "Models/crud_abierta.php";
-//require_once "Models/crud_subnivel.php";
+require_once "Models/crud_sustitucion.php";
+require_once "Models/crud_listacompradetalle.php";
+require_once "Models/crud_ciudadresidencia.php";
+require_once "Models/crud_causas.php";
 //require_once "Models/crud_generales.php";
 //require_once "Models/crud_productos.php";
 //require_once "Models/crud_muestras.php";

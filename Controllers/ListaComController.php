@@ -40,8 +40,8 @@ private $Planta;
  <table id="example2" class="table table-bordered table-hover">
       <tr>
       <td style="width: 20%"> Cliente:  
-      <select class="form-control cascada" name="clientelis" >
-        <option value="">Seleccione una opción</option>';
+      <select class="form-control cascada" name="clientelis"    onchange="javascript:cargarCombobox(this.value)" >
+        <option value="">---  Todos  ---</option>';
         // llamar a query
         $rs = Datosnuno::vistaN1Model("ca_nivel1"); 
         $this->listaCliente = null;
@@ -54,9 +54,9 @@ private $Planta;
     </select>
      </td>
         <td style="width: 25%">Planta:   
-          <select class="form-control" name="plantalis"    id="niv-2">  
-           <option value="">Seleccione una opción</option>';
-        $rs = Datosncin::vistancinModel( "ca_nivel5");
+          <select class="form-control cascada" name="plantalis" id="niv-2" disabled>  
+           <option value="">--- Todos  ---</option>';
+            $rs = Datosncin::listaplantaClien(4, "ca_nivel5");
             $this->listaPlanta = null;
             foreach ($rs as $row) {     
                 $this->listaPlanta[] =  "<option value='" . $row [0] . "'>" . $row [1] . "</option>";  
@@ -67,7 +67,7 @@ private $Planta;
                       </select>
 </td>
         <td style="width: 20%">Indice :   <select class="form-control" name="indicelis">
-                         <option value="">Seleccione una opción</option>';
+                         <option value="">---  Todos  ---</option>';
 
                          
         $rs = DatosMesasignacion::listaMesAsignacion("ca_mesasignacion");       
@@ -121,7 +121,7 @@ private $Planta;
               echo '
                       </select></td>
                   <td style="width: 35%">Recolector :    <select class="form-control" name="recolectorlis">
-                         <option value="">Seleccione una opción</option>';
+                         <option value="">---  Todos  ---</option>';
                           $rs = DatosRecolector::vistarecModel("ca_recolectores");
                           $this->listaRecolector = null;
                           foreach ($rs as $row) {
@@ -743,20 +743,28 @@ public function duplicarlista(){
 public function ordenalista(){
   // valida lista
   include "Utilerias/leevar.php";
-  echo $ord1;
-  echo $ord2;
-  echo $ord3;
-  echo $ord4;
-  echo $ord5;
-  echo $ord6;
+  // leo el numero de lista
+  $id=$_POST["idlis"];
+  //echo $id;
+  $respuesta =DatosListaCompraDet::vistalistacomModel($id,"pr_listacompradetalle");
+  foreach($respuesta as $row => $item){
+     $nomchk = "chk".$item["lid_idprodcompra"]; 
+     $ordenori=$item["lid_idprodcompra"];
+  if (isset($_POST[$nomchk])){
+          $indchk=-1;
+      }else{
+          $indchk=0;
+      }
 
-  echo $chk1;
-  echo $chk2;
-  echo $chk3;
-  echo $chk4;
-  echo $chk5;
-  echo $chk6;
-   echo "entre a ordenacion";
+      //echo $indchk;
+      $datosController1= array("idlis"=>$id,
+                            "orden"=>$ordenori,
+                            "chkbac"=>$indchk,
+                             ); 
+        
+        $rs= DatosListaCompraDet::actualizabackup($datosController1,"pr_listacompradetalle");
+  }         
+  
 }
 
 

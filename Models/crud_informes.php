@@ -23,12 +23,12 @@ inf_tercera_muestra terceraMuestra,   inf_comentarios comentarios,
 inf_estatus estatus,2 estatusSync,
  inf_primera_muestra primeraMuestra, inf_plantasid plantasId, 
  inf_ticket_compra ticket_compra, inf_condiciones_traslado condiciones_traslado, 
-inf_causa_nocompra causa_nocompra, cn.n4_nombre as plantaNombre  ,
-cn2.n1_nombre clienteNombre,
+inf_causa_nocompra causa_nocompra, cn.n5_nombre as plantaNombre  ,
+cn2.n1_nombre clienteNombre,  n5_idn1 as clientesId,
 inf_primera_muestra sinproducto
 FROM $tabla
-inner join ca_nivel4 cn on cn.n4_id =inf_plantasid
-inner join ca_nivel1 cn2 on cn2.n1_id =cn.n4_idn1 
+inner join ca_nivel5 cn on cn.n5_id =inf_plantasid
+inner join ca_nivel1 cn2 on cn2.n1_id =cn.n5_idn1 
 where inf_indice=:indice and inf_usuario=:cverecolector and inf_visitasIdlocal=:visita ";
         
         $stmt=DatosInforme::getInstance()->prepare($sSQL);
@@ -268,7 +268,8 @@ where cn.n6_idn5 =:idplan";
     public function getNvaLisComprDetxRecol($idrecolector,$fecha,$indice,$tabla){
         $econexion=self::getInstance();
         //me faltan las siglas
-        $sSQL="SELECT lid_idlistacompra as listaId, lid_idprodcompra as id , 
+        $sSQL="
+SELECT lid_idlistacompra as listaId, lid_idprodcompra as id , 
             lid_idproducto as productosId, 
             cp.pro_producto as productoNombre,
             cc.cad_descripcionesp as tamanio,
@@ -281,7 +282,7 @@ where cn.n6_idn5 =:idplan";
              ctp.cad_descripcionesp  as nombreTipoMuestra,
             lid_fechapermitida , lid_fecharestringida,
             cp.pro_categoria as categoriaid, ccp.cad_descripcionesp as categoria,
-            pl.lis_idplanta as planta, lid_orden,lid_backup
+            pl.lis_idplanta as planta,  lid_orden,lid_backup
             FROM $tabla
             inner join pr_listacompra pl on pl.lis_idlistacompra =lid_idlistacompra
             inner join ca_productos cp on cp.pro_id =lid_idproducto 
@@ -291,13 +292,13 @@ where cn.n6_idn5 =:idplan";
              inner join ca_catalogosdetalle cta on cta.cad_idopcion =lid_idtipoanalisis and cta.cad_idcatalogo =7
              inner join ca_catalogosdetalle ctp on ctp.cad_idopcion =lid_tipo and ctp.cad_idcatalogo =15
             where pl.lis_idrecolector =:recolector and pl.lis_fechacreacion>:fechareq
-            and pl.lis_idindice=:indice";
+            and pl.lis_idindice=:indice;";
         $stmt = $econexion-> prepare($sSQL);
         $stmt->bindParam(":recolector", $idrecolector,PDO::PARAM_INT);
         $stmt->bindParam(":fechareq", $fecha,PDO::PARAM_STR);
         $stmt->bindParam(":indice", $indice,PDO::PARAM_STR);
         $stmt-> execute();
-       // $stmt->debugDumpParams();
+    //   $stmt->debugDumpParams();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
         
     }
@@ -357,8 +358,10 @@ inner join visitas v on
 where
 ind_productos_id =:producto
 and ind_tamanio_id =:tamanio
-and ind_empaque =:empaque and ind_tipoanalisis=:tipoanalisis and inf_plantasid=:planta
-and v.vi_createdat<:fechafin and v.vi_createdat >=:fechaini group by ind_caducidad
+and ind_empaque =:empaque and ind_tipoanalisis=:tipoanalisis and inf_plantasid=:planta 
+and str_to_date(concat('01.',vi_indice ),'%d.%m.%Y') <:fechafin
+ and str_to_date(concat('01.',vi_indice ),'%d.%m.%Y') >=:fechaini
+/*and v.vi_createdat<:fechafin and v.vi_createdat >=:fechaini*/ group by ind_caducidad
 order by ind_caducidad desc";
         $stmt = $econexion-> prepare($sSQL);
         $stmt->bindParam(":fechaini", $fechaini,PDO::PARAM_STR);
@@ -371,7 +374,7 @@ order by ind_caducidad desc";
         
        
         $stmt-> execute();
-       // $stmt->debugDumpParams();
+//$stmt->debugDumpParams();
       //  echo "<br>--".$fechaini."--".$fechafin."--".$prod."--".$tamanio."--".$empaque."--".$ana."--".$planta;
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
         
@@ -379,7 +382,9 @@ order by ind_caducidad desc";
     
     public function insertarUnegocio($datosModel, $tabla,$pdo) {
         try {
-           
+           //busco el pais x la ciudad
+            $res=$this->vistaN4opcionModel($datosModel["ciudaduneg"],"ca_nivel4");
+           $pais=$res["n4_idn3"];
             
             $stmt = null;
             //procedimiento de insercion de  la cuenta
@@ -389,7 +394,7 @@ order by ind_caducidad desc";
             $stmt->bindParam(":nomuneg", $datosModel["nomuneg"], PDO::PARAM_STR);
             $stmt->bindParam(":dirtien", $datosModel["dirtien"], PDO::PARAM_STR);
             $stmt->bindParam(":refer", $datosModel["refer"], PDO::PARAM_STR);
-            $stmt->bindParam(":paisuneg", $datosModel["paisuneg"], PDO::PARAM_INT);
+            $stmt->bindParam(":paisuneg", $pais, PDO::PARAM_INT);
             $stmt->bindParam(":ciudaduneg", $datosModel["ciudaduneg"], PDO::PARAM_INT);
             $stmt->bindParam(":cxy", $datosModel["cxy"], PDO::PARAM_STR);
             $stmt->bindParam(":puncaruneg", $datosModel["puncaruneg"], PDO::PARAM_INT);
@@ -579,6 +584,23 @@ and n6_nombre=:siglas");
         //  var_dump($res);
        
        
+        
+    }
+    public function vistaN4opcionModel($idn4, $tabla){
+        
+        $stmt = Conexion::conectar()-> prepare("SELECT n4_idn1, n4_idn2, n4_id, n4_nombre,n4_idn3 FROM ca_nivel4 WHERE n4_id=:idn4");
+        
+        
+        
+        $stmt-> bindParam(":idn4", $idn4, PDO::PARAM_INT);
+        
+        
+        
+        $stmt-> execute();
+        
+        
+        
+        return $stmt->fetch();
         
     }
     

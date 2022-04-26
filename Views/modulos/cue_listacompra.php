@@ -27,4 +27,41 @@ $ingreso -> vistaliscController();
 
 </section>
 
- 
+   <script>
+    function cargarCombobox(cli)
+    {
+    	if(cli>0){
+        	console.log(cli);
+    	var parametro={"clientelis":cli
+    			};
+
+    	$.ajax({
+    		data:parametro,
+    	url:"getPlantaRec.php",
+    	type:"post",
+    	beforeSend:function(){
+    		$("#niv-2").html("cargando...");
+    	
+    	},
+    	success:function(response){
+    		var arr=response.split("¬¬");
+    	
+    		if(arr.length>0)
+    		{//	primera=arr[0];
+    		$("#niv-2").append("<option value=''>---  Todos  ---</option>");
+    		$("#niv-2").append(arr[0]);
+    		$("#niv-2").prop( "disabled", false );
+    		}
+    		
+    	
+    	}
+    	});
+    	}else
+    	{	
+    		$("#niv-2").prop( "disabled", true );
+    		$("#niv-2").html("<option value=''>---  Todos  ---</option>");
+    	
+    		
+    	}
+    }
+</script>

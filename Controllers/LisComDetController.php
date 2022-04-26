@@ -41,26 +41,29 @@ public function NvolisComDetController(){
               $this->duplica();
           }else if($admin=="cnp"){
               $this->addcodigo();
+          }else if($admin=="imp"){
+              $this->imprimir();    
           }	
 			}
 
       echo '
      <div class="card-body"> 
-     <table class="table table-bordered">
+     <table class="table table-bordered" id="listacompra">
                   <thead>
-                  <tr>
-                    <th>No.</th>
-                    <th>PRODUCTO</th>
-                    <th>TAMAÑO</th>
-                    <th>EMPAQUE</th>
-                    <th>ANALISIS</th>
-                    <th>CANTIDAD</th>
-                    <th>TIPO MUESTRA</th>
-                    <th>CODIGOS NO PERMITIDOS</th>
-                    <th>RESTRINGIR CODIGO</th>
-                    <th>PERMITIR CODIGO</th>
-                    <th>BACKUP</th>
-                    <th>ELIMINAR</th>
+                    <th align="center" style="width: 15%">PRODUCTO</th>
+                    <th align="center" style="width: 10%">TAMAÑO</th>
+                    <th align="center" style="width: 10%">EMPAQUE</th>
+                    <th align="center" style="width: 5%">ANALISIS</th>
+                    <th align="center" style="width: 8%">CANTIDAD</th>
+                    <th align="center" style="width: 8%">TIPO MUESTRA</th>
+                    <th align="center" style="width: 8%">CODIGOS NO PERMITIDOS</th>
+                    <th align="center" style="width: 8%">RESTRINGIR CODIGO</th>
+                    <th align="center" style="width: 8%">PERMITIR CODIGO</th>
+                    <th align="center" style="width: 5%">BACKUP 
+                        <input type="hidden" class="form-control" name="idlis" id="idlis" value='.$id.'
+                       
+                    </th>
+                    <th align="center" style="width: 5%">ELIMINAR</th>
                   </tr>
                   </thead>
                   <tbody>
@@ -68,7 +71,8 @@ public function NvolisComDetController(){
             $totcant=0;  
 // lee la lista de compra detalle con el numero de lista
       $respuesta =DatosListaCompraDet::vistalistacomModel($id,"pr_listacompradetalle");
-      
+      $i=0;
+
       foreach($respuesta as $row => $item){
           $numprod =$item["lid_orden"];
           $numprodlis= $item["lid_idprodcompra"];
@@ -89,10 +93,11 @@ public function NvolisComDetController(){
           $fecrest = $item["lid_fecharestringida"];
           
           $totcant= $totcant+$cantidad;
-          $i=1;
+          
        
           
           $mes_asig=$item["lis_idindice"];
+
           $aux = explode(".", $mes_asig);
                    
           $solomes = $aux[0];
@@ -103,7 +108,6 @@ public function NvolisComDetController(){
             $mes1=12;
             $soloanio = $aux[1]-1;
           }
-         // echo "---".$mes1;
           $mes2 = $solomes -2;
           if ($mes2==-1){
             $mes2=11;
@@ -116,7 +120,9 @@ public function NvolisComDetController(){
           $planta=$item["lis_idplanta"];
           $mesant1=$mes1.".".$soloanio;
           $mesant2=$mes2.".".$soloanio;
-         // echo $mesant1."--".$mesant2;
+          //echo $mesant1;
+          //echo $mesant2;
+          //echo $mes2;
 //       solicita codigos del primer mes
           $datosCont= array("cnpindi"=>$mesant1,
                             "planta"=>$planta,
@@ -127,6 +133,7 @@ public function NvolisComDetController(){
                                );
           
           $CodNoPerm="";
+
      $resp1 =DatosListaCompraDet::vistacodigosnopermitidos($datosCont, "informe_detalle");
      //var_dump($resp1); 
       foreach($resp1 as $row => $item1){
@@ -135,7 +142,7 @@ public function NvolisComDetController(){
          
           $codnop = $fecpartida[2]."-".$fecpartida[1]."-".substr($fecpartida[0],2,2);
            //var_dump($codnop);
-         $CodNoPerm= $CodNoPerm."=".$codnop.", ";
+          $CodNoPerm= $CodNoPerm."=".$codnop." , ";
       } 
      
      // solicita codigos del segundo mes
@@ -161,26 +168,24 @@ public function NvolisComDetController(){
          $opb='<div class="form-group clearfix"><input type="checkbox"  class="icheck-primary d-inline" name="chk'.$numprodlis.'" checked></div>';
 
       } else {
-        $opb='<input type="checkbox"  class="form-control" name="chk'.$numprodlis.'" value="no" >';
+        $opb='<div class="form-group clearfix"><input type="checkbox"  class="icheck-primary d-inline" name="chk'.$numprodlis.'" value="no" ></div>';
       }
       echo '      
-                  <tr>
+                  <tr >   
                     
-                    <td>
-                    <span class="glyphicon glyphicon-chevron-up arriba"></span>  <span class="glyphicon glyphicon-chevron-down down abajo"> </span></td>  
-                    <td><a href="index.php?action=editacompradetalle&id='.$id.'&idp='.$numprodlis.'">'.$producto.'</a></td>
-                    <td>'. $tamano.'<input type="hidden" class="form-control" id="ordn" name="ordn" value="'.$numprodlis.'" > </td>
-                    <td>'.$tipoempaque.'</td>
-                    <td>'.$tipoanalisis.'</td>
-                    <td >'.$cantidad.'</td>
-                    <td>'.$tipomuestra.'</td>
-                    <td>'.$CodNoPerm.'</td>
-                    <td>'.$fecrest.'</td>                   
-                    <td>'.$fecperm.'</td>
-                    <td>'.$opb.'</td>
+                    <td align="center"><a href="index.php?action=editacompradetalle&id='.$id.'&idp='.$numprodlis.'">'.$producto.'</a></td>
+                    <td align="center">'. $tamano.'<input type="hidden" class="form-control" id="ordn" name="ordn" value="'.$numprodlis.'" > </td>
+                    <td align="center">'.$tipoempaque.'</td>
+                    <td align="center">'.$tipoanalisis.'</td>
+                    <td align="center">'.$cantidad.'</td>
+                    <td align="center">'.$tipomuestra.'</td>
+                    <td align="center">'.$CodNoPerm.'</td>
+                    <td align="center">'.$fecrest.'</td>                   
+                    <td align="center">'.$fecperm.'</td>
+                    <td align="center">'.$opb.'</td>
 
                    
-                    <td><a type="button" href="index.php?action=listacompradet&admin=eli&id='.$id.'&idp='.$numprodlis.'" onclick="return dialogoEliminar();"><i class="fa fa-trash-alt fa-lg"></i></a></td>
+                    <td align="center"><a type="button" href="index.php?action=listacompradet&admin=eli&id='.$id.'&idp='.$numprodlis.'" onclick="return dialogoEliminar();"><i class="fa fa-trash-alt fa-lg"></i></a></td>
                     
                   </tr>';
               $i = $i+1;
@@ -192,11 +197,11 @@ public function NvolisComDetController(){
                   <tfoot>
                   <tr>
                      <th></th>
-                    <th></th>
+                    <th><input type="hidden" class="form-control" id="totreg" name="totreg" value="'.$i.'" > </th>
                     <th></th>
                     <th></th>
                     <th>TOTAL</th>
-                    <th>'.$totcant.'</th>
+                    <th align="center">'.$totcant.'</th>
                     <th></th>
                     <th></th>
                     <th></th>
@@ -206,6 +211,7 @@ public function NvolisComDetController(){
                   </tr>
                   </tfoot>
                 </table>
+                </form>
               </div>
               <!-- /.card-body -->
             </div>
@@ -242,8 +248,14 @@ public function NvolisComDetController(){
     public function vistaNuevoProductoCompra() {
       include "Utilerias/leevar.php";
       $this->numlista = $id;
+      // busca el cliente
+      $rs=DatosListaCompra::vistalistaEnccomModel($id, "pr_listacompra");
+      $cliente = null;
+      foreach ($rs as $row) {
+        $cliente = $row ["lis_idcliente"];
+      }
 
-      $rs = DatosProd::vistaprodModel("ca_productos");    
+      $rs = DatosProd::listaprodModel($cliente,"ca_productos");    
       $this->listaProducto = null;
       foreach ($rs as $row) {
         $this->listaProducto[] = "<option value='" . $row ["pro_id"] . "'>" . $row ["pro_producto"] . "</option>";
@@ -350,6 +362,7 @@ public function editaliscompradet(){
         
   $respuesta =DatosListaCompraDet::vistalistacomdetModel($id, $idp, "pr_listacompradetalle");
       foreach($respuesta as $row => $item){
+          $numclien = $item["lis_idcliente"];
           $numprod= $item["lid_idproducto"];
           $numtam= $item["lid_idtamano"];
           $numemp= $item["lid_idempaque"];
@@ -363,8 +376,8 @@ public function editaliscompradet(){
           $this->idpe=$idp;
           }
 
-      $rs = DatosProd::vistaprodModel("ca_productos");
-          
+      //$rs = DatosProd::vistaprodModel("ca_productos");
+      $rs = DatosProd::listaprodModel($numclien,"ca_productos");    
       $this->listaProde = null;
 
       foreach ($rs as $row) {

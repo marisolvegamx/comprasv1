@@ -32,7 +32,7 @@ class InformePostController{
        
         $pdo->beginTransaction();
         if(isset($visita))
-        DatosVisita::insertar($visita,"visitas",$pdo);
+            DatosVisita::insertar($visita,"visitas",$pdo);
        
        foreach ($fotos_ex as $lisfotos_ex)
            DatosProductoExhibido::insertar($lisfotos_ex,$cverecolector,$indice,"producto_exhibido",$pdo);
@@ -57,7 +57,9 @@ class InformePostController{
         //      echo "estoy aqui"; 
                 //es tienda nueva
             $datostienda=$this->tiendaNueva($visita);
-          
+            //busco la zona
+            
+            
             $idtienda=$this->datosInf->insertarUnegocio($datostienda, "ca_unegocios",$pdo);
          
           //  echo "estoy aqui"; 
@@ -147,7 +149,7 @@ class InformePostController{
            
             
         }catch(Exception $ex){
-            throw new Exception($this->TAG."Hubo un error al insertar "+$ex->getMessage());
+            throw new Exception($this->TAG."Hubo un error al insertar visita"+$ex->getMessage());
         }
         
         
@@ -164,7 +166,7 @@ class InformePostController{
             $this->datosInf->insertar($informe,"informes");
             
         }catch(Exception $ex){
-            throw new Exception($this->TAG."Hubo un error al insertar "+$ex->getMessage());
+            throw new Exception($this->TAG."Hubo un error al insertar informe "+$ex->getMessage());
         }
         
         
@@ -219,13 +221,14 @@ class InformePostController{
         //BUSCO LOS DATOS DE cd, pais, con las coordenadas en google
         $datosModel=array();
         $datosModel["nomuneg"]=$tiendarem[ContratoVisitas::TIENDANOMBRE];
-        $datosModel["dirtien"]="falta dir";
+        $datosModel["dirtien"]=$tiendarem[ContratoVisitas::DIRECCION];
+        $datosModel["tipouneg"]=$tiendarem[ContratoVisitas::TIPOTIENDAID];
         $datosModel["refer"]=$tiendarem[ContratoVisitas::COMPLEMENTODIR];
-        $datosModel["paisuneg"]=1;
-        $datosModel["ciudaduneg"]=1;
+        $datosModel["paisuneg"]=$tiendarem[ContratoVisitas::PAISID];
+        $datosModel["ciudaduneg"]=$tiendarem[ContratoVisitas::CIUDADID];
         $datosModel["cxy"]=$tiendarem[ContratoVisitas::GEOLOCALIZACION];
         $datosModel["cadcomuneg"]=0;
-      
+        
         $datosModel["estatusuneg"]=1;
         return $datosModel;
       

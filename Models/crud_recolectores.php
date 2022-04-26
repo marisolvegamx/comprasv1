@@ -6,7 +6,7 @@ class DatosRecolector extends Conexion{
 	# CLASE NIVEL 1n1
 	public function vistarecModel($tabla){
 
-		$stmt = Conexion::conectar()-> prepare("SELECT * FROM $tabla");
+		$stmt = Conexion::conectar()-> prepare("SELECT * FROM $tabla order by rec_nombre;");
 
 		$stmt-> execute();
 		return $stmt->fetchAll();
@@ -119,26 +119,26 @@ public function vistarecdetModel($numrec, $tabla){
     return $stmt->fetchAll();
 
   }
-
   public function vistarecxCliente($cliente, $tabla){
       
       $sql="SELECT rec_id, rec_nombre,
       rec_ser_pepsi
       FROM $tabla ";
       if($cliente==4)
-        $sql.="where rec_ser_pepsi=-1";
-      if($cliente==5)
-         $sql.="where rec_ser_penafiel=-1";
-            
-      if($cliente==6)
-         $sql.="where rec_ser_electro=-1";
-       
-      
-      $stmt = Conexion::conectar()-> prepare($sql);
-     
-      $stmt-> execute();
-      return $stmt->fetchAll();
-      
+          $sql.="where rec_ser_pepsi=-1";
+          if($cliente==5)
+              $sql.="where rec_ser_penafiel=-1";
+              
+              if($cliente==6)
+                  $sql.="where rec_ser_electro=-1";
+                  
+                  
+                  $stmt = Conexion::conectar()-> prepare($sql);
+                  
+                  $stmt-> execute();
+                  return $stmt->fetchAll();
+                  
   }
+
 
 }

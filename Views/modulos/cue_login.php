@@ -14,7 +14,7 @@
   <!-- overlayScrollbars -->
   <link rel="stylesheet" href="Views/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
   
-  <script src='https://www.google.com/recaptcha/api.js'></script>
+
 
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -46,9 +46,7 @@
                     <input type="password" name="logpass" class="form-control" id="logpass" placeholder="Password">
                   </div>
     
-                  <div class="g-recaptcha" data-sitekey="6LdZapsUAAAAAPcjkPWs8SrsV1s_EY8S73ut4jIg"></div>
-    
-      <div class="row">
+                     <div class="row">
         <div class="col-xs-8">
           <div class="checkbox icheck">
             <label>

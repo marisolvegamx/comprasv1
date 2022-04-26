@@ -78,7 +78,7 @@ ind_condiciones_traslado, ind_comentarios, ind_estatus estatus,
 2  estatusSync, ind_atributoc atributoc,
 ind_foto_atributoc foto_atributoc, ind_azucares azucares,
 ind_tipoanalisis tipoAnalisis,
-            cta.cad_descripcionesp  as tipoAnalisis,
+            cta.cad_descripcionesp  as nombreAnalisis,
 ind_nummuestra numMuestra, ind_comprasid comprasId,
 ind_compraddetid comprasDetId, ind_comprasIdbu comprasIdbu,
 ind_comprasDetIdbu comprasDetIdbu
@@ -89,7 +89,7 @@ inner join ca_productos cp on cp.pro_id =ind_productos_id
             inner join ca_catalogosdetalle cem on cem.cad_idopcion =ind_empaque and cem.cad_idcatalogo =12
              inner join ca_catalogosdetalle cta on cta.cad_idopcion =ind_tipoanalisis and cta.cad_idcatalogo =7
              inner join ca_catalogosdetalle ctp on ctp.cad_idopcion =ind_tipomuestra and ctp.cad_idcatalogo =15
-where ind_indice=:indice and ind_recolector=:cverecolector and ind_id=:informe";
+where ind_indice=:indice and ind_recolector=:cverecolector and ind_informes_id=:informe";
         
         $stmt=DatosInformeDetalle::getInstance()->prepare($sSQL);
         $stmt->bindParam(":indice", $INDICE, PDO::PARAM_STR);
@@ -98,6 +98,7 @@ where ind_indice=:indice and ind_recolector=:cverecolector and ind_id=:informe";
         $stmt->bindParam(":informe",  $informe, PDO::PARAM_INT);
         
         $stmt-> execute();
+      //  $stmt->debugDumpParams();
         return $stmt->fetchAll(PDO::FETCH_ASSOC); //para que solo devuelva los nombres de columnas
         
         

@@ -1,7 +1,8 @@
 
 <?php
 
-
+//error_reporting(E_ALL);
+//ini_set("display_errors", 1); 
 include "Models/crud_n5.php";
 include "Models/crud_recolectores.php";
 
