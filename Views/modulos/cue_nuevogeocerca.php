@@ -1,6 +1,7 @@
 <?php 
-
-
+//error_reporting(E_ERROR);
+//ini_set("display_errors", 1);
+//echo "zzzz";
   include_once  'Controllers/geocercaController.php';
 
   $geocercaCon=new GeocercaController();
@@ -10,7 +11,7 @@
   $idc = filter_input(INPUT_GET, "n4id",FILTER_SANITIZE_NUMBER_INT);
   $ref = filter_input(INPUT_GET, "ref",FILTER_SANITIZE_NUMBER_INT);
    //echo "--".$idc;
-  
+  //clave mari AIzaSyANZ_tj0m9KI-W0MZKmXImqpH_V6AkJgfI
   ?>
     <style>#map_canvas {
  height: 90vh;
@@ -23,6 +24,7 @@
     text-align: center;
 }
  </style> 
+
      <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCvmd3x0BmhG5yEhZqv0iJcjnESOT-lNVc&libraries=drawing&solution_channel=GMP_QB_locatorplus_v4_cABD" async defer></script>
  
  <script type="text/javascript">
@@ -373,12 +375,11 @@ function agregarRegion(){
        url: 'geocercasajax.php?admin=insertar',
     
        data: { puntos},
-       dataType: 'json',
-       success: function (data) {
-           //actualizarLista();
-           console.log("todo bien");
-          // salir();
-       }
+     
+   }).done(function () {
+       //actualizarLista();
+       //console.log("todo bien");
+       salir();
    });
 }
 

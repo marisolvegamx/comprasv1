@@ -282,7 +282,11 @@ SELECT lid_idlistacompra as listaId, lid_idprodcompra as id ,
              ctp.cad_descripcionesp  as nombreTipoMuestra,
             lid_fechapermitida , lid_fecharestringida,
             cp.pro_categoria as categoriaid, ccp.cad_descripcionesp as categoria,
-            pl.lis_idplanta as planta,  lid_orden,lid_backup
+            pl.lis_idplanta as planta, pro_orden as lid_orden,lid_backup,
+            cc.cad_otro as ordtam,
+            cem.cad_otro as ordemp,
+            cta.cad_otro as ordtipa,
+            ctp.cad_otro as ordtipm 
             FROM $tabla
             inner join pr_listacompra pl on pl.lis_idlistacompra =lid_idlistacompra
             inner join ca_productos cp on cp.pro_id =lid_idproducto 
@@ -298,7 +302,7 @@ SELECT lid_idlistacompra as listaId, lid_idprodcompra as id ,
         $stmt->bindParam(":fechareq", $fecha,PDO::PARAM_STR);
         $stmt->bindParam(":indice", $indice,PDO::PARAM_STR);
         $stmt-> execute();
-    //   $stmt->debugDumpParams();
+     //  $stmt->debugDumpParams();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
         
     }
@@ -319,7 +323,11 @@ SELECT lid_idlistacompra as listaId, lid_idprodcompra as id ,
              ctp.cad_descripcionesp  as nombreTipoMuestra,
             lid_fechapermitida , lid_fecharestringida,
             cp.pro_categoria as categoriaid, ccp.cad_descripcionesp as categoria,
-  pl.lis_idplanta as planta, lid_orden,lid_backup
+  pl.lis_idplanta as planta, lid_orden,lid_backup,
+ cc.cad_otro as ordtam,
+            cem.cad_otro as ordemp,
+            cta.cad_otro as ordtipa,
+            ctp.cad_otro as ordtipm 
             FROM $tabla
             inner join pr_listacompra pl on pl.lis_idlistacompra =lid_idlistacompra
             inner join ca_productos cp on cp.pro_id =lid_idproducto
@@ -382,9 +390,12 @@ order by ind_caducidad desc";
     
     public function insertarUnegocio($datosModel, $tabla,$pdo) {
         try {
-           //busco el pais x la ciudad
+           //busco el nombre de la ciudad en ciudades de residencia
             $res=$this->vistaN4opcionModel($datosModel["ciudaduneg"],"ca_nivel4");
-           $pais=$res["n4_idn3"];
+         //var_dump($res);
+       //  die();
+            $pais=$res["ciu_paisid"];
+           $ciudad=$res["ciu_id"];
             
             $stmt = null;
             //procedimiento de insercion de  la cuenta
@@ -395,7 +406,7 @@ order by ind_caducidad desc";
             $stmt->bindParam(":dirtien", $datosModel["dirtien"], PDO::PARAM_STR);
             $stmt->bindParam(":refer", $datosModel["refer"], PDO::PARAM_STR);
             $stmt->bindParam(":paisuneg", $pais, PDO::PARAM_INT);
-            $stmt->bindParam(":ciudaduneg", $datosModel["ciudaduneg"], PDO::PARAM_INT);
+            $stmt->bindParam(":ciudaduneg", $ciudad, PDO::PARAM_INT);
             $stmt->bindParam(":cxy", $datosModel["cxy"], PDO::PARAM_STR);
             $stmt->bindParam(":puncaruneg", $datosModel["puncaruneg"], PDO::PARAM_INT);
             $stmt->bindParam(":cadcomuneg", $datosModel["cadcomuneg"], PDO::PARAM_INT);
@@ -405,7 +416,7 @@ order by ind_caducidad desc";
             $res = $stmt->execute();
            
             
-            //  echo $stmt->debugDumpParams();
+           //   echo $stmt->debugDumpParams();
             if($res)
             { $sql2="select max(une_id) from $tabla";
               $stmt=$pdo->prepare($sql2);
@@ -422,6 +433,30 @@ order by ind_caducidad desc";
             return "error";
         }
     }
+    
+    public function actualizarUnegocioEstatus($idtienda,$estatus, $tabla) {
+        
+        try {
+            
+            //procedimiento de insercion de  la cuenta
+            
+            $sSQL = "UPDATE ca_unegocios
+ SET  une_estatus=:estatus WHERE une_id=:idt";
+            
+            $stmt = Conexion::conectar()->prepare($sSQL);
+            
+            $stmt->bindParam(":estatus", $estatus);
+            $stmt->bindParam(":idt", $idtienda);
+            $stmt->execute();
+            
+            return "success";
+        } catch (Exception $ex) {
+            
+            return "error";
+        }
+    }
+    
+    
     
     public function getUltVisita($recolector, $indice,$tabla){
         $econexion=self::getInstance();
@@ -588,7 +623,11 @@ and n6_nombre=:siglas");
     }
     public function vistaN4opcionModel($idn4, $tabla){
         
-        $stmt = Conexion::conectar()-> prepare("SELECT n4_idn1, n4_idn2, n4_id, n4_nombre,n4_idn3 FROM ca_nivel4 WHERE n4_id=:idn4");
+        $stmt = Conexion::conectar()-> prepare("SELECT n4_idn3, n4_id, n4_nombre, n4_idn1, n4_idn2,
+ciu_id,ciu_descripcionesp,ciu_descripcioning,ciu_paisid
+FROM ca_nivel4
+inner join ca_ciudadesresidencia on trim(n4_nombre) =trim(ciu_descripcionesp)
+ WHERE  n4_id =:idn4");
         
         
         
@@ -598,10 +637,27 @@ and n6_nombre=:siglas");
         
         $stmt-> execute();
         
-        
+    //    $stmt->debugDumpParams();
         
         return $stmt->fetch();
         
+    }
+    
+    public function listaCatalogo($idcatalogo, $tabla){
+        $stmt = Conexion::conectar()-> prepare("SELECT ca_idcatalogo as cad_idcatalogo,
+ca_nombrecatalogo as cad_nombreCatalogo,
+  `cad_idopcion`,
+  `cad_descripcionesp`,
+  `cad_descripcioning`,
+  `cad_otro`
+FROM $tabla inner join ca_catalogos on ca_catalogos.ca_idcatalogo=cad_idcatalogo
+where ca_catalogosdetalle.cad_idcatalogo=:id");
+        
+        $stmt->bindParam(":id", $idcatalogo, PDO::PARAM_INT);
+        
+        $stmt-> execute();
+        
+        return $stmt->fetchAll(PDO::FETCH_ASSOC); //para que solo devuelva los nombres de columnas
     }
     
     

@@ -3,13 +3,19 @@
 
 class DatosCatalogoDetalle {
      public function listaCatalogoDetalle($datosModel, $tabla){
-		$stmt = Conexion::conectar()-> prepare("SELECT
+$sql="SELECT
   `cad_idcatalogo`,
   `cad_idopcion`,
   `cad_descripcionesp`,
   `cad_descripcioning`,
   `cad_otro`
-FROM $tabla where ca_catalogosdetalle.cad_idcatalogo= :id");
+FROM $tabla where ca_catalogosdetalle.cad_idcatalogo= :id";
+
+if ($datosModel =13) {
+    $sql=$sql. " order by cad_descripcionesp";
+}
+
+		$stmt = Conexion::conectar()-> prepare($sql);
          
 		$stmt->bindParam(":id", $datosModel, PDO::PARAM_INT);
 		
@@ -328,7 +334,8 @@ FROM `ca_tipomercado` where  tm_clavetipo=:id";
   		return $res;
   	
   }
-    
+ 
+  
   public function listaCatalogo($idcatalogo, $tabla){
       $stmt = Conexion::conectar()-> prepare("SELECT ca_idcatalogo as cad_idcatalogo,
 ca_nombrecatalogo as cad_nombreCatalogo,
@@ -345,4 +352,6 @@ where ca_catalogosdetalle.cad_idcatalogo=:id");
       
       return $stmt->fetchAll(PDO::FETCH_ASSOC); //para que solo devuelva los nombres de columnas
   }
+  
+  
 }

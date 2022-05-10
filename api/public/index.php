@@ -144,6 +144,8 @@ $app->get('/listacompras', function ($request, $response, $args) {
     $fechal = filter_input(INPUT_GET, "version_lista", FILTER_SANITIZE_STRING);
     $fechad = filter_input(INPUT_GET, "version_detalle", FILTER_SANITIZE_STRING);
     $indice = filter_input(INPUT_GET, "indice", FILTER_SANITIZE_STRING);
+    $this->get('logger')->addInfo('listacompras: Llegó una peticion  ' . $recolector.".".$fechal."--".$fechad."--".$indice);
+   
     return $response->withHeader('Content-type', 'application/json')
         ->getBody()
         ->write($cc->response($fechal, $recolector, $indice));
@@ -161,6 +163,9 @@ $app->get('/tiendas', function ($request, $response, $args) {
     $cliente = filter_input(INPUT_GET, "cli", FILTER_SANITIZE_NUMBER_INT);
     $fechaini = filter_input(INPUT_GET, "fini", FILTER_SANITIZE_STRING);
     $fechafin = filter_input(INPUT_GET, "ffin", FILTER_SANITIZE_STRING);
+    $this->get('logger')
+    ->addInfo('tiendas: Llegó una peticion ' . $pais."--".$ciudad."--".$planta."--".$cliente."--".$fechaini."--".$fechafin);
+    
     return $response->withHeader('Content-type', 'application/json')
         ->getBody()
         ->write($cc->response($pais, $ciudad, $cadena, $nombre, $planta,$fechaini,$fechafin,$cliente));

@@ -69,7 +69,7 @@ imd_indice=:imd_indice and imd_usuario=:imd_recolector;";
 (imd_idlocal, imd_descripcion, imd_ruta, imd_estatus, imd_indice, imd_usuario)
 VALUES(:imd_idlocal, :imd_descripcion, :imd_ruta, :imd_estatus, :imd_indice, :imd_recolector); ";
             
-            $stmt=Conexion::conectar()->prepare($sSQL);
+            $stmt=$pdo->prepare($sSQL);
             $stmt->bindParam(":imd_idlocal", $datosModel[ContratoImagenes::ID],PDO::PARAM_INT);
             $stmt->bindParam(":imd_descripcion", $datosModel[ContratoImagenes::DESCRIPCION], PDO::PARAM_STR);
             $stmt->bindParam(":imd_estatus", $datosModel[ContratoImagenes::ESTATUS], PDO::PARAM_INT);

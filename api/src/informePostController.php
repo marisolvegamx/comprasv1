@@ -56,7 +56,7 @@ class InformePostController{
         if($visita[ContratoVisitas::TIENDAID]==null||$visita[ContratoVisitas::TIENDAID]==0){
         //      echo "estoy aqui"; 
                 //es tienda nueva
-            $datostienda=$this->tiendaNueva($visita);
+            $datostienda=$this->tiendaNueva($visita,$informe[ContratoInformes::CAUSANOCOMPRA]);
             //busco la zona
             
             
@@ -67,6 +67,12 @@ class InformePostController{
             DatosVisita::actualizar($visita, $idtienda, "visitas",$pdo);
             
             
+        }else{
+            //actualizo el estatus si no hubo prod
+            $tiendaid=$visita[ContratoVisitas::TIENDAID];
+            if(isset($informe[ContratoInformes::CAUSANOCOMPRA])&&$informe[ContratoInformes::CAUSANOCOMPRA]==4){
+               $this->datosInf->actualizarUnegocioEstatus($tiendaid,2,"ca_unegocios");
+            }
         }
         $pdo->commit();
         
@@ -97,7 +103,7 @@ class InformePostController{
                 DatosVisita::insertar($visita,"visitas",$pdo);
                 if($visita[ContratoVisitas::TIENDAID]==null||$visita[ContratoVisitas::TIENDAID]==0){
                     //es tienda nueva
-                    $datostienda=$this->tiendaNueva($visita);
+                    $datostienda=$this->tiendaNueva($visita,0);
                     //   var_dump($datostienda);
                     $idtienda=$this->datosInf->insertarUnegocio($datostienda, "ca_unegocios",$pdo);
                     echo $idtienda;
@@ -217,7 +223,7 @@ class InformePostController{
         
     }
     
-    public function tiendaNueva($tiendarem){
+    public function tiendaNueva($tiendarem,$causa){
         //BUSCO LOS DATOS DE cd, pais, con las coordenadas en google
         $datosModel=array();
         $datosModel["nomuneg"]=$tiendarem[ContratoVisitas::TIENDANOMBRE];
@@ -228,8 +234,10 @@ class InformePostController{
         $datosModel["ciudaduneg"]=$tiendarem[ContratoVisitas::CIUDADID];
         $datosModel["cxy"]=$tiendarem[ContratoVisitas::GEOLOCALIZACION];
         $datosModel["cadcomuneg"]=0;
-        
-        $datosModel["estatusuneg"]=1;
+        if($causa==4)
+        $datosModel["estatusuneg"]=2;
+        else 
+            $datosModel["estatusuneg"]=1;
         return $datosModel;
       
     }

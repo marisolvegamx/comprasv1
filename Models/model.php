@@ -50,12 +50,12 @@ class EnlacesPaginas{
 			$enlacesModel == "presentamapa" ||
 			$enlacesModel == "geocerca" ||
 		    $enlacesModel == "nuevogeocerca"||
-		
+		    
 			$enlacesModel == "suplistainformes" ||
 			$enlacesModel == "supinforme" ||
 
 			#AQUI INICIA SECCION REPORTE	
-			//$enlacesModel == "rlistaunegocio" ||
+			$enlacesModel == "editainforme" ||
 			//$enlacesModel == "runegociodetalle" ||
 			//$enlacesModel == "runegociocomp" ||
 			//$enlacesModel == "editarep" ||

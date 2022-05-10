@@ -17,7 +17,7 @@ class ContratoInformes {
     const COMENTARIOS="comentarios";
     const TICKETCOMPRA="ticket_compra";
     const CONDICIONESTRASLADO="condiciones_traslado";
-    const CAUSANOCOMPRA="inf_causa_nocompra";
+    const CAUSANOCOMPRA="causa_nocompra";
     
     
   

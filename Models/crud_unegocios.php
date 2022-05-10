@@ -14,18 +14,34 @@ class DatosUnegocio extends Conexion {
         return $stmt->fetchAll();
     }
     
-    public function vistaUnegocioModelCiudad( $tabla){
-        $stmt = Conexion::conectar()-> prepare("SELECT une_id,cad_descripcionesp,cad_descripcioning,ciu_descripcionesp,ciu_descripcioning,
-  une_descripcion 
-FROM `ca_unegocios` 
-inner join ca_catalogosdetalle on cad_idopcion=une_cla_pais and cad_idcatalogo=10
-inner join ca_ciudadesresidencia on ciu_id=une_cla_ciudad and ciu_paisid=une_cla_pais
- ORDER BY une_id DESC;");
+    public function vistaUnegocioModelCiudad($condic, $tabla){
+        $stmt = Conexion::conectar()-> prepare("SELECT une_id, cad_descripcionesp, cad_descripcioning, ciu_descripcionesp, ciu_descripcioning, une_descripcion FROM `ca_unegocios` inner join ca_catalogosdetalle on cad_idopcion=une_cla_pais and cad_idcatalogo=10 inner join ca_ciudadesresidencia on ciu_id=une_cla_ciudad and ciu_paisid=une_cla_pais where une_estatus=1 ".$condic." ORDER BY une_id DESC;");
         
         $stmt->execute();
-      //  $stmt->debugDumpParams();
+        
         
         return $stmt->fetchAll();
+    }
+
+public function vistaUnegociohabilitada($idun, $tabla){
+        $stmt = Conexion::conectar()-> prepare("SELECT * FROM $tabla WHERE une_id=:idun;");
+        
+        $stmt-> bindParam(":idun", $idun, PDO::PARAM_INT);
+        $stmt->execute();
+    
+        
+        return $stmt->fetchAll();
+    }
+
+
+public function nombreUnegociohabilitada($idun, $tabla){
+        $stmt = Conexion::conectar()-> prepare("SELECT * FROM $tabla WHERE une_id=:idun;");
+        
+        $stmt-> bindParam(":idun", $idun, PDO::PARAM_INT);
+        $stmt->execute();
+    
+        
+        return $stmt->fetch();
     }
 
 
@@ -755,67 +771,43 @@ SET
             //}
             
     }
-    public function getUnegocioxFiltros($pais,$ciudad, $cadenacomercial,$unedescripcion){
-        
-        $sql="SELECT une_descripcion, une_direccion, une_dir_referencia, une_cla_pais, une_cla_ciudad,
- une_estatus, une_coordenadasxy, une_puntocardinal,
-une_tipotienda, une_cadenacomercial FROM ca_unegocios WHERE 1=1 ";
-        
-        // agregando filtros
-        if(isset($pais)&&$pais!="") {
-            $sql.=" and ca_unegocios.une_cla_pais=:pais";
-            
-        }
-        // agregando filtros
-        if(isset($unedescripcion)&&$unedescripcion!="") {
-            $sql.=" and ca_unegocios.une_descripcion like :descripcion";
-            
-        }
-        
-        // agregando filtros
-        if(isset($cadenacomercial)&&$cadenacomercial!="") {
-            $sql.=" and ca_unegocios.une_cadenacomercial=:cadena";
-            
-        }
-        if(isset($ciudad)){
-            
-            if($ciudad!="") {
-                $sql.=" and ca_unegocios.une_cla_ciudad=:ciudad";
-                
-            }
-        }
-        $stmt = Conexion::conectar()-> prepare($sql." order by une_descripcion" );
-        if(isset($unedescripcion)&&$unedescripcion!="") {
-            $stmt-> bindValue(":descripcion", "%".$unedescripcion."%", PDO::PARAM_STR);
-            
-        }
-        
-        if(isset($ciudad)){
-            
-            if($ciudad!="") {
-                
-                $stmt-> bindParam(":ciudad", $ciudad, PDO::PARAM_STR);
-            }
-        }
-        if(isset($cadenacomercial)){
-            
-            if($cadenacomercial!="") {
-                
-                $stmt-> bindParam(":cadena", $cadenacomercial, PDO::PARAM_STR);
-            }
-        }
-        if(isset($pais)){
-            
-            if($pais!="") {
-                
-                $stmt-> bindParam(":pais", $pais, PDO::PARAM_INT);
-            }
-        }
-        
-        $stmt->execute();
-        // echo $stmt->debugDumpParams();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-    
 
+public function insertarhab($datosModel, $tabla) {
+        try {
+           
+              
+    $sSQL = "INSERT INTO `ca_unegocioshabilitada`(`une_id`, `une_idindice`) VALUES (:idt, :indice)";
+            $stmt = Conexion::conectar()->prepare($sSQL);
+
+            $stmt->bindParam(":idt", $datosModel["idt"], PDO::PARAM_INT);
+            $stmt->bindParam(":indice", $datosModel["indice"], PDO::PARAM_STR);
+            $res = $stmt->execute();
+            //$stmt-> execute();    
+           if($res)
+              return "success";
+        } catch (Exception $ex) {
+            return "error";
+        }
 }
+
+   public function eliminauneghab($datosModel,$tabla){
+            //try{      
+              
+              $sSQL= "DELETE FROM $tabla WHERE une_id=:idt and une_idindice=:indice";
+              $stmt=Conexion::conectar()->prepare($sSQL);
+              
+              $stmt->bindParam(":idt", $datosModel["idt"],PDO::PARAM_INT);
+              $stmt->bindParam(":indice", $datosModel["indice"], PDO::PARAM_STR);
+
+              $stmt-> execute();
+              
+            //}//catch(PDOException $ex){
+              //throw new Exception("Hubo un error al insertar el recolector");
+            //}
+            
+    }
+
+    
+}
+
+?>	

@@ -22,10 +22,13 @@ class TiendasController{
         
        
        // $rs = $this->getUnegocioxFiltros($pais,$ciudad, $cadenacomercial,$unedescripcion);
-        $rs=$this->getUnegocioxFiltros2($pais, $ciudad, $planta, $fechaini, $fechafin, $cliente) ;   
+      //calculo fecha 3 meses y el fin
+      $auxfec=explode(".",$fechafin);
+    
+      $rs=$this->getUnegocioxFiltros2($pais, $ciudad, $planta, $fechaini, $fechafin,$fechafin, $cliente) ;   
             
             //return $stmt->fetchAll(PDO::FETCH_ASSOC);
-            
+           // echo "watt";
             foreach ($rs as $row) {
                 
                 $this->result[] = $row;
@@ -36,7 +39,7 @@ class TiendasController{
     public function getZonas($pais,$ciudad){
         
         
-        $this->zonas = $this->datosGeo->vistaGeocercaModel($ciudad, "ca_geocercas");
+        $this->zonas = $this->datosGeo->vistaGeocercaModelxnombre($ciudad, "ca_geocercas");
         //return $stmt->fetchAll(PDO::FETCH_ASSOC);
         
         
@@ -118,33 +121,44 @@ une_tipotienda, une_cadenacomercial FROM ca_unegocios WHERE 1=1 ";
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     
-    public function getUnegocioxFiltros2($pais,$ciudad, $planta,$fechaini,$fechafin,$cliente){
-        if($cliente==4&&isset($fechaini)&&$fechaini!=""&&isset($fechafin)&&$fechafin!="") {
-                
-            $sqlcol=" ,if(une_estatus=2,'rojo',if(une_estatus=1 and  str_to_date(concat('01.',vi_indice ),'%d.%m.%Y') <:fechafin
- and str_to_date(concat('01.',vi_indice ),'%d.%m.%Y') >=:fechaini,'amarillo','verde' )) as color ";
+    public function getUnegocioxFiltros2($pais,$ciudad, $planta,$fechaini,$fechafin,$tremini,$cliente){
+        //las fechas vienen aumentadas en 1 mes
+        //busco el nombre de la ciudad
+       // $sql1="select "
+     //   $stmt = Conexion::conectar()-> prepare($sql." order by une_descripcion" );
+     //   $stmt-> bindParam(":ciudad", $ciudad, PDO::PARAM_STR);
+        // $stmt-> bindParam(":pais", $pais, PDO::PARAM_INT);
+        
+        if($cliente==4&&isset($fechafin)&&$fechafin!="") {
+               
+            $sqlcol=" ,if(une_estatus=2,'rojo',if(une_estatus=1 and  str_to_date(concat('01.',vi_indice ),'%d.%m.%Y') < DATE_ADD(:fechafin, interval 1 month)
+ and str_to_date(concat('01.',vi_indice ),'%d.%m.%Y') >= DATE_ADD(:fechafin, interval -2 month),'amarillo','verde' )) as color ";
             }else
             $sqlcol=",'verde' as color";
         
         $sql="select une_id,une_descripcion, une_direccion, une_dir_referencia, une_cla_pais, une_cla_ciudad,
  une_estatus, une_coordenadasxy, une_puntocardinal,
+str_to_date(concat('01.', vi_indice ),'%d.%m.%Y') as fec,
+	DATE_ADD('2022-04-01', interval 1 month) freal,
+	DATE_ADD('2021-04-01', interval 1 month) frealini,
+	DATE_ADD('2022-04-01', interval -2 month) 3m,
 une_tipotienda, une_cadenacomercial, une_estatus ".$sqlcol."
  from ca_unegocios cu 
-left join visitas on vi_tiendaid=cu.une_id ";
+inner join visitas on vi_tiendaid=cu.une_id ";
         if(isset($fechaini)&&$fechaini!=""&&isset($fechafin)&&$fechafin!="") {
-            $sql.=" and str_to_date(concat('01.',vi_indice ),'%d.%m.%Y') <:fechafin
- and str_to_date(concat('01.',vi_indice ),'%d.%m.%Y') >=:fechaini";
+            $sql.=" and str_to_date(concat('01.',vi_indice ),'%d.%m.%Y') < DATE_ADD(:fechafin, interval 1 month)
+ and str_to_date(concat('01.',vi_indice ),'%d.%m.%Y') >= DATE_ADD(:fechaini, interval 1 month) ";
             }
         
-        $sql.=" left join informes i on i.inf_visitasIdlocal =vi_idlocal
+        $sql.=" inner join informes i on i.inf_visitasIdlocal =vi_idlocal
 and vi_cverecolector=i.inf_usuario  and vi_indice=i.inf_indice ";
         // agregando filtros
         if(isset($planta)&&$planta!="") {
             $sql.=" and inf_plantasid=:planta";
             
         }
-        $sql.=" left join ca_nivel5 on n5_id=inf_plantasid
-where  une_cla_ciudad=:ciudad ";
+       // $sql.=" left join ca_nivel5 on n5_id=inf_plantasid
+//where  une_cla_ciudad=:ciudad ";
 //and une_cla_pais=:pais";
         
         
@@ -153,12 +167,16 @@ where  une_cla_ciudad=:ciudad ";
        $sql.="  group by une_id";
              //    echo $sql;
         $stmt = Conexion::conectar()-> prepare($sql." order by une_descripcion" );
-        $stmt-> bindParam(":ciudad", $ciudad, PDO::PARAM_STR);
+     //   $stmt-> bindParam(":ciudad", $ciudad, PDO::PARAM_STR);
        // $stmt-> bindParam(":pais", $pais, PDO::PARAM_INT);
         
         if(isset($fechaini)&&$fechaini!=""&&isset($fechafin)&&$fechafin!="") {
             $stmt-> bindParam(":fechafin", $fechafin, PDO::PARAM_STR);
             $stmt-> bindParam(":fechaini", $fechaini, PDO::PARAM_STR);
+            
+        }
+        if($cliente==4){
+       //     $stmt-> bindParam(":tremini", $tremini, PDO::PARAM_STR);
         }
        /* if(isset($unedescripcion)&&$unedescripcion!="") {
             $stmt-> bindValue(":descripcion", "%".$unedescripcion."%", PDO::PARAM_STR);
@@ -188,7 +206,7 @@ where  une_cla_ciudad=:ciudad ";
         }
         */
         $stmt->execute();
-       //  echo $stmt->debugDumpParams();
+     //   $stmt->debugDumpParams();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     

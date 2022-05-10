@@ -68,6 +68,7 @@ VALUES( :vi_idlocal, :vi_indice,:vi_geolocalizacion,:vi_direccion,:vi_complement
                throw new Exception("Hubo un error al insertar visita".$stmt->errorInfo()[0]);
              
            }
+           $stmt->debugDumpParams();
             
         }catch(PDOException $ex){
             Utilerias::guardarError("DatosVisita.insertar "+$ex->getMessage());

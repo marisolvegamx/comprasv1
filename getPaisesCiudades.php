@@ -1,7 +1,7 @@
 
 <?php
 include "Models/crud_ciudades.php";
-include "Models/crud_catalogoDetalle.php";
+include "Models/crud_catalogoDetalle_mio.php";
 
 
 

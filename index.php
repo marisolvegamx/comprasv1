@@ -81,7 +81,7 @@ require_once "Models/crud_causas.php";
 //require_once "Models/crud_solicitudes.php";
 //require_once "Models/crud_reporte.php";
 require_once "Models/crud_catalogos.php";
-require_once "Models/crud_catalogoDetalle.php";
+require_once "Models/crud_catalogoDetalle_mio.php";
 //require_once "Models/crud_inspectores.php";
 require_once "Models/crud_mesasignacion.php";
 

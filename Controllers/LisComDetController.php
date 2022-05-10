@@ -120,18 +120,19 @@ public function NvolisComDetController(){
           $planta=$item["lis_idplanta"];
           $mesant1=$mes1.".".$soloanio;
           $mesant2=$mes2.".".$soloanio;
-          //echo $mesant1;
-          //echo $mesant2;
-          //echo $mes2;
+         
 //       solicita codigos del primer mes
-          $datosCont= array("cnpindi"=>$mesant1,
+          $datosCont= array("cnpindi1"=>$mesant1,
+                            "cnpindi2"=>$mesant2,
+                            "mesasig" =>$mes_asig,
                             "planta"=>$planta,
                             "cnpprod"=>$idprod,
                             "cnptam"=>$idtam,
                             "cnpempa"=>$idemp,
                             "cnptipana"=>$idtipoana, 
                                );
-          
+          //var_dump($datosCont);
+
           $CodNoPerm="";
 
      $resp1 =DatosListaCompraDet::vistacodigosnopermitidos($datosCont, "informe_detalle");
@@ -142,19 +143,19 @@ public function NvolisComDetController(){
          
           $codnop = $fecpartida[2]."-".$fecpartida[1]."-".substr($fecpartida[0],2,2);
            //var_dump($codnop);
-          $CodNoPerm= $CodNoPerm."=".$codnop." , ";
+         $CodNoPerm= $CodNoPerm."=".$codnop." , ";
       } 
      
      // solicita codigos del segundo mes
-        $datosController2= array("cnpindi"=>$mesant2,
-                            "planta"=>$planta,
-                            "cnpprod"=>$idprod,
-                            "cnptam"=>$idtam,
-                            "cnpempa"=>$idemp,
-                            "cnptipana"=>$idtipoana, 
-                               );
+        //$datosController2= array("cnpindi"=>$mesant2,
+        //                    "planta"=>$planta,
+        //                    "cnpprod"=>$idprod,
+        //                    "cnptam"=>$idtam,
+        //                    "cnpempa"=>$idemp,
+        //                    "cnptipana"=>$idtipoana, 
+        //                       );
         
-      $resp2 =DatosListaCompraDet::vistacodigosnopermitidos($datosController2, "informe_detalle");
+      //$resp2 =DatosListaCompraDet::vistacodigosnopermitidos($datosController2, "informe_detalle");
     foreach($resp2 as $row => $item1){
          // var_dump($item1["ind_caducidad"]);
           $fecpartida=explode("-", $item1["ind_caducidad"]);
@@ -198,7 +199,6 @@ public function NvolisComDetController(){
                   <tr>
                      <th></th>
                     <th><input type="hidden" class="form-control" id="totreg" name="totreg" value="'.$i.'" > </th>
-                    <th></th>
                     <th></th>
                     <th>TOTAL</th>
                     <th align="center">'.$totcant.'</th>

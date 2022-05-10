@@ -1,6 +1,6 @@
 <?php
 require_once '../../Models/conexion.php';
-require '../../Models/crud_catalogoDetalle.php';
+//require '../../Models/crud_informes.php';
 //require '../../Models/crud_atributos.php';
 
 
@@ -17,7 +17,7 @@ class CatalogosController{
         $this->listaCatalogos=[2=>"TIPO DE TIENDA",8=>"UBICACION DE LA MUESTRA",
             15=>"TIPO DE MUESTRA"
         ];
-        $this->datosCatdet=new DatosCatalogoDetalle();
+       // $this->datosCatdet=new DatosInforme();
         $this->datosInf=new DatosInforme();
     }
     
@@ -26,7 +26,7 @@ class CatalogosController{
         foreach ($this->listaCatalogos as $key=>$catalogo)
         {
             //echo "*****".$key;
-            $rs = $this->datosCatdet->listaCatalogo($key, "ca_catalogosdetalle");
+            $rs = $this->datosInf->listaCatalogo($key, "ca_catalogosdetalle");
             
             
             //return $stmt->fetchAll(PDO::FETCH_ASSOC);

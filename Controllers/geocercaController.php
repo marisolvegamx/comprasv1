@@ -114,7 +114,20 @@ class GeocercaController {
 		    
 				$resultado=$this->db->actualizarGeocerca($geocerca, "ca_geocercas");
 		    else //es nuevo
+		    {
+		        $res=$this->db->getxcdZona($geocerca["geo_n4id"], $geocerca["geo_region"], "ca_geocercas");
+		        if(sizeof($res)>0)//ya existe
+		        {   
+		           // var_dump($res);
+		            foreach ($res as $puntoedi)
+		                $geocerca["geo_id"]=$puntoedi["geo_id"];
+		          //  var_dump($geocerca);
+		            $resultado=$this->db->actualizarGeocerca($geocerca, "ca_geocercas");
+		        
+		        }
+		      else
 		    $resultado=$this->db->insertarGeocerca($geocerca, "ca_geocercas");
+		    }
 		  //  echo ">>>".$resultado;
 		    }
 		    if($resultado){
