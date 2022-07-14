@@ -12,9 +12,11 @@ class TiendasController{
    private $result;
    private $datosGeo;
    private $zonas;
+   private $datosInf;
    
    public function __construct(){
         $this->datosGeo=new DatosGeocercas();
+        
     }
     
    
@@ -35,7 +37,7 @@ class TiendasController{
             }
         
     }
-    
+    //LLEGA EL ID DE LA CIUDAD de la estructura de regiones etc
     public function getZonas($pais,$ciudad){
         
         
@@ -50,7 +52,7 @@ class TiendasController{
     
     public function response($pais,$ciudad, $cadenacomercial,$unedescripcion,$planta,$fechaini,$fechafin,$cliente)
     {
-     
+        if(isset($planta)&&$planta!="") 
         $this->getTiendas($pais,$ciudad, $cadenacomercial,$unedescripcion,$planta,$fechaini,$fechafin,$cliente);
         $this->getZonas($pais, $ciudad);
         //busco las geocercas
@@ -58,6 +60,23 @@ class TiendasController{
         return json_encode(array("tiendas"=>$this->result,
                                 "geocercas"=>$this->zonas
         ));
+    }
+    
+    public function responseGeo($recolector,$indice)
+    {
+        $this->zonas=array();
+       //busco las ciudades de ese indice
+        $this->datosInf=new DatosInforme();
+       $result= $this->datosInf->getCiudadesAsigxRec($recolector, $indice, "pr_listacompra");
+       foreach ($result as $row){
+           $ciudadnombre=$row["ciudadNombre"];
+    
+           $this->zonas= array_merge($this->zonas,$this->datosGeo->vistaGeocercaModelxnombreRes($ciudadnombre, "ca_geocercas"));
+            //busco las geocercas
+       }
+            return json_encode(array("tiendas"=>null,
+                "geocercas"=>$this->zonas
+            ));
     }
     public function getUnegocioxFiltros($pais,$ciudad, $cadenacomercial,$unedescripcion){
         
@@ -128,20 +147,21 @@ une_tipotienda, une_cadenacomercial FROM ca_unegocios WHERE 1=1 ";
      //   $stmt = Conexion::conectar()-> prepare($sql." order by une_descripcion" );
      //   $stmt-> bindParam(":ciudad", $ciudad, PDO::PARAM_STR);
         // $stmt-> bindParam(":pais", $pais, PDO::PARAM_INT);
-        
+       // echo $pais."--".$ciudad."--".$planta."--".$fechaini."--".$fechafin."--".$tremini."--".$cliente;
         if($cliente==4&&isset($fechafin)&&$fechafin!="") {
                
-            $sqlcol=" ,if(une_estatus=2,'rojo',if(une_estatus=1 and  str_to_date(concat('01.',vi_indice ),'%d.%m.%Y') < DATE_ADD(:fechafin, interval 1 month)
- and str_to_date(concat('01.',vi_indice ),'%d.%m.%Y') >= DATE_ADD(:fechafin, interval -2 month),'amarillo','verde' )) as color ";
+            $sqlcol=" ,if(une_estatus=2,'rojo',if(une_idindice is not null,'verde',if(une_estatus=1 and  str_to_date(concat('01.',vi_indice ),'%d.%m.%Y') < DATE_ADD(:fechafin, interval 1 month)
+ and str_to_date(concat('01.',vi_indice ),'%d.%m.%Y') >= DATE_ADD(:fechafin, interval -3 month),'amarillo','verde' ))) as color ";
             }else
             $sqlcol=",'verde' as color";
         
-        $sql="select une_id,une_descripcion, une_direccion, une_dir_referencia, une_cla_pais, une_cla_ciudad,
+        $sql="select cu.une_id,une_descripcion, une_direccion, une_dir_referencia, une_cla_pais, une_cla_ciudad,
  une_estatus, une_coordenadasxy, une_puntocardinal,
 str_to_date(concat('01.', vi_indice ),'%d.%m.%Y') as fec,
-	DATE_ADD('2022-04-01', interval 1 month) freal,
-	DATE_ADD('2021-04-01', interval 1 month) frealini,
-	DATE_ADD('2022-04-01', interval -2 month) 3m,
+	
+	DATE_ADD(:fechaini, interval 1 month) fini,
+DATE_ADD(:fechafin, interval 1 month) ffin,
+	DATE_ADD(:fechafin, interval -3 month) 3m,
 une_tipotienda, une_cadenacomercial, une_estatus ".$sqlcol."
  from ca_unegocios cu 
 inner join visitas on vi_tiendaid=cu.une_id ";
@@ -157,14 +177,13 @@ and vi_cverecolector=i.inf_usuario  and vi_indice=i.inf_indice ";
             $sql.=" and inf_plantasid=:planta";
             
         }
+         $sql.=" left join ca_unegocioshabilitada cuh on cuh.une_id=cu.une_id and  str_to_date(concat('01.',une_idindice ),'%d.%m.%Y')=:fechafin";
+     
        // $sql.=" left join ca_nivel5 on n5_id=inf_plantasid
 //where  une_cla_ciudad=:ciudad ";
 //and une_cla_pais=:pais";
-        
-        
- 
         // agregando filtros
-       $sql.="  group by une_id";
+       $sql.="  group by cu.une_id";
              //    echo $sql;
         $stmt = Conexion::conectar()-> prepare($sql." order by une_descripcion" );
      //   $stmt-> bindParam(":ciudad", $ciudad, PDO::PARAM_STR);
@@ -205,8 +224,9 @@ and vi_cverecolector=i.inf_usuario  and vi_indice=i.inf_indice ";
             }
         }
         */
+    //     $stmt-> bindParam(":indice", $indice, PDO::PARAM_STR);
         $stmt->execute();
-     //   $stmt->debugDumpParams();
+       // $stmt->debugDumpParams();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     
@@ -273,8 +293,13 @@ where  une_cla_ciudad=:ciudad and une_cla_pais=:pais";
             }
             */
             $stmt->execute();
-            echo $stmt->debugDumpParams();
+           // echo $stmt->debugDumpParams();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     
+   
+    
+    public function getResult(){
+        return $this->result;
+    }
 }

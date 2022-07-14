@@ -98,8 +98,8 @@ class ContratoVisitas{
     const GEOLOCALIZACION="geolocalizacion";
     const DIRECCION="direccion";
     const TIPOTIENDAID="tipoId";
+    const PUNTOCARDINAL="puntoCardinal";
     
-  
     
 }
 class ContratoImagenes{
@@ -110,6 +110,20 @@ class ContratoImagenes{
     const ESTATUS="estatus";
     const RUTA="ruta";
    
+    
+}
+class ContratoUneImagenes{
+    
+    const  ID="ui_id";
+    const UNEID="ui_uneid";
+    const CLIENTEID="ui_clienteid";
+    const TICKET="ui_ticket";
+    const EXHIBIDOR="ui_exhibidor";
+    const EXINDICE="ui_exindice";
+    const TIKINDICE="ui_tikindice";
+    const EXRECOLECTOR="ui_exrecolector";
+    const TIKRECOLECTOR="ui_tikrecolector";
+    
     
 }
 class ContratoProductoEx{

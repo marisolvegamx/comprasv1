@@ -161,7 +161,21 @@ class UsuarioModel extends Conexion{
 
 	}
 
-        
+ public function getsupervisor($id, $tabla){
+
+ 		$SQL="SELECT cus_cliente FROM cnfg_usuarios where cus_email=:idusuario";
+		$stmt = Conexion::conectar()-> prepare($SQL);
+
+	    $stmt->bindParam(":idusuario", $id, PDO::PARAM_INT);		
+
+		$stmt-> execute();
+
+		return $stmt->fetchAll();
+	}
+
+
+
+      
 
          function buscarReferenciaNivel($usuario) {
 
@@ -262,110 +276,6 @@ where cus_usuario=:usuario ";
 
 
 
-
-
-
-  function validarRegionCuenta() {
-
-        $result = 0;
-
-        $usuario = $_SESSION["UsuarioInd"];
-
-
-
-       
-
-        // verifico el tipo de usuario
-
-      
-
-            $query = "SELECT
-
-cnfg_usuarios.cus_usuario,
-
-cnfg_usuarios.cus_clavegrupo,
-
-cnfg_usuarios.cus_tipoconsulta,
-
-cnfg_usuarios.cus_nivel1,
-
-cnfg_usuarios.cus_nivel2,
-
-cnfg_usuarios.cus_nivel3,
-
-cnfg_usuarios.cus_nivel4,
-
-cnfg_usuarios.cus_cliente,
-
-cnfg_usuarios.cus_servicio,
-
-cnfg_usuarios.cus_nombreusuario
-
-FROM
-
-cnfg_usuarios
-
-where cus_usuario=:usuario ";
-
-//      echo $query;
-
-            $parametros = array("usuario" => $usuario);
-
-            $res = Conexion::ejecutarQuery($query, $parametros);
-
-
-
-            foreach ($res as $row) {
-
-                $grupo=$row["cus_clavegrupo"];
-
-                $nivCons = $row["cus_tipoconsulta"];
-
-                $niv4 = $row["cus_nivel4"];
-
-                $niv1 = $row["cus_nivel1"];
-
-                $niv2 = $row["cus_nivel2"];
-
-                $niv3 = $row["cus_nivel3"];
-
-            }
-
-            if ($grupo == "cli") {
-
-                if ($nivCons >= 4)
-
-                    $result = $nivCons; //devuelvo nivel de consulta
-
-                else if ($nivCons < 4)
-
-                    $result = 0; //puede ver todos
-
-            } else
-
-            if ($grupo == "cue") {
-
-
-
-                if ($niv2 > 0) { //es usuario de franquicia
-
-                    $result = "P"; //devuelvo cuenta y franquicia
-
-                    if ($niv3 > 0) //es usuario por p.v.
-
-                        $result = "PP";
-
-                } else    //puede ver toda la cuenta
-
-                    $result = "F";
-
-            }
-
-        
-
-        return $result;
-
-    }
 
 
 public function getUsuarioId($id,$tabla){

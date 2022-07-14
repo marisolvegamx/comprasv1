@@ -4,99 +4,109 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
- <!--   <script scr="https://maps.googleapis.com/maps/api/js?key=AIzaSyBDaeWicvigtP9xPv919E-RNoxfvC-Hqik&callback=iniciarMap" async defer></script>-->
-
+  <script scr="https://maps.googleapis.com/maps/api/js?key=AIzaSyBDaeWicvigtP9xPv919E-RNoxfvC-Hqik&callback=iniciarMap" async defer></script>
+   
   <title>Muesmerc | Sistema de Compras</title>
 
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Theme style -->
-  <link rel="stylesheet" href="Views/dist/css/adminlte.min.css">
+  <link rel="stylesheet" href="Views/dist/css/adminlte.css">
   <!-- overlayScrollbars -->
   <link rel="stylesheet" href="Views/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
  <!--   <script src="Views/dist/js/jquery-3.0.0.min.js"></script> -->
+
 <!-- jQuery -->
 <script src="Views/plugins/jquery/jquery.min.js"></script>
  <!-- jQuery UI 1.11.4 -->
 <script src="Views/plugins/jquery-ui/jquery-ui.min.js"></script>
+<link rel="stylesheet" href="Views/bower_components/bootstrap/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="Views/plugins/select2/css/select2.min.css">
   <link rel="stylesheet" href="Views/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
  <link rel="stylesheet" href="Views/plugins/fontawesome-free/css/all.min.css">
   <!-- Theme style -->
-  <link rel="stylesheet" href="Views/dist/css/adminlte.min.css">
+  <link rel="stylesheet" href="Views/dist/css/adminlte.css">
   <link rel="stylesheet" href="Views/plugins/select2/css/select2.min.css">
  <link rel="stylesheet" href="Views/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
   <link rel="stylesheet" href="Views/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
   <link rel="stylesheet" href="Views/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
 
 
-
 </head>
-<?php
-   include "modulos/enlaces.php";
-
-?>
 
 
 <body class="hold-transition sidebar-mini layout-fixed" data-panel-auto-height-mode="height">
-<div class="wrapper">
+<header >
+<div class="wrapper ">
 
   <!-- Navbar -->
-  <nav class="main-header navbar navbar-expand navbar-white navbar-light">
-    <!-- Left navbar links -->
-    <ul class="navbar-nav">
-      <li class="nav-item">
-        <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
-      </li>
-      <li class="nav-item d-none d-sm-inline-block">
-        <a href="index3.html" class="nav-link">Home</a>
-      </li>
-      <li class="nav-item d-none d-sm-inline-block">
-        <a href="#" class="nav-link">Contact</a>
-      </li>
-    </ul>
+<nav class="main-header navbar navbar-expand navbar-gray">
+      <!-- Sidebar toggle button-->
+      <!-- Navbar Right Menu -->
+      <div class="navbar-custom-menu">
+     
+           <ul class="navbar-nav">
+          <!-- Messages: style can be found in dropdown.less-->
+          
 
-    <!-- Right navbar links -->
-    <ul class="navbar-nav ml-auto">
-      <!-- Navbar Search -->
-      
+          <!-- Notifications Menu -->
+          
+          <!-- Tasks Menu -->
+         
+          <!-- User Account Menu -->
+          <li class="dropdown user user-menu">
 
-      <!-- Messages Dropdown Menu -->
-      <li class="nav-item dropdown">
-        
-        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-          <a href="#" class="dropdown-item">
-            <!-- Message Start -->
-            <div class="media">
+            <!-- Menu Toggle Button -->
+            <a href="#" class="dropdown-togglen" data-toggle="dropdown">
+              </br>
+              <img src="Views/dist/img/User-Icon.jpg" class="user-image" >
+
+              <span style="color: #000000;">
+              <?php
+              $datini=UsuarioController::Obten_NomUsuario();
+                echo $datini;               
+                 ?> 
+
+              </span>
+            </a>
+            <ul class="dropdown-menu">
+              <!-- User image -->
+              <li class="user-header">
+                <img src="Views/dist/img/User-Icon.jpg" class="img-circle" alt="User Image">
+                <p>
+                <?php
+                  $datini=UsuarioController::Obten_NomUsuario();
+                  echo $datini;
+
+                  $cargo=UsuarioController::Obten_Cargo();
+                  echo "<small>".$cargo."</small>";               
+                 ?>
+                  
+                  </p>
+                
+              </li>
               
-            </div>
-            <!-- Message End -->
-          </a>
-          <div class="dropdown-divider"></div>
-          
-          
-      </li>
-      <!-- Notifications Dropdown Menu -->
-      
-      <li class="nav-item">
-        <a class="nav-link" data-widget="fullscreen" href="#" role="button">
-          <i class="fas fa-expand-arrows-alt"></i>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button">
-          <i class="fas fa-th-large"></i>
-        </a>
-      </li>
-            <li class="nav-item">
-              <a class="nav-link" data-widget="remove" data-slide="true" href="#" role="button">
-             <i class="fas fa-times"></i>
-                  </a>
-</li>
-    </ul>
-  </nav>
-  <!-- /.navbar -->
+             
+              <!-- Menu Footer-->
+              <li class="user-footer">
+                <div class="pull-left">
+                  <!--<a href="#" class="btn btn-default btn-flat">Profile</a>-->
+                </div>
+                <div class="pull-right">
+                  <a href='index.php?salir=1' class="btn btn-default btn-flat">Salir</a>
+                </div>
+              </li>
+            </ul>
+            
+     </li>     
+         
+          <!-- Control Sidebar Toggle Button -->
 
+        </ul>
+      </div>
+    </nav>  <!-- /.navbar -->
+
+</header>
   <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
@@ -108,30 +118,11 @@
     <!-- Sidebar -->
     <div class="sidebar">
       <!-- Sidebar user panel (optional) -->
-      <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-        <div class="image ">
-           <img src="Views/dist/img/User-Icon.jpg" class="img-circle" alt="User Image">
-
-          </div>
-        <div class="info">
-          <?php
-                  $datini=UsuarioController::Obten_NomUsuario();
-                 echo "<a href='#' class='d-block'>".$datini."</a>";
-
-                  $cargo=UsuarioController::Obten_Cargo();
-                  echo "<span class='brand-text font-weight-light'>".$cargo."</span>";
-
-                  //echo "<small>".$cargo."</small>"; 
-
-                  //$grupo=UsuarioController::Obten_Grupo();
-                  //echo "<small>".$grupo."</small>";               
-                 ?>
-        </div>
-      </div>
+      
      
       <!-- Sidebar Menu -->
       <nav class="mt-2">
-        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="true">
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
           <li class="nav-item">
@@ -162,9 +153,16 @@
                 </a>
               </li>
               <li class="nav-item">
+                <a href="index.php?action=listaciures" class="nav-link">
+                  <i class="nav-icon far fa-circle text-info"></i>
+                  <p>Ciudades con Geocercas</p>
+                </a>
+              </li>
+
+              <li class="nav-item">
                 <a href="index.php?action=listan4&admin=lis" class="nav-link">
                   <i class="nav-icon far fa-circle text-info"></i>
-                  <p>Ciudades de Muestreo</p>
+                  <p>Ciudades</p>
                 </a>
               </li>
               <li class="nav-item">
@@ -182,27 +180,22 @@
               <li class="nav-item">
                 <a href="index.php?action=listamesas&op=mes&admin=lis" class="nav-link">
                   <i class="nav-icon far fa-circle text-info"></i>
-                  <p>Indice</p>
+                  <p>Indices</p>
                 </a>
               </li>
 
-               <li class="nav-item">
-                <a href="index.php?action=listaciures" class="nav-link">
-                  <i class="nav-icon far fa-circle text-info"></i>
-                  <p>Ciudad de Residencia</p>
-                </a>
-              </li>
+               
 
               <li class="nav-item">
                 <a href="index.php?action=listarecolector" class="nav-link">
                   <i class="nav-icon far fa-circle text-info"></i>
-                  <p>Recolector</p>
+                  <p>Recolectores</p>
                 </a>
               </li>
               <li class="nav-item">
                 <a href="index.php?action=listaunegocio" class="nav-link">
                   <i class="nav-icon far fa-circle text-info"></i>
-                  <p>Tienda</p>
+                  <p>Tiendas</p>
                 </a>
               </li>
               <li class="nav-item">
@@ -220,13 +213,13 @@
               <li class="nav-item">
                 <a href="index.php?action=listasustitucion" class="nav-link">
                   <i class="nav-icon far fa-circle text-info"></i>
-                  <p>Sustitución</p>
+                  <p>Listas de Sustitución</p>
                 </a>
               </li>
                <li class="nav-item">
                 <a href="index.php?action=listacausas" class="nav-link">
                   <i class="nav-icon far fa-circle text-info"></i>
-                  <p>Causa de NO Compra</p>
+                  <p>Causas de NO Compra</p>
                 </a>
               </li>
               <li class="nav-item">
@@ -253,7 +246,7 @@
               <li class="nav-item">
                 <a href="index.php?action=listacompra" class="nav-link">
                   <i class="far fa-circle nav-icon text-warning"></i>
-                  <p>Lista de Compra</p>
+                  <p>Listas de Compra</p>
                 </a>
               </li>
               <li class="nav-item">
@@ -263,9 +256,9 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="pages/examples/e-commerce.html" class="nav-link">
+                <a href="index.php?action=direccion" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>E-commerce</p>
+                  <p>Direccion</p>
                 </a>
               </li>
               
@@ -273,20 +266,24 @@
           </li>
           <li class="nav-item">
             <a href="#" class="nav-link">
-              <i class="nav-icon far fa-plus-square"></i>
+              <i class="nav-icon far fa-thumbs-up"></i>
               <p>
-                Reportes
+                Supervisión
                 <i class="fas fa-angle-left right"></i>
               </p>
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>
-                    Login & Register v1
-                    <i class="fas fa-angle-left right"></i>
-                  </p>
+                <a href="index.php?action=suplistainformes" class="nav-link">
+                  <i class="far fa-circle nav-icon text-warning"></i>
+                  <p>Asignación</p>
+                </a>
+              </li>
+
+              <li class="nav-item">
+                <a href="index.php?action=suplistainformes" class="nav-link">
+                  <i class="nav-icon far fa-circle text-info"></i>
+                  <p>Reportes</p>
                 </a>
                 <ul class="nav nav-treeview">
                   <li class="nav-item">
@@ -376,56 +373,29 @@
 <script src="Views/dist/js/adminlte.min.js"></script>
 <!-- AdminLTE App -->
 <script src="Views/dist/js/adminlte.js"></script>
-
+<script src="Views/bower_components/select2/dist/js/select2.full.min.js"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="Views/dist/js/demo.js"></script>
 
+
 <!-- Bootstrap 3.3.7 -->
 <script src="Views/plugins/bootstrap/js/bootstrap.min.js"></script>
-
+<script src="Views/bower_components/select2/dist/js/select2.full.min.js"></script>
 <!-- AdminLTE App -->
 <script src="Views/plugins/inputmask/jquery.inputmask.js"></script>
 
 <script src="Views/dist/js/adminlte.min.js"></script>
 
+<script src="Views/bower_components/moment/min/moment.min.js"></script>
+<script src="Views/bower_components/bootstrap-daterangepicker/daterangepicker.js"></script>
+<!-- bootstrap datepicker -->
+<script src="Views/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
 <script src="Views/dist/js/demo.js"></script>
 <!-- Optionally, you can add Slimscroll and FastClick plugins.
      Both of these plugins are recommended to enhance the
      user experience. -->
-<script>
 
-/*
-  
-  $(function () {
-    //Initialize Select2 Elements
-    $('.select2').select2()
-
-    //Datemask dd/mm/yyyy
-    $('#datemask').inputmask('dd/mm/yyyy', { 'placeholder': 'dd/mm/yyyy' })
-    //Datemask2 mm/dd/yyyy
-    $('#datemask2').inputmask('dd/mm/yyyy', { 'placeholder': 'dd/mm/yyyy' })
-    //Money Euro
-    $('[data-mask]').inputmask()
-      //Date picker
-    //$('#datepicker').datepicker({
-    //  autoclose: true
-   // })
-
-    $('#datepicker2').datepicker({
-      autoclose: true,
-      format: 'dd/mm/yyyy' 
-    })
-
-   $('#datepicker').datepicker({
-       autoclose: true,
-       format: 'dd/mm/yyyy' 
-   });
-
-
-   
-  })*/
-</script>
-
+<script src="Views/plugins/jquery/jquery.min.js"></script>
 <!-- Bootstrap 4 -->
 <script src="Views/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- DataTables  & Plugins -->

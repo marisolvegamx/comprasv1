@@ -104,6 +104,45 @@ where ind_indice=:indice and ind_recolector=:cverecolector and ind_informes_id=:
         
     }
     
+    public  function getInformesDetxid($idlocal,$INDICE,$CVEUSUARIO,$tabla){
+        
+        
+        $sSQL= "SELECT ind_id id, ind_informes_id informesId,
+ind_productos_id productoId,
+ind_tamanio_id tamanioId,
+    ind_empaque empaquesId,
+ ind_codigo codigo, ind_caducidad caducidad
+, ind_tipomuestra tipoMuestra,
+ind_origen origen,
+ind_costo costo, ind_foto_codigo_produccion foto_codigo_produccion ,
+ind_energia energia, ind_foto_num_tienda foto_num_tienda,
+ind_marca_traslape marca_traslape, ind_atributoa atributoa,
+ind_foto_atributoa foto_atributoa, ind_atributob atributob,
+ind_foto_atributob foto_atributob, ind_etiqueta_evaluacion etiqueta_evaluacion,
+ind_segunda_muestra, ind_qr qr,
+ind_condiciones_traslado, ind_comentarios, ind_estatus estatus,
+2  estatusSync, ind_atributoc atributoc,
+ind_foto_atributoc foto_atributoc, ind_azucares azucares,
+ind_tipoanalisis tipoAnalisis,
+       ind_nummuestra numMuestra, ind_comprasid comprasId,
+ind_compraddetid comprasDetId, ind_comprasIdbu comprasIdbu,
+ind_comprasDetIdbu comprasDetIdbu
+FROM $tabla
+where ind_indice=:indice and ind_recolector=:cverecolector and ind_id=:id";
+        
+        $stmt=DatosInformeDetalle::getInstance()->prepare($sSQL);
+        $stmt->bindParam(":indice", $INDICE, PDO::PARAM_STR);
+        $stmt->bindParam(":id", $idlocal, PDO::PARAM_INT);
+        
+        $stmt->bindParam(":cverecolector",  $CVEUSUARIO, PDO::PARAM_INT);
+        
+        $stmt-> execute();
+     //   $stmt->debugDumpParams();
+        return $stmt->fetch(PDO::FETCH_ASSOC); //para que solo devuelva los nombres de columnas
+        
+        
+    }
+    
     public static function insertar($datosModel,$recolector,$indice,$tabla,$pdo){
         try{
             

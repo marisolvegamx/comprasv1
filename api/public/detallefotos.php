@@ -9,12 +9,16 @@ $cliente=filter_input(INPUT_POST, "cli",FILTER_SANITIZE_NUMBER_INT);
 //$cliente=filter_input(INPUT_POST, "cli",FILTER_SANITIZE_NUMBER_INT);
 buscarFotosInf($inf, $indice, $recolector, $cliente);
 
-
+/*
+ * SELECT imd_idlocal, imd_descripcion, imd_ruta, imd_estatus, imd_indice, imd_usuario, imd_created_at, imd_updated_at
+FROM imagen_detalle
+where imd_idlocal =227 and imd_indice ='5.2022' and imd_usuario =4;
+ */
 function buscarFotosInf($inf,$indice,$recolector,$cliente){
 $sql = "select vi_idlocal, vi_fotofachada, inf_ticket_compra,inf_condiciones_traslado ,vi_indice, vi_cverecolector
 from informes i 
 inner join visitas v on v.vi_idlocal =i.inf_visitasIdlocal and v.vi_indice =i.inf_indice and v.vi_cverecolector =i.inf_usuario 
-where v.vi_idlocal =$inf and v.vi_indice ='$indice' and vi_cverecolector=$recolector limit 0,1;";
+where inf_id =$inf and v.vi_indice ='$indice' and vi_cverecolector=$recolector limit 0,1;";
 
 // echo $sql;
 $rs1 = Conexion::ejecutarQuerysp ($sql );

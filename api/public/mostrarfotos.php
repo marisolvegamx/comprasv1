@@ -82,7 +82,7 @@ inner join visitas v on v.vi_idlocal =i.inf_visitasIdlocal and v.vi_indice =i.in
 inner join ca_recolectores cr on cr.rec_id =inf_usuario 
 inner join ca_nivel5 cn  on cn.n5_id =inf_plantasid 
 inner join ca_nivel1 cn2 on cn2.n1_id =n5_idn1
-left join ca_unegocios cu  on cu.une_id =vi_tiendaid;";
+left join ca_unegocios cu  on cu.une_id =vi_tiendaid order by rec_nombre,vi_indice;";
 				// echo $sql;
 				$rs1 = Conexion::ejecutarQuerysp ($sql );
                         

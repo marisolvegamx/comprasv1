@@ -72,10 +72,9 @@ where inf_indice=:indice and inf_usuario=:cverecolector ";
         
     }
     
+    
     public  function insertar($datosModel,$cveusuario,$indice,$tabla,$pdo){
-        try{
-         
-            
+        try{      
             $sSQL= "INSERT INTO $tabla
 ( inf_id,inf_consecutivo, inf_visitasIdlocal, inf_segunda_muestra, inf_tercera_muestra,
 inf_indice, inf_usuario,
@@ -89,7 +88,7 @@ VALUES(:inf_id,:inf_consecutivo, :inf_visitasIdlocal, :inf_segunda_muestra, :inf
             
             $stmt=$pdo->prepare($sSQL);
             $stmt->bindParam(":inf_id", $datosModel[ContratoInformes::ID],PDO::PARAM_INT);
-             $stmt->bindParam(":inf_consecutivo", $datosModel[ContratoInformes::CONSECUTIVO],PDO::PARAM_INT);
+            $stmt->bindParam(":inf_consecutivo", $datosModel[ContratoInformes::CONSECUTIVO],PDO::PARAM_INT);
             $stmt->bindParam(":inf_visitasIdlocal", $datosModel[ContratoInformes::VISITASID], PDO::PARAM_INT);
             $stmt->bindParam(":inf_segunda_muestra", $datosModel[ContratoInformes::SEGUNDAMUESTRA], PDO::PARAM_INT);
             $stmt->bindParam(":inf_tercera_muestra", $datosModel[ContratoInformes::TERCERAMUESTRA], PDO::PARAM_INT);
@@ -283,6 +282,7 @@ SELECT lid_idlistacompra as listaId, lid_idprodcompra as id ,
             lid_fechapermitida , lid_fecharestringida,
             cp.pro_categoria as categoriaid, ccp.cad_descripcionesp as categoria,
             pl.lis_idplanta as planta, pro_orden as lid_orden,lid_backup,
+            lis_idcliente,
             cc.cad_otro as ordtam,
             cem.cad_otro as ordemp,
             cta.cad_otro as ordtipa,
@@ -323,7 +323,7 @@ SELECT lid_idlistacompra as listaId, lid_idprodcompra as id ,
              ctp.cad_descripcionesp  as nombreTipoMuestra,
             lid_fechapermitida , lid_fecharestringida,
             cp.pro_categoria as categoriaid, ccp.cad_descripcionesp as categoria,
-  pl.lis_idplanta as planta, lid_orden,lid_backup,
+  pl.lis_idplanta as planta, lid_orden,lid_backup,lis_idcliente,
  cc.cad_otro as ordtam,
             cem.cad_otro as ordemp,
             cta.cad_otro as ordtipa,
@@ -399,7 +399,13 @@ order by ind_caducidad desc";
             
             $stmt = null;
             //procedimiento de insercion de  la cuenta
-            $sSQL = "INSERT INTO ca_unegocios(une_descripcion, une_direccion, une_dir_referencia, une_cla_pais, une_cla_ciudad, une_estatus, une_coordenadasxy, une_puntocardinal, une_tipotienda, une_cadenacomercial) VALUES (:nomuneg, :dirtien, :refer, :paisuneg, :ciudaduneg, :estatusuneg, :cxy, :puncaruneg,:tipouneg,:cadcomuneg)";
+            $sSQL = "INSERT INTO ca_unegocios(une_descripcion, une_direccion,
+ une_dir_referencia, une_cla_pais, une_cla_ciudad, une_estatus, une_coordenadasxy,
+ une_puntocardinal, une_tipotienda, une_cadenacomercial,
+une_fotofachada, une_facrecolector, une_facindice) 
+VALUES (:nomuneg, :dirtien, :refer, :paisuneg, :ciudaduneg, :estatusuneg, :cxy,
+ :puncaruneg,:tipouneg,:cadcomuneg,
+:une_fotofachada, :une_facrecolector, :une_facindice)";
             $stmt = $pdo->prepare($sSQL);
             
             $stmt->bindParam(":nomuneg", $datosModel["nomuneg"], PDO::PARAM_STR);
@@ -412,11 +418,14 @@ order by ind_caducidad desc";
             $stmt->bindParam(":cadcomuneg", $datosModel["cadcomuneg"], PDO::PARAM_INT);
             $stmt->bindParam(":estatusuneg", $datosModel["estatusuneg"], PDO::PARAM_INT);
             $stmt->bindParam(":tipouneg", $datosModel["tipouneg"], PDO::PARAM_INT);
+            $stmt->bindParam(":une_fotofachada", $datosModel["une_fotofachada"], PDO::PARAM_INT);
+            $stmt->bindParam(":une_facrecolector", $datosModel["une_facrecolector"], PDO::PARAM_INT);
+            $stmt->bindParam(":une_facindice", $datosModel["une_facindice"], PDO::PARAM_STR);
             
             $res = $stmt->execute();
            
             
-           //   echo $stmt->debugDumpParams();
+            //  echo $stmt->debugDumpParams();
             if($res)
             { $sql2="select max(une_id) from $tabla";
               $stmt=$pdo->prepare($sql2);
@@ -660,6 +669,62 @@ where ca_catalogosdetalle.cad_idcatalogo=:id");
         return $stmt->fetchAll(PDO::FETCH_ASSOC); //para que solo devuelva los nombres de columnas
     }
     
+    public  function getInformexid($INDICE,$CVEUSUARIO,$id,$tabla){
+        
+        
+        $sSQL= "SELECT inf_visitasIdlocal visitasId, inf_id id,
+ inf_consecutivo consecutivo, inf_segunda_muestra segundaMuestra,
+inf_tercera_muestra terceraMuestra,   inf_comentarios comentarios,
+inf_estatus estatus,
+ inf_primera_muestra primeraMuestra, inf_plantasid plantasId,
+ inf_ticket_compra ticket_compra, inf_condiciones_traslado condiciones_traslado,
+inf_causa_nocompra causa_nocompra, 
+inf_primera_muestra sinproducto
+FROM $tabla
+where inf_indice=:indice and inf_usuario=:cverecolector and inf_id=:id ";
+        
+        $stmt=DatosInforme::getInstance()->prepare($sSQL);
+        $stmt->bindParam(":indice", $INDICE, PDO::PARAM_STR);
+        $stmt->bindParam(":id",  $id, PDO::PARAM_INT);
+        
+        $stmt->bindParam(":cverecolector",  $CVEUSUARIO, PDO::PARAM_INT);
+        
+        $stmt-> execute();
+        //  $stmt->debugDumpParams();
+        return $stmt->fetch(PDO::FETCH_ASSOC); //para que solo devuelva los nombres de columnas
+        
+        
+    }
+    
+    public function getCiudadesAsigxRec($idrecolector,$indice,$tabla){
+        $econexion=self::getInstance();
+        //me faltan las siglas
+        $sSQL="SELECT lis_idlistacompra as id,
+            lis_idplanta as plantasId,
+            cc.n5_nombre  as plantaNombre,
+            
+            lis_idcliente as clientesId,
+            cn.n1_nombre  as clienteNombre,
+            lis_idindice as indice,
+            cn2.n4_id as ciudadesId,
+            cn2.n4_nombre as ciudadNombre,
+            lis_idusuario as createdBy,
+            lis_nota
+            FROM $tabla
+             inner join ca_nivel1 cn on lis_idcliente=cn.n1_id
+             inner join ca_nivel5 cc on lis_idplanta=cc.n5_id
+             inner join ca_nivel4 cn2 on cn2.n4_id =cc.n5_idn4
+            where 
+             lis_idrecolector =:recolector
+             and lis_idindice=:indice group by cn2.n4_nombre ";
+        $stmt = $econexion-> prepare($sSQL);
+        $stmt->bindParam(":recolector", $idrecolector,PDO::PARAM_INT);
+     //   $stmt->bindParam(":fechareq", $fecha,PDO::PARAM_STR);
+        $stmt->bindParam(":indice", $indice,PDO::PARAM_STR);
+        $stmt-> execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+    }
     
     
 }

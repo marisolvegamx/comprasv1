@@ -49,9 +49,11 @@ imd_indice=:imd_indice and imd_usuario=:imd_recolector;";
             
             $stmt-> execute();
             $res=$stmt->fetch();
+           //die();
+          
             if($res!=null&&sizeof($res)>0){
                 //ya existe actualizo 
-                DatosImagenDetalle::insertar($datosModel, $cveusuario, $indice, $tabla, $pdo);
+                DatosImagenDetalle::actualizar($datosModel, $cveusuario, $indice, $tabla, $pdo);
             }else{
                 DatosImagenDetalle::insertar($datosModel, $cveusuario, $indice, $tabla, $pdo);
             }
@@ -82,8 +84,8 @@ VALUES(:imd_idlocal, :imd_descripcion, :imd_ruta, :imd_estatus, :imd_indice, :im
             
             if(!$stmt-> execute())
             {
-                
-                throw new Exception($stmt->errorCode()."-".$stmt->errorInfo()[2]);
+               // $stmt->debugDumpParams();
+                throw new Exception("DatosImagenDetalle.insertar".$stmt->errorCode()."-".$stmt->errorInfo()[2]);
             }
           
         }catch(PDOException $ex){

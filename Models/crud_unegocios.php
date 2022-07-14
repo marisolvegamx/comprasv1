@@ -5,6 +5,18 @@ require_once "Models/conexion.php";
 class DatosUnegocio extends Conexion {
 #vistaservicios
 
+public function consultaUnegocioModel($iduneg, $tabla){
+        $stmt = Conexion::conectar()-> prepare("SELECT `une_descripcion`, `une_direccion`, `une_dir_referencia`, `une_cla_pais`, `une_cla_ciudad`, `une_estatus`, `une_coordenadasxy`, `une_puntocardinal`, `une_tipotienda`, `une_cadenacomercial` FROM `ca_unegocios` WHERE `une_id`=:uneg;");
+        
+        $stmt-> bindParam(":uneg", $iduneg, PDO::PARAM_INT);
+        $stmt->execute();
+    
+        
+        return $stmt->fetchAll();
+    }
+    
+
+
 	public function vistaUnegocioModel( $tabla){
 		$stmt = Conexion::conectar()-> prepare("SELECT une_id, n3_nombre, n4_nombre, une_descripcion FROM `ca_unegocios` left JOIN ca_nivel3 ON `une_cla_pais`= N3_ID LEFT JOIN ca_nivel4 ON une_cla_ciudad= N4_ID ORDER BY une_id DESC;");
 		
@@ -178,6 +190,35 @@ LIKE :opbusqueda ";
     }
 
    
+   public function actualizarSupUnegocio($datosModel, $tabla) {
+
+        try {
+          
+            $sSQL = "UPDATE `ca_unegocios` SET`une_descripcion`=:nomtienc,`une_direccion`=:dirtien, `une_dir_referencia`=:compdir, `une_coordenadasxy`=:cxy, `une_puntocardinal`=:zona,`une_tipotienda`=:tipotien, `une_cadenacomercial`=:cadcom WHERE  `une_id`=:ntien";
+           // var_dump($datosModel);
+           //  echo $sSQL;   
+            $stmt = Conexion::conectar()->prepare($sSQL);
+
+            $stmt->bindParam(":nomtienc", $datosModel["nomtienc"]);
+            $stmt->bindParam(":dirtien", $datosModel["dirtien"]);
+            $stmt->bindParam(":compdir", $datosModel["compdir"]);
+            $stmt->bindParam(":cxy", $datosModel["cxy"]);
+            $stmt->bindParam(":zona", $datosModel["zona"]);
+            $stmt->bindParam(":tipotien", $datosModel["tipotien"]);
+            $stmt->bindParam(":cadcom", $datosModel["cadcom"]);
+            $stmt->bindParam(":ntien", $datosModel["ntien"]);
+
+            $stmt->execute();
+
+            return "success";
+        } catch (Exception $ex) {
+
+            return "error";
+        }
+    }
+
+
+
 
     function unegociosxNivel($fil_ptoventa, $fil_idpepsi, $filx, $fily, $ini, $fin) {
 

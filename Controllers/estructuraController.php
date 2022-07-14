@@ -316,7 +316,7 @@ class EstructuraController {
 						break;
 					case "5":
 						
-						$resultado=Datosncin::add($clanivel4,$clanivel3,$clanivel2,$clanivel1,$nombre,"ca_nivel5");
+						$resultado=Datosncin::add($clanivel4,$clanivel3,$clanivel2,$clanivel1,$nombre,$clasup,"ca_nivel5");
 						$this->regresar="index.php?action=listan5&admin=lis&idncu=".$referencia;
 						break;
 					case "6":
@@ -377,8 +377,7 @@ class EstructuraController {
 							$this->regresar="index.php?action=listan4&admin=lis&idnt=".$referencia;
 							break;
 						case "5":
-						   
-							$resultado=Datosncin::update($clanivel4,$clanivel3,$clanivel2,$clanivel1,$nombre,$id ,"ca_nivel5");
+						   $resultado=Datosncin::update($clanivel4,$clanivel3,$clanivel2,$clanivel1,$clasup, $nombre,$id ,"ca_nivel5");
 							$this->regresar="index.php?action=listan5&admin=lis&idncu=".$referencia;
 							break;
 						case "6":

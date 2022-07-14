@@ -2,8 +2,8 @@
 session_start();
 //echo $_SESSION['Usuario'];
 
-error_reporting(E_ERROR|E_NOTICE|E_WARNING);
-ini_set("display_errors", 1); 
+//error_reporting(E_ERROR|E_NOTICE|E_WARNING);
+//ini_set("display_errors", 1); 
 
 
 require_once "Controllers/usuarioController.php";
@@ -31,10 +31,11 @@ require_once "Controllers/LisComDetController.php";
 require_once "Controllers/sustitucionController.php";
 require_once "Controllers/ciuresController.php";
 require_once "Controllers/causaController.php";
-//require_once "Controllers/causaModel.php";
-//require_once "Controllers/productoController.php";
+require_once "Controllers/SupInformesController.php";
+require_once "Models/crud_sup_informes.php";
+require_once "Models/crud_sup_visitas.php";
 
- //require_once "Controllers/indpostmix/estadisticasController.php";
+ require_once "Controllers/SupervisainformeController.php";
  //require_once "Controllers/indpostmix/graficaIndicadorController.php";
  //require_once "Controllers/indpostmix/resumenResultadosController.php";
  //require_once "Controllers/indpostmix/resumenResxRepController.php";
@@ -74,14 +75,14 @@ require_once "Models/crud_sustitucion.php";
 require_once "Models/crud_listacompradetalle.php";
 require_once "Models/crud_ciudadresidencia.php";
 require_once "Models/crud_causas.php";
-//require_once "Models/crud_generales.php";
+require_once "Models/crud_Supvalidacion.php";
 //require_once "Models/crud_productos.php";
 //require_once "Models/crud_muestras.php";
 
 //require_once "Models/crud_solicitudes.php";
 //require_once "Models/crud_reporte.php";
 require_once "Models/crud_catalogos.php";
-require_once "Models/crud_catalogoDetalle_mio.php";
+require_once "Models/crud_catalogoDetalle.php";
 //require_once "Models/crud_inspectores.php";
 require_once "Models/crud_mesasignacion.php";
 

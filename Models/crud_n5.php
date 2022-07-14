@@ -43,7 +43,7 @@ class Datosncin extends Conexion{
 	
 	public function getNombre($datosModel,$tabla){
 	    
-	    $stmt = Conexion::conectar()-> prepare("SELECT n5_id, n5_nombre,n5_idn4,`n5_idn1`,`n5_idn2`,`n5_idn3`  FROM $tabla WHERE n5_id=:idn");
+	    $stmt = Conexion::conectar()-> prepare("SELECT n5_id, n5_nombre,n5_idn4,`n5_idn1`,`n5_idn2`,`n5_idn3`, n5_supervisor  FROM $tabla WHERE n5_id=:idn");
 	    
 	    $stmt-> bindParam(":idn", $datosModel, PDO::PARAM_INT);
 	    
@@ -120,7 +120,7 @@ class Datosncin extends Conexion{
         }
 
 
-        function add($n5_idn4,$n5_idn3,$n5_idn2,$n5_idn1,$n5_nombre,$tabla){
+        function add($n5_idn4,$n5_idn3,$n5_idn2,$n5_idn1,$n5_nombre,$n5_sup, $tabla){
         	$stmt = Conexion::conectar()-> prepare("SELECT max(n5_id) FROM $tabla ");
         		$stmt-> execute();
         	
@@ -132,18 +132,19 @@ class Datosncin extends Conexion{
         	else
         		$n5_id=1;
         		
-        	$query = "INSERT INTO $tabla  (n5_idn4, n5_idn3, n5_idn2, n5_idn1, n5_id, n5_nombre)
+        	$query = "INSERT INTO $tabla  (n5_idn4, n5_idn3, n5_idn2, n5_idn1, n5_id, n5_nombre, n5_supervisor)
 		VALUES (
 			:n5_idn4,
             :n5_idn3,
             :n5_idn2,
             :n5_idn1,
 			:n5_id,
-			:n5_nombre)";
+			:n5_nombre,
+            :n5_sup)";
         	$q = Conexion::conectar()->prepare($query);
         	
         	
-        	if ($q->execute(array(':n5_idn4' => $n5_idn4,':n5_idn3' => $n5_idn3,':n5_idn2' => $n5_idn2,':n5_idn1' => $n5_idn1, ':n5_id' => $n5_id, ':n5_nombre' => $n5_nombre))){
+        	if ($q->execute(array(':n5_idn4' => $n5_idn4,':n5_idn3' => $n5_idn3,':n5_idn2' => $n5_idn2,':n5_idn1' => $n5_idn1, ':n5_id' => $n5_id, ':n5_nombre' => $n5_nombre, ':n5_sup' => $n5_sup))){
         		return (Conexion::conectar()->lastInsertId());
         	}
         	else{
@@ -157,13 +158,14 @@ class Datosncin extends Conexion{
          * Update a row in ca_nivel5
          * @param array data
          */
-        function update($n5_idn4,$n5_idn3,$n5_idn2,$n5_idn1,$n5_nombre,$n5_id,$tabla){
-        	
+        function update($n5_idn4,$n5_idn3,$n5_idn2,$n5_idn1,$n5_sup, $n5_nombre,$n5_id,$tabla){
+        	echo $n5_sup;
         	$query = "UPDATE $tabla SET
 		`n5_idn4` = :n5_idn4,
         `n5_idn3` = :n5_idn3,
         `n5_idn2` = :n5_idn2,
         `n5_idn1` = :n5_idn1,
+        `n5_supervisor` = :n5_sup,
 		`n5_nombre` = :n5_nombre
 	WHERE n5_id = :n5_id ";
         	
@@ -172,7 +174,7 @@ class Datosncin extends Conexion{
         	
         	if ($q->execute(array(':n5_idn4' => $n5_idn4,
         	    ':n5_idn3' => $n5_idn3, ':n5_idn2' => $n5_idn2,':n5_idn1' => $n5_idn1,
-        	    ':n5_nombre' => $n5_nombre, ':n5_id' => $n5_id ))){
+        	    ':n5_sup' => $n5_sup, ':n5_nombre' => $n5_nombre, ':n5_id' => $n5_id ))){
         	
         	    return (1);
         	}
@@ -208,7 +210,7 @@ class Datosncin extends Conexion{
 
 
 
-            $sql = "SELECT n5_id, n5_nombre FROM $tabla where n5_idn1=:id ";
+            $sql = "SELECT n5_id, n5_nombre FROM $tabla where n5_idn1=:id order by n5_nombre";
 
 
 
@@ -239,7 +241,19 @@ class Datosncin extends Conexion{
             
         }
 
+public function getDatosPlanta($datosModel,$tabla){
+        
+        $stmt = Conexion::conectar()-> prepare("select n5_nombre, nomsup, n1_nombre from ( SELECT n5_id, n5_nombre,n5_idn4,`n5_idn1`,`n5_idn2`,`n5_idn3`, n1_nombre, n5_supervisor FROM $tabla inner join ca_nivel1 on n5_idn1=n1_id WHERE n5_id=:idn) as A inner join (SELECT cad_idopcion as idsup, cad_descripcionesp as nomsup FROM `ca_catalogosdetalle` WHERE cad_idcatalogo=18) as B ON A.n5_supervisor=B.idsup;");
+        
+        $stmt-> bindParam(":idn", $datosModel, PDO::PARAM_INT);
+        
+        $stmt-> execute();
+        
+        return $stmt->fetch();
 
+        
+    }
+    
 
 }
 

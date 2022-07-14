@@ -58,7 +58,7 @@ where pe_indice=:indice and pe_recolector=:cverecolector and pe_visitasId=:visit
             
             $sSQL= "SELECT * FROM  $tabla
  where pe_idlocal=:pe_idlocal and 
-pe_recolector=:pe_recolector, pe_indice=:pe_indice;";
+pe_recolector=:pe_recolector and pe_indice=:pe_indice;";
             $stmt=$pdo->prepare($sSQL);
             $stmt->bindParam(":pe_idlocal", $datosModel[ContratoProductoEx::ID],PDO::PARAM_INT);
             $stmt->bindParam(":pe_recolector", $usuario, PDO::PARAM_STR);
@@ -66,16 +66,18 @@ pe_recolector=:pe_recolector, pe_indice=:pe_indice;";
             //   $stmt->bindParam(":imd_created_at", $datosModel[ContratoImagenes::], PDO::PARAM_STR);
             // $stmt->bindParam(":imd_updated_at", $datosModel[ContratoImagenes::imd_updated_at"], PDO::PARAM_STR);
             
-            $stmt-> execute();
+            $stmt->execute();
+           // $stmt->debugDumpParams();
             $res=$stmt->fetch();
+            //var_dump($res);
             if($res!=null&&sizeof($res)>0){
                 //ya existe actualizo
-                DatosImagenDetalle::insertar($datosModel, $cveusuario, $indice, $tabla, $pdo);
+                DatosProductoExhibido::actualizar($datosModel, $usuario, $indice, $tabla, $pdo);
             }else{
-                DatosImagenDetalle::insertar($datosModel, $cveusuario, $indice, $tabla, $pdo);
+                DatosProductoExhibido::insertar($datosModel, $usuario, $indice,$tabla, $pdo);
             }
         }catch(PDOException $ex){
-            Utilerias::guardarError("DatosInformeDetalle.insertar "+$ex->getMessage());
+            Utilerias::guardarError("DatosProdEx.insertar "+$ex->getMessage());
             throw new Exception("Hubo un error al insertar la imagen");
         }
         
@@ -112,9 +114,9 @@ VALUES(:pe_idlocal, :pe_visitasId, :pe_imagenId, :pe_clienteId,:pe_recolector,:p
         try{
             
             $sSQL= " UPDATE $tabla
-SET  pe_visitasId=:pe_visitasId, pe_imagenId=:pe_imagenId, pe_clienteId=:pe_clienteId,
+SET  pe_visitasId=:pe_visitasId, pe_imagenId=:pe_imagenId, pe_clienteId=:pe_clienteId
 where pe_idlocal=:pe_idlocal and 
-pe_recolector=:pe_recolector, pe_indice=:pe_indice; ";
+pe_recolector=:pe_recolector and pe_indice=:pe_indice; ";
             
             $stmt=$pdo->prepare($sSQL);
             $stmt->bindParam(":pe_idlocal", $datosModel[ContratoProductoEx::ID],PDO::PARAM_INT);

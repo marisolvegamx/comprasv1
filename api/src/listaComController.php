@@ -55,7 +55,8 @@ class listaComController{
         
        
         $rs = $this->datosInf->getNvaLisComprxRecol($recolector, $fecha,$indice, "pr_listacompra");
-           
+          // var_dump($rs);
+         //  die();
         foreach ($rs as $row) {
         	$nuevorow=$row;
             //busco las siglas de la planta
@@ -72,7 +73,7 @@ class listaComController{
         	//var_dump($row2);
         	$listaperm=$listarestrin=array();
         	//armo un array con los no permitidos;  lid_fechapermitida , lid_fecharestringida,
-	//echo "<br>mmmmmm". $row2["productoNombre"];
+           // echo "<br>mmmmmm". $row2["productoNombre"];
         	if(strlen($row2["lid_fecharestringida"])>1)
         	{$listarestrin=explode(",", $row2["lid_fecharestringida"]);
         	//var_dump($listarestrin);
@@ -80,7 +81,7 @@ class listaComController{
         	$listarestrin=$this->dejarSoloFecha($listarestrin);
         	}
         	//echo "------------------<br>";
-        //	var_dump($listarestrin);
+        	//var_dump($listarestrin);
         	if(strlen($row2["lid_fechapermitida"])>1){
             	$listaperm=explode(",", $row2["lid_fechapermitida"]);
            // 	echo "zzzzzzzzzzzzzzzzzzz<br>";
@@ -88,9 +89,10 @@ class listaComController{
             	if(sizeof($listaperm)>0)
             	$listaperm=$this->dejarSoloFecha($listaperm);
         	}
+        	$cliente=$row2["lis_idcliente"];
         	
             //busco los codigos no perm
-            $codigos=$this->getCodigosNoPer($row2,$listaperm,$listarestrin,$indice);
+            $codigos=$this->getCodigosNoPer($row2,$listaperm,$listarestrin,$indice,$cliente);
             //var_dump($codigos);
          //   echo "<br>".$row2["listaId"]."--".$row2["id"]."------------------".$codigos;
            // die();
@@ -129,22 +131,25 @@ class listaComController{
         return substr($siglas,0,strlen($siglas)-1);
     }
     
-    public function getCodigosNoPer($datos,$listapermitidos,$listarestrin,$indice){
+    public function getCodigosNoPer($datos,$listapermitidos,$listarestrin,$indice,$cliente){
+        
         $this->calcularFechasNoPer($indice);
-
-        $resp=$this->datosInf->getCodigosNoPer($this->fechaini,$this->fechafin,$datos["productosId"],$datos["tamanioId"],$datos["empaquesId"],$datos["analisisId"],$datos["planta"],"informe_detalle");
-        $codigos="";
-       // echo "<br>";
-       // var_dump($resp);
-       // echo"<br> calculando codigos";
-        //primero agrego los restringidos
         $listanoper=array();
-        foreach($resp as $row){
-            $listanoper[]=$row["fec_caducidad"];
+        if($cliente==4)
+        {  $resp=$this->datosInf->getCodigosNoPer($this->fechaini,$this->fechafin,$datos["productosId"],$datos["tamanioId"],$datos["empaquesId"],$datos["analisisId"],$datos["planta"],"informe_detalle");
+            $codigos="";
+           // echo "<br>";
+           // var_dump($resp);
+           // echo"<br> calculando codigos";
+            //primero agrego los restringidos
+           
+            foreach($resp as $row){
+                $listanoper[]=$row["fec_caducidad"];
+            }
+            $todojunto=$listanoper;
         }
-        $todojunto=$listanoper;
       //  var_dump($listarestrin);
-       // var_dump($listapermitidos);
+       //    var_dump($todojunto);
         if(sizeof($listarestrin)>0){
             if(sizeof($listanoper)<1){
                 $todojunto=$listarestrin;
@@ -152,7 +157,7 @@ class listaComController{
             $todojunto=$this->insertarRestringidos($listarestrin, $listanoper);
         }
        // echo "<br>**************restr";
-        //var_dump($todojunto);
+     //   var_dump($todojunto);
         //quito los permitidos
         if(sizeof($listapermitidos)>0)
             $todojunto=$this->eliminarPermitidos($listapermitidos, $todojunto);
@@ -166,17 +171,17 @@ class listaComController{
                 $ntodojunto[]=$fecha->format("y-m-d");
                // $codigos.=$row.";";
             }
-         //   var_dump($ntodojunto);
+           // var_dump($ntodojunto);
            // echo "<br>+++++++++++++restr+++++++++++";
-            if($ntodojunto)
-        {rsort($ntodojunto, SORT_STRING);
-       // var_dump($ntodojunto);
-         foreach($ntodojunto as $row){
-             $fecha = DateTime::createFromFormat('y-m-d', $row);
-             
-            $codigos.=$fecha->format("d-m-y").";";
-        }
-    }
+       if($ntodojunto)
+            {rsort($ntodojunto, SORT_STRING);
+           // var_dump($ntodojunto);
+             foreach($ntodojunto as $row){
+                 $fecha = DateTime::createFromFormat('y-m-d', $row);
+                 
+                $codigos.=$fecha->format("d-m-y").";";
+            }
+             }
       //  die();
         if(strlen($codigos)>0)
         return substr($codigos,0,strlen($codigos)-1);
@@ -209,14 +214,25 @@ class listaComController{
     public function comparar($codnoper,$restringido){
         $ban=0;
         $todojunto=array();
+      
         for($i=0;$i<sizeof($codnoper);$i++){
-            $fechares=strtotime($restringido);
-            $fechanoper = strtotime($codnoper[$i]);
+           
+            $fechares=DateTime::createFromFormat('d-m-y',$restringido);
+            $fechanoper = DateTime::createFromFormat('d-m-y',$codnoper[$i]);
+         //   echo "<br>".$restringido.">".$codnoper[$i];
+            if($ban==1)//ya lo encontré acabo de pasar los demas
+            {
+                $todojunto[]=$codnoper[$i];
+                $ban=1;
+                //   echo "aqui";
+                continue;
+            }
+             if($fechares > $fechanoper)
             
-            if($fechares < $fechanoper)
             {   $todojunto[]=$restringido;
-               $todojunto[]=$codnoper[$i];
+            $todojunto[]=$codnoper[$i];
                $ban=1;
+            //   echo "aqui";
                continue;
                // $nuevoarray=array_merge($todojunto,array_slice($codnoper, $i));
                 //return $nuevoarray;
@@ -225,12 +241,15 @@ class listaComController{
             {  
                 $todojunto[]=$codnoper[$i];
             $ban=1;
+        //   echo "aca";
             continue;
             // $nuevoarray=array_merge($todojunto,array_slice($codnoper, $i));
             //return $nuevoarray;
             }
             
             $todojunto[]=$codnoper[$i];
+         //   echo "<br>++++++";
+         //  var_dump($todojunto);
         }
         //nunca fue mayor queda al final
         if($ban==0)
@@ -254,7 +273,7 @@ class listaComController{
         if($pos>=0)
         {  
             //echo "<br>esta en ".$pos;
-        array_splice($codnoper, $pos);
+        array_splice($codnoper, $pos,1);
        // var_dump($codnoper);
         return $codnoper;
         }
@@ -297,9 +316,9 @@ class listaComController{
         	    if(sizeof($listaperm)>0)
         	    $listaperm=$this->dejarSoloFecha($listaperm);
         	}
-        	
+        	$cliente=$row2["lis_idcliente"];
         	//busco los codigos no perm
-        	$codigos=$this->getCodigosNoPer($row2,$listaperm,$listarestrin,$indice);
+        	$codigos=$this->getCodigosNoPer($row2,$listaperm,$listarestrin,$indice,$cliente);
          //   echo "<br>ooooooooooooooooooooooo";
             //busco los codigos no perm
            // $codigos=$this->getCodigosNoPer($row2);

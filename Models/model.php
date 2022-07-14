@@ -53,10 +53,11 @@ class EnlacesPaginas{
 		    
 			$enlacesModel == "suplistainformes" ||
 			$enlacesModel == "supinforme" ||
-
+			$enlacesModel == "suplistatiendas" ||
+			
 			#AQUI INICIA SECCION REPORTE	
 			$enlacesModel == "editainforme" ||
-			//$enlacesModel == "runegociodetalle" ||
+			
 			//$enlacesModel == "runegociocomp" ||
 			//$enlacesModel == "editarep" ||
 

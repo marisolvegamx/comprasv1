@@ -25,7 +25,7 @@
 }
  </style> 
 
-     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCvmd3x0BmhG5yEhZqv0iJcjnESOT-lNVc&libraries=drawing&solution_channel=GMP_QB_locatorplus_v4_cABD" async defer></script>
+     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB4iIUMXD0GrrxFC2BbNRhXcVZtfLDrhEQ&libraries=drawing&solution_channel=GMP_QB_locatorplus_v4_cABD" async defer></script>
  
  <script type="text/javascript">
  var colors = {N:'#1E90FF',S: '#FF1493',E: '#32CD32',O: '#FF8C00',C: '#4B0082'};

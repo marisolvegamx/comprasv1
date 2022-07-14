@@ -7,7 +7,7 @@ require '../../Models/crud_informes.php';
 require '../../Models/crud_informesDetalle.php';
 require '../../Models/crud_productoExhibido.php';
 require '../../Models/crud_imagenesDetalle.php';
-//require '../../Models/crud_unegocios.php';
+require '../../Models/crud_uneimagenes.php';
 require 'contratoapp.php';
 //clase para manejar el json e insertarlo
 class InformePostController{
@@ -25,6 +25,7 @@ class InformePostController{
         $informe_det=$campos["informeCompraDetalles"]; //este es un array
         $fotos_ex=$campos["productosEx"]; //es array
         $imagenes_det=$campos["imagenDetalles"]; //es array
+      //  $uneimagenes=$campos["uneimagenes"]; //es array
         $cverecolector=$campos[ContratoVisitas::CVEUSUARIO];
         $indice=$campos[ContratoVisitas::INDICE];
       
@@ -32,51 +33,120 @@ class InformePostController{
        
         $pdo->beginTransaction();
         if(isset($visita))
-            DatosVisita::insertar($visita,"visitas",$pdo);
+        {   
+            //reviso si ya existe
+            $dv=new DatosVisita();
+            $result=$dv->getVisita( $visita[ContratoVisitas::ID],  $visita[ContratoVisitas::INDICE], $cverecolector, "visitas");
+            if($result==null||sizeof($result)==0)
+              DatosVisita::insertar($visita,"visitas",$pdo);
+        }
        
-       foreach ($fotos_ex as $lisfotos_ex)
-           DatosProductoExhibido::insertar($lisfotos_ex,$cverecolector,$indice,"producto_exhibido",$pdo);
+        if(isset($fotos_ex))
+           foreach ($fotos_ex as $lisfotos_ex)
+           {   
+               
+               DatosProductoExhibido::insertaru($lisfotos_ex,$cverecolector,$indice,"producto_exhibido",$pdo);
+               
+           }
         
-      //  echo "insertar imagenes";
-       
+      // echo "insertar imagenes";
+       //die();
+            if(isset($imagenes_det))
         foreach ($imagenes_det as $imagen)
-            DatosImagenDetalle::insertar($imagen,$cverecolector,$indice,"imagen_detalle",$pdo);
+        {  DatosImagenDetalle::insertaru($imagen,$cverecolector,$indice,"imagen_detalle",$pdo);
+       
+            }
         $datosInfdet=new DatosInformeDetalle();
         
-      
+        if(isset($informe_det))
         foreach ($informe_det as $detalle)
-            $datosInfdet->insertar($detalle,$cverecolector,$indice,"informe_detalle",$pdo);
-        
+        { 
+            $datosInfdet2=new DatosInformeDetalle();
+           $resp= $datosInfdet2->getInformesDetxid($detalle[ContratoInformesDet::ID],$indice,$cverecolector,"informe_detalle");
+         //  var_dump($resp);
+         //  die();
+          // echo "<br>".$resp[ContratoInformesDet::ID]."--".$detalle[ContratoInformesDet::ID];
+               
+           if($resp!=null&&$resp[ContratoInformesDet::ID]==$detalle[ContratoInformesDet::ID]){
+           }else
            
+           $datosInfdet->insertar($detalle,$cverecolector,$indice,"informe_detalle",$pdo);
            
-        
-        $this->datosInf->insertar($informe,$cverecolector,$indice,"informes",$pdo);
+        }
+        $datosInf2=new DatosInforme();
+        $resp= $datosInf2->getInformexid($indice,$cverecolector,$informe[ContratoInformes::ID],"informes");
+       // var_dump($resp);
+       // die();
+        if($resp!=null&&$resp[ContratoInformes::ID]==$informe[ContratoInformes::ID]){
+        }else
+         $this->datosInf->insertar($informe,$cverecolector,$indice,"informes",$pdo);
        // echo "rrrrrrrrrr".$visita[ContratoVisitas::TIENDAID];
         //reviso si es una tienda nueva para insertarla
         if($visita[ContratoVisitas::TIENDAID]==null||$visita[ContratoVisitas::TIENDAID]==0){
         //      echo "estoy aqui"; 
                 //es tienda nueva
-            $datostienda=$this->tiendaNueva($visita,$informe[ContratoInformes::CAUSANOCOMPRA]);
+            if(isset($informe[ContratoInformes::CAUSANOCOMPRA]))
+                $causanocompra=$informe[ContratoInformes::CAUSANOCOMPRA];
+            else 
+                $causanocompra=0;
+            $datostienda=$this->tiendaNueva($visita,$causanocompra,$indice,$cverecolector);
             //busco la zona
             
             
             $idtienda=$this->datosInf->insertarUnegocio($datostienda, "ca_unegocios",$pdo);
-         
-          //  echo "estoy aqui"; 
-                //actualizo en la visita
-            DatosVisita::actualizar($visita, $idtienda, "visitas",$pdo);
+            //inserto las fotos
+           // die();
+            $datosui=new DatosUneImagenes();
+            if($idtienda>0)
+            { foreach ($fotos_ex as $lisfotos_ex)
+                {
+                    $datosui->insertar($lisfotos_ex,$idtienda,$cverecolector,$indice, "ca_uneimagenes");
+                   
+                }
+              
+                if(isset($informe))
+                {  $resp=$datosui->getUneImagenxCli($idtienda, $informe[ContratoInformes::CLIENTESID], "ca_uneimagenes");
+                if($resp!=null){
+                     
+                    $datosui->actualizarTicket($informe, $idtienda, $cverecolector, $indice, "ca_uneimagenes");
+                }else 
+                    //insertar
+                    $datosui->insertarTicket($informe,$idtienda,$cverecolector,$indice, "ca_uneimagenes");
+                    
+                }
+                
+              //  echo "estoy aqui"; 
+                    //actualizo en la visita
+                DatosVisita::actualizar($visita, $idtienda, "visitas",$pdo);
+            }
             
             
         }else{
             //actualizo el estatus si no hubo prod
             $tiendaid=$visita[ContratoVisitas::TIENDAID];
+            
             if(isset($informe[ContratoInformes::CAUSANOCOMPRA])&&$informe[ContratoInformes::CAUSANOCOMPRA]==4){
                $this->datosInf->actualizarUnegocioEstatus($tiendaid,2,"ca_unegocios");
+            }
+            $datosuneim=new DatosUneImagenes();
+            if(isset($informe))
+            $resp=$datosuneim->getUneImagenxCli($tiendaid, $informe[ContratoInformes::CLIENTESID], "ca_uneimagenes");
+            if($resp==null){
+               
+                foreach ($fotos_ex as $lisfotos_ex)
+                {  
+                    $datosuneim->insertar($lisfotos_ex,$idtienda,$cverecolector,$indice, "ca_uneimagenes");
+                       
+                }
+                if(isset($informe))
+                    $datosuneim->actualizarTicket($informe, $idtienda, $cverecolector, $indice, "ca_uneimagenes");
+                    
             }
         }
         $pdo->commit();
         
         }catch(Exception $ex){
+           // $ex->getTrace();
             throw new Exception($this->TAG." *Hubo un error al insertar ".$ex->getMessage());
             $pdo->rollBack();
         }
@@ -103,10 +173,21 @@ class InformePostController{
                 DatosVisita::insertar($visita,"visitas",$pdo);
                 if($visita[ContratoVisitas::TIENDAID]==null||$visita[ContratoVisitas::TIENDAID]==0){
                     //es tienda nueva
-                    $datostienda=$this->tiendaNueva($visita,0);
+                    $datostienda=$this->tiendaNueva($visita,0,$indice,$cverecolector);
                     //   var_dump($datostienda);
                     $idtienda=$this->datosInf->insertarUnegocio($datostienda, "ca_unegocios",$pdo);
-                    echo $idtienda;
+                    //inserto las fotos
+                    $datosui=new DatosUneImagenes();
+                    foreach ($fotos_ex as $lisfotos_ex)
+                    {
+                        
+                        
+                        $datosui->insertar($lisfotos_ex,$idtienda,$cverecolector,$indice, "ca_uneimagenes");
+                        if(isset($informe))
+                            $datosui->actualizarTicket($informe, $idtienda, $cverecolector, $indice, "ca_uneimagenes");
+                            
+                    }
+                   // echo $idtienda;
                     if($idtienda>0)
                         //actualizo la visita
                         DatosVisita::actualizar($visita, $idtienda, "visitas");
@@ -116,7 +197,7 @@ class InformePostController{
             }
             
             foreach ($lisfotos_ex as $fotos_ex)
-                DatosProductoExhibido::insertar($fotos_ex,$cverecolector,$indice,"producto_exhibido",$pdo);
+                DatosProductoExhibido::insertaru($fotos_ex,$cverecolector,$indice,"producto_exhibido",$pdo);
             
            // foreach ($imagenes_det as $imagen)
            //     DatosImagenDetalle::insertar($imagen,$cverecolector,$indice,"imagen_detalle");
@@ -124,16 +205,12 @@ class InformePostController{
                 
             foreach ($lisinforme_det as $detalle)
                 $datosInfdet->insertar($detalle,$cverecolector,$indice,"informe_detalle",$pdo);
-                    
-                    
-                    
+       
             foreach ($lisinforme as $informe)
                 $this->datosInf->insertar($informe,$cverecolector,$indice,"informes",$pdo);
                     //  echo "rrrrrrrrrr".$visita[ContratoVisitas::TIENDAID];
                     //reviso si es una tienda nueva para insertarla
            
-                    
-                    
             $pdo->commit();
             
         }catch(Exception $ex){
@@ -192,38 +269,11 @@ class InformePostController{
         
         
     }
-    //se inserta por primera vez
-    public function insertarProdEx($campos){
-        try{
-         
-            $fotos_ex=$campos["fotos_ex"]; //es array
-          
-           //  $conexion=Conexion::conectar();
-            DatosProductoExhibido::insertar($fotos_ex,"producto_exhibido");
-            
-            
-        }catch(Exception $ex){
-            throw new Exception($this->TAG."Hubo un error al insertar "+$ex->getMessage());
-        }
-        
-        
-    }
-    //se inserta por primera vez
-    public function insertarImagenes($campos){
-        try{
-        
-            $imagenes_det=$campos["imagenes_det"]; //es array
-            
-            DatosImagenDetalle::insertar($imagenes_det,"imagen_detalle");
-                  
-        }catch(Exception $ex){
-            throw new Exception($this->TAG."Hubo un error al insertar "+$ex->getMessage());
-        }
-        
-        
-    }
+   
+ 
     
-    public function tiendaNueva($tiendarem,$causa){
+    
+    public function tiendaNueva($tiendarem,$causa,$indice,$recolector){
         //BUSCO LOS DATOS DE cd, pais, con las coordenadas en google
         $datosModel=array();
         $datosModel["nomuneg"]=$tiendarem[ContratoVisitas::TIENDANOMBRE];
@@ -233,7 +283,11 @@ class InformePostController{
         $datosModel["paisuneg"]=$tiendarem[ContratoVisitas::PAISID];
         $datosModel["ciudaduneg"]=$tiendarem[ContratoVisitas::CIUDADID];
         $datosModel["cxy"]=$tiendarem[ContratoVisitas::GEOLOCALIZACION];
+        $datosModel["puncaruneg"]=$tiendarem[ContratoVisitas::PUNTOCARDINAL];
         $datosModel["cadcomuneg"]=0;
+        $datosModel["une_fotofachada"]=$tiendarem[ContratoVisitas::FOTOFACHADA];
+        $datosModel["une_facrecolector"]=$recolector;
+        $datosModel["une_facindice"]=$indice;
         if($causa==4)
         $datosModel["estatusuneg"]=2;
         else 
@@ -241,5 +295,27 @@ class InformePostController{
         return $datosModel;
       
     }
+    public function tiendaNuevaInf($informe,$indice,$recolector){
+       
+      $datosinf=new DatosVisita();
+      $res=$datosinf->getVisita($informe[ContratoInformes::VISITASID],$indice, $recolector, "visitas");
+      if($res!=null){
+          $tiendaid=$res["vi_tiendaid"];
+      }
+      if($tiendaid>0) //es nueva inserto el ticket{
+      {
+          //veo si existe el ticket
+          $datosuneim=new DatosUneImagenes();
+          $resp=$datosuneim->getUneImagenxCli($tiendaid, $informe[ContratoInformes::CLIENTESID], "ca_uneimagenes");
+          if($resp!=null){
+              //ya existe actualizo
+              $datosuneim->actualizarTicket($informe, $tiendaid, $recolector, $indice, "ca_uneimagenes");
+          }
+          
+      }
+      
+    }
+    
+   
     
 }

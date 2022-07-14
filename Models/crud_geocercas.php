@@ -58,6 +58,21 @@ where trim(ciu_descripcionesp)=trim(:ciudad)");
         
     }
     
+    public function vistaGeocercaModelxnombreRes($ciudad,$tabla){
+        //busco el nombre de la cd de muestreo
+     
+        $stmt = Conexion::conectar()-> prepare("SELECT geo_id, geo_n4id, geo_region, geo_p1, geo_p2, geo_p3, geo_p4, ciu_descripcionesp as ciudad FROM $tabla
+       inner join ca_ciudadesresidencia cc
+on geo_n4id =ciu_id
+where trim(ciu_descripcionesp)=trim(:ciudad)");
+        $stmt->bindParam(":ciudad", $ciudad,PDO::PARAM_STR);
+        
+        $stmt-> execute();
+        //$stmt->debugDumpParams();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+    }
+    
     
  /*   public function vistaGeocercaModel($geo_n4id,$tabla){
         

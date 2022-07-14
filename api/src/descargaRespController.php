@@ -27,6 +27,7 @@ class DescargaRespController
         $dvisit=new \DatosVisita();
         $visitas=$dvisit->getVisitas($indice, $recolector, "visitas");
         foreach($visitas as $visitapend) {
+            $visitapend["estatus"]=2; //cambio estatus a finalizado y enviado
                 $visitaenv[]=$visitapend;
               //  echo "<br>".TAG."->buscando prodexh".$visitapend["id"];
                 $productoExhibidos=\DatosProductoExhibido::getProductosExxVisita($indice,$recolector,$visitapend["id"],\ConsTablas::PRODUCTOEX);
@@ -40,7 +41,7 @@ class DescargaRespController
                 $vis_informes=\DatosInforme::getInformesxVisita($indice,$recolector,$visitapend["id"],"informes");
                // echo "<br>".TAG."->informes".sizeof($vis_informes);
                 foreach ($vis_informes as $informe){
-                   
+                        $informe["estatus"]=2;//cambio estatus a finalizado
                         $informeCompraenv[]=$informe;
                         //busco los detalles
                         $detalles = \DatosInformeDetalle::getInformesDetxInf($indice,$recolector,$informe["id"],\ConsTablas::INFDETALLE);

@@ -170,6 +170,19 @@ $app->get('/tiendas', function ($request, $response, $args) {
         ->getBody()
         ->write($cc->response($pais, $ciudad, $cadena, $nombre, $planta,$fechaini,$fechafin,$cliente));
 });
+
+    $app->get('/geocercas', function ($request, $response, $args) {
+        $cc = new TiendasController();
+        $recolector = filter_input(INPUT_GET, "usuario", FILTER_SANITIZE_NUMBER_INT);
+       
+        $indice = filter_input(INPUT_GET, "indice", FILTER_SANITIZE_STRING);
+        $this->get('logger')
+        ->addInfo('geocercas: Llegó una peticion usr=' . $recolector."--indice".$indice);
+        
+        return $response->withHeader('Content-type', 'application/json')
+        ->getBody()
+        ->write($cc->responseGeo($recolector,$indice));
+    });
 $app->post('/informe/create', function (Request $request, Response $response) {
 
     // Si necesitamos acceder a alguna variable global en el framework
