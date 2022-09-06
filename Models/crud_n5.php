@@ -255,5 +255,35 @@ public function getDatosPlanta($datosModel,$tabla){
     }
     
 
+
+public function getnombreNivel5($id,$tabla) {
+
+
+
+            $sql = "SELECT n5_id, n5_nombre FROM $tabla where n5_id=:id ";
+
+
+
+           $stmt = Conexion::conectar()-> prepare($sql);
+
+            $stmt->bindParam(":id",$id,PDO::PARAM_INT);
+
+            $stmt->execute();
+
+            $res=$stmt->fetchAll();
+
+            foreach ($res as $row) {
+
+              $nombre = $row["n5_nombre"];
+
+            }
+
+             return $nombre;
+
+        }
+
+   
+
+
 }
 

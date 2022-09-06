@@ -196,9 +196,10 @@ $app->post('/informe/create', function (Request $request, Response $response) {
     try {
 
         $informeContrl = new InformePostController();
-
+       // var_dump($campos);
+      //  die();
         $informeContrl->insertarTodo($campos);
-
+       
         $datos = array(
             'status' => 'ok',
             'data' => 'Informe dado de alta correctamente.'
@@ -207,6 +208,7 @@ $app->post('/informe/create', function (Request $request, Response $response) {
             ->addInfo('CrearInforme: Respuesta Informe dado de alta correctamente');
         return $response->withJson($datos, 200);
     } catch (Exception $e) {
+        echo "hubo un error";
         $datos = array(
             'status' => 'error',
             'data' => $e->getMessage()

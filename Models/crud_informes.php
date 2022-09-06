@@ -286,7 +286,7 @@ SELECT lid_idlistacompra as listaId, lid_idprodcompra as id ,
             cc.cad_otro as ordtam,
             cem.cad_otro as ordemp,
             cta.cad_otro as ordtipa,
-            ctp.cad_otro as ordtipm 
+            ctp.cad_otro as ordtipm ,lid_numtienbak 
             FROM $tabla
             inner join pr_listacompra pl on pl.lis_idlistacompra =lid_idlistacompra
             inner join ca_productos cp on cp.pro_id =lid_idproducto 
@@ -327,7 +327,7 @@ SELECT lid_idlistacompra as listaId, lid_idprodcompra as id ,
  cc.cad_otro as ordtam,
             cem.cad_otro as ordemp,
             cta.cad_otro as ordtipa,
-            ctp.cad_otro as ordtipm 
+            ctp.cad_otro as ordtipm ,lid_numtienbak 
             FROM $tabla
             inner join pr_listacompra pl on pl.lis_idlistacompra =lid_idlistacompra
             inner join ca_productos cp on cp.pro_id =lid_idproducto
@@ -724,6 +724,23 @@ where inf_indice=:indice and inf_usuario=:cverecolector and inf_id=:id ";
         $stmt-> execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
         
+    }
+
+     public function eliminauneghab($datosModel,$tabla){
+            try{      
+              
+              $sSQL= "DELETE FROM $tabla WHERE une_id=:idt and une_idindice=:indice";
+              $stmt=Conexion::conectar()->prepare($sSQL);
+              
+              $stmt->bindParam(":idt", $datosModel["idt"],PDO::PARAM_INT);
+              $stmt->bindParam(":indice", $datosModel["indice"], PDO::PARAM_STR);
+
+              $stmt-> execute();
+           //   $stmt->debugDumpParams();
+            }catch(PDOException $ex){
+              throw new Exception("Hubo un error al eliminar");
+            }
+            
     }
     
     

@@ -12,6 +12,7 @@ $informeCont=new SupInformesController();
         $recolector= $informeCont->getrecolector();
         $nunminf= $informeCont->getidinforme();
         $numtienda= $informeCont->getconsec();
+
         $coord= $informeCont->getcoord();
        
         $idzona =$informeCont->getidzona();
@@ -47,6 +48,7 @@ $informeCont=new SupInformesController();
            $coordc =$informeCont->getcoordc();
            $idtienda=$informeCont->getidtien();
            $idtipc=$informeCont->getidtipc();
+           $nomciudad= $informeCont->getnomciudad();
 
          // datos edicion cat
            //$informeContoller=new SupInformesController();
@@ -176,15 +178,16 @@ drawingManager.setOptions({
 <?php 
 //dibujo la tienda
 if($coord!=""){
-$auxc=explode(",",$coordc);
+$auxc=explode(",",$coord);
+if($auxc[0]!=""&&$auxc[1]!="")
 echo "dibujarPunto(".$auxc[0].",".$auxc[1].",map,'red');";
 }
-//dibujo las tiendas demás tiendas
+//dibujo las tiendas
 
   $lat=0;
   $long=0; //de la lista de tiendas que ya traje dibujo el punto sacando las coordenadas
  
-  $listatiendas=$informeCont->getTiendasxindice(0, 0, "", "", $idplan, $informeCont->mesas, $cliente);
+  $listatiendas=$informeCont->getTiendasxindice(0,  $informeCont->idciudadres, "", "", 0, $informeCont->mesas,$idrec);
  //var_dump($listatiendas);
  //die();
  if($listatiendas!=null)
@@ -194,10 +197,12 @@ echo "dibujarPunto(".$auxc[0].",".$auxc[1].",map,'red');";
              continue;
      if($tienda["une_coordenadasxy"]!=null&&sizeof($tienda["une_coordenadasxy"])>0) {
          $auxcoor =explode(",",$tienda["une_coordenadasxy"]);
+         
             if($auxcoor!=null&&sizeof($auxcoor)>0)
             { $lat=$auxcoor[0];
             $long=$auxcoor[1];
-            echo "dibujarPunto(".$lat.",".$long.",map,'blue');";
+            if($lat!=""&&$long!="")
+            echo "dibujarPunto(".$lat.",".$long.",map,'".$tienda["color"]."');";
             }
             
         }
@@ -223,81 +228,62 @@ echo "dibujarPunto(".$auxc[0].",".$auxc[1].",map,'red');";
     <table border="1px"  bordercolor="#9d981c" width="100%">
       
         <tr> 
-          <td  style=" text-align: center; background: #9d981c; color: #ffffff;  font-size: 16px; font-weight: 800; " colspan="10" height="10px">SUPERVISION INFORMES DE COMPRA</td>   
+          <td  style=" text-align: center; background: #9d981c; color: #ffffff;  font-size: 16px; font-weight: 800; " colspan="10" height="10px">SUPERVISION INFORMES DE COMPRA</gtd>   
         </tr>
-        <tr>
-          <td style="width: 5px; font-size: 10px; text-align: right; background: #cdc836;">CLIENTE :</td>   
-
-          <td style="width: 25% ; font-size: 10px; padding-left: 5px; background: #cdc836;"> <?php echo $cliente//echo  $listaCompraContoller->getCliente(); ?>
-            
-          </td>
-         
-          <td style="width:7%; font-size: 10px; text-align: right; background: #cdc836;">PLANTA :</td>   
-
-          <td style="width: 8% ; font-size: 10px; padding-left: 5px; background: #cdc836;"> <?php echo  $planta ?>
-            
-          </td>
           
-          <td style="width: 8%; font-size: 10px; text-align: right; background: #cdc836;">INDICE :</td>   
-
-          <td style="width: 20% ; font-size: 10px; padding-left: 5px; background: #cdc836;" colspan="5" ><?php echo  $informeCont->getindice(); ?>
-            
-          </td>
-          
-        </tr>  
           
         <tr>
-          <td style="width: 10%; font-size: 10px; text-align: right; background: #cdc836;">RECOLECTOR :</td>   
+          <td style=" font-size: 10px; text-align: right; background: #f6f296;" width=" 10%";>RECOLECTOR :</td>   
  
-          <td style="width: 22% ; font-size: 10px; padding-left: 5px; background: #cdc836;"> <?php echo  $informeCont->getrecolector(); ?>
+          <td style="width: 23% ; font-size: 10px; padding-left: 5px; background: #f8f6b9;"> <?php echo  $informeCont->getrecolector(); ?>
             
           </td>
-          <td style="width:7%; font-size: 10px; text-align: right; background: #cdc836;">ID INFORME :</td>   
+          <td style="width:7%; font-size: 10px; text-align: right; background: #f6f296;">INDICE :</td>   
 
-          <td style="width: 8% ; font-size: 10px; padding-left: 5px; background: #cdc836;"> <?php echo  $informeCont->getidinforme(); ?>
+          <td style="width: 8% ; font-size: 10px; padding-left: 5px; background: #f8f6b9;"> <?php echo  $informeCont->getindice(); ?>
             
           </td>
-          <td style="width: 10%; font-size: 10px; text-align: right; background: #cdc836;"># TIENDA :</td>   
+          <td style="width: 10%; font-size: 10px; text-align: right; background: #f6f296;">CIUDAD :</td>   
 
-          <td style="width:20% ; font-size: 10px; padding-left: 5px; background: #cdc836;">  <?php echo $informeCont->getconsec(); ?> 
+          <td style="width:20% ; font-size: 10px; padding-left: 5px; background: #f8f6b9;">  <?php echo $nomciudad ?> 
           </td>
-         <td style="width: 20px; font-size: 16px; text-align: center; background: #cdc836;">
+         <td style="width: 10px; font-size: 16px; text-align: center; background: #9d981c;">
   <?php 
 
-      echo '<a href="index.php?action=supinforme&idmes='.$idmes.'&idrec='.$idrec.'&id='.$inffirst.'"> <i class="fa fa-step-backward" aria-hidden="true" style="color: #000000;"></i></a>';
+      echo '<a href="index.php?action=supinforme&idmes='.$idmes.'&idrec='.$idrec.'&id='.$inffirst.'"> <i class="fa fa-step-backward" aria-hidden="true" style="color: #ffffff;"></i></a>';
       
     
      ?>
            </td>
-         <td style="width: 20px; font-size: 16px; text-align: center; background: #cdc836;">
+         <td style="width: 10px; font-size: 16px; text-align: center; background: #9d981c;">
   <?php 
     if ($infant==0){ 
         echo '<a  href=#> <i class="fa fa-caret-left fa-lg" aria-hidden="true"  style="color: grey;"></i></a>';
     } else {
-      echo '<a href="index.php?action=supinforme&idmes='.$idmes.'&idrec='.$idrec.'&id='.$infant.'"> <i class="fa fa-caret-left fa-lg" aria-hidden="true" style="color: #000000;"></i></a>';
+      echo '<a href="index.php?action=supinforme&idmes='.$idmes.'&idrec='.$idrec.'&id='.$infant.'"> <i class="fa fa-caret-left fa-lg" aria-hidden="true" style="color: #ffffff;"></i></a>';
       
      }  
      ?>
            </td>
    
   
-  <td style="width: 20px; font-size: 16px; text-align: center; background: #cdc836;">
+  <td style="width: 10px; font-size: 16px; text-align: center; background: #9d981c;">
 
   <?php 
       if ($infsig==0){
         echo '<a href=#> <i class="fa fa-caret-right fa-lg" aria-hidden="true" style="color: grey;"></i></a>';
       } else {
-  echo '<a href="index.php?action=supinforme&idmes='.$idmes.'&idrec='.$idrec.'&id='.$infsig.'"> <i class="fa fa-caret-right fa-lg" aria-hidden="true" style="color: #000000;"></i></a>';
+  echo '<a href="index.php?action=supinforme&idmes='.$idmes.'&idrec='.$idrec.'&id='.$infsig.'"> <i class="fa fa-caret-right fa-lg" aria-hidden="true" style="color: #ffffff;"></i></a>';
     }
   ?>
 </td>
-<td style="width: 20px; font-size: 16px; text-align: center; background: #cdc836;">
+<td style="width: 10px; font-size: 16px; text-align: center; background: #9d981c;">
 
   <?php 
       //if ($infsig==0){
         //inputbox("es el final de la lista");
       //} else {
-  echo '<a href="index.php?action=supinforme&idmes='.$idmes.'&idrec='.$idrec.'&id='.$inflast.'"> <i class="fa fa-step-forward" aria-hidden="true" style="color: #000000;"></i></a>';
+  echo '<a href="index.php?action=supinforme&idmes='.$idmes.'&idrec='.$idrec.'&id='.$inflast.'"> <i class="fa fa-step-forward" aria-hidden="true" style="color: #ffffff;"></i></a>';
     //}
   ?>
 </td>
@@ -311,16 +297,16 @@ echo "dibujarPunto(".$auxc[0].",".$auxc[1].",map,'red');";
         </tr>
         <tr>
           <td style="background: #f8f6b9; ">
-           <table border="2px"  bordercolor="#dbd66d" lang="100%">  
+           <table border="2px"  bordercolor="#dbd66d" lang="100%" height="25px">  
                <form role="form" method="post" action="index.php?action=supinforme&admin=act">
              <tr>
               <?php
                 if ($admin=="edi"){
                    echo '              
-                    <td style="width:15%; font-size: 10px; text-align: right; background: #f6f296;">NOMBRE :</td>';
+                    <td style=" font-size: 10px; text-align: right; background: #f6f296;" width="10%"; height="25px">NOMBRE :</td>';
                 } else {
                   echo '
-                     <td style="width:8%; font-size: 10px; text-align: right; background: #f6f296;">NOMBRE :</td>';
+                     <td style=" font-size: 10px; text-align: right; background: #f6f296;" width="5%"; height="25px">NOMBRE :</td>';
                 }
                  ?> 
               
@@ -329,10 +315,10 @@ echo "dibujarPunto(".$auxc[0].",".$auxc[1].",map,'red');";
                 if ($admin=="edi"){
 
                   echo  '
-                      <td style="width: 40%;  font-size: 10px; text-align: left;  padding-left: 5px; background: #f8f6b9;">
-                  <input type="text" style="width:250px"  name="nomtien" id="nomtien" value="'.$informeCont->getnomplan().'"';
+                      <td style="width: 15%;  font-size: 10px; text-align: left;  padding-left: 5px; background: #f8f6b9;" height="25px">
+                  <input type="text" style="width:220px"  name="nomtien" id="nomtien" value="'.$informeCont->getnomplan().'"';
                 } else { 
-                    echo ' <td style="width: 20%;  font-size: 10px; text-align: left;  padding-left: 5px; background: #f8f6b9;">';  
+                    echo ' <td style="width: 15%;  font-size: 10px; text-align: left;  padding-left: 5px; background: #f8f6b9;" height="25px">';  
                   echo $informeCont->getnomplan(); 
                 }
               ?>             
@@ -340,17 +326,17 @@ echo "dibujarPunto(".$auxc[0].",".$auxc[1].",map,'red');";
                <?php
                 if ($admin=="edi"){
                   echo '
-              <td style="width:10%; font-size: 10px; text-align: right; background: #f6f296;">CADENA :</td>';
+              <td style="width:10%; font-size: 10px; text-align: right; background: #f6f296;" height="25px">CADENA :</td>';
               }else{
                   echo '
-              <td style="width:6%; font-size: 10px; text-align: right; background: #f6f296;">CADENA :</td>';
+              <td style="width:5%; font-size: 10px; text-align: right; background: #f6f296;" height="25px">CADENA :</td>';
               }   
               ?>
               <?php 
                 
                 if ($admin=="edi"){
-                    echo '<td style="width: 6%;  font-size: 10px; text-align: left; padding-left: 5px; background: #f8f6b9;">';
-                    echo '   <select  name="cadcomuneg" style="width:80px">
+                    echo '<td style="width: 8%;  font-size: 10px; text-align: left; padding-left: 5px; background: #f8f6b9;" >';
+                    echo '   <select  name="cadcomuneg" style="width:90px">
                          <option value="">Seleccione una opción</option>';
                          $rs = DatosCatalogoDetalle::listaCatalogoDetalle(1, "ca_catalogosdetalle");
      
@@ -366,20 +352,20 @@ echo "dibujarPunto(".$auxc[0].",".$auxc[1].",map,'red');";
 
 
                 } else {   
-                    echo '<td style="width: 6%;  font-size: 10px; text-align: left; padding-left: 5px; background: #f8f6b9;">';
+                    echo '<td style="width: 8%;  font-size: 10px; text-align: left; padding-left: 5px; background: #f8f6b9;">';
                    echo $informeCont->getcadena(); 
                 } ?>
             
             </td>
           </tr>
  <tr>
-          <td style=" font-size: 10px; text-align: right; background: #f6f296;">TIPO DE TIENDA :</td>   
+          <td style=" font-size: 10px; text-align: right; background: #f6f296;" height="25px">TIPO DE TIENDA :</td>   
 
           <td style="width: 20%;  font-size: 10px; padding-left: 5px; text-align: left; background: #f8f6b9;">
 
             <?php  if ($admin=="edi"){
                echo '
-                <select name="tipouneg" style="width:150px">
+                <select name="tipouneg" style="width:220px">
                <option value="">Seleccione una opción</option>';
                $rs = DatosCatalogoDetalle::listaCatalogoDetalle(2, "ca_catalogosdetalle");
 
@@ -397,7 +383,7 @@ echo "dibujarPunto(".$auxc[0].",".$auxc[1].",map,'red');";
               echo $informeCont->gettipot(); 
               }   ?>
           </td>
-          <td style=" font-size: 10px; text-align: right; background: #f6f296;">ID TIENDA :</td>
+          <td style=" font-size: 10px; text-align: right; background: #f6f296;" height="25px">ID TIENDA :</td>
           <?php   
             if ($admin=="edi"){
               echo '
@@ -414,24 +400,24 @@ echo "dibujarPunto(".$auxc[0].",".$auxc[1].",map,'red');";
           </td>
         </tr>
  <tr>
-          <td style=" font-size: 10px; text-align: right; background: #f6f296;">COORDENADAS :</td>   
+          <td style=" font-size: 10px; text-align: right; background: #f6f296;" height="25px">COORDENADAS :</td>   
 
           <td style=" font-size: 10px; padding-left: 5px; text-align: left; background: #f8f6b9;"><?php 
           if ($admin=="edi"){
                 echo '
-                <input type="text" style="width:250px; placeholder="COORDENADAS XY" name="cxy" id="cxy" value="'.$coord.'"';
+                <input type="text" style="width:220px; placeholder="COORDENADAS XY" name="cxy" id="cxy" value="'.$coord.'"';
              } else {   
               echo $coord; 
               }   ?>
             
           </td>
-          <td style=" font-size: 10px; text-align: right; background: #f6f296;">ZONA :</td>   
+          <td style=" font-size: 10px; text-align: right; background: #f6f296;" height="25px">ZONA :</td>   
 
 
           <td style="  font-size: 10px; padding-left: 5px; text-align: left; background: #f8f6b9;"><?php 
               if ($admin=="edi"){
                 echo '
-                <select name="zona" style="width:80px">
+                <select name="zona" style="width:90px">
                 <option value="">Seleccione una opción</option> ';
                 $rs = DatosCatalogoDetalle::listaCatalogoDetalle(4, "ca_catalogosdetalle");
 
@@ -453,19 +439,19 @@ echo "dibujarPunto(".$auxc[0].",".$auxc[1].",map,'red');";
           </td>
         </tr>
 <tr>
-          <td style=" font-size: 10px; text-align: right; background: #f6f296;">FECHA :</td>   
+          <td style=" font-size: 10px; text-align: right; background: #f6f296;" height="25px">FECHA :</td>   
 
-          <td style=" font-size: 10px; padding-left: 5px; text-align: left; background: #f8f6b9;"><?php echo $informeCont->getfecha(); ?>
+          <td style=" font-size: 10px; padding-left: 5px; text-align: left; background: #f8f6b9;" ><?php echo $informeCont->getfecha(); ?>
             
           </td>
-          <td style=" font-size: 10px; text-align: right; background:#f6f296; rgb(244,240,175);<">HORA :</td>   
+          <td style=" font-size: 10px; text-align: right; background:#f6f296; " height="25px">HORA :</td>   
 
           <td style="  font-size: 10px; padding-left: 5px; text-align: left; background: #f8f6b9;"><?php echo $informeCont->gethora(); ?>
           </td>
           </tr> 
 
            <tr>
-          <td style=" font-size: 10px; text-align: right; background: #f6f296;">DIRECCION :</td>   
+          <td style=" font-size: 10px; text-align: right; background: #f6f296;" height="25px">DIRECCION :</td>   
 
           <td style="  font-size: 10px; padding-left: 5px; text-align: left; background: #f8f6b9;" colspan="3"><?php 
 
@@ -479,7 +465,7 @@ echo "dibujarPunto(".$auxc[0].",".$auxc[1].",map,'red');";
           </td>
 </tr>
 <tr>
-          <td style=" font-size: 10px; text-align: right; background: #f6f296;">COMPLEMENTO DIR:</td>   
+          <td style=" font-size: 10px; text-align: right; background: #f6f296;" height="25px">COMPLEMENTO DIR:</td>   
 
           <td style=" font-size: 10px; padding-left: 5px; text-align: left; background: #f8f6b9;" colspan="3"><?php 
             if ($admin=="edi"){
@@ -495,7 +481,7 @@ echo "dibujarPunto(".$auxc[0].",".$auxc[1].",map,'red');";
       </tr>    
 
 <tr>
-          <td style=" font-size: 10px; text-align: right; background: #f6f296;">COMENTARIOS :</td>   
+          <td style=" font-size: 10px; text-align: right; background: #f6f296;" height="25px">COMENTARIOS :</td>   
 
           <td style="  font-size: 10px; padding-left: 5px; text-align: left; background: #f8f6b9;" colspan="3"><?php 
             if ($admin=="edi"){
@@ -515,11 +501,11 @@ echo "dibujarPunto(".$auxc[0].",".$auxc[1].",map,'red');";
 
             <?php 
              if ($admin=="edi"){
-            echo ' <button type="submit"  style="color: #000000; background: #9d981c; font-size: 12px; font-weight: 800; border-color:#bfba59; ">GUARDAR</button>'; 
+            echo ' <button type="submit"  style="color: #ffffff; background: #9d981c; font-size: 12px; font-weight: 800; border-color:#bfba59; ">GUARDAR</button>'; 
           } else {   
              // echo '<button type="link"  style="color: #000000; font-size: 12px; font-weight: 800; border-color:#bfba59; background: #bfba59;  " <a href="index.php?action=supinforme&admin=edi&idmes='.$idmes.'&idrec='.$idrec.'&id='.$informeCont->getidinf().'"> EDITAR</a></button>';
 
-              echo ' <a href="index.php?action=supinforme&admin=edi&idmes='.$idmes.'&idrec='.$idrec.'&id='.$informeCont->getidinf().'" style="color: #000000; background: #9d981c; font-size: 12px; font-weight: 800; "> EDITAR</a>';
+              echo ' <a href="index.php?action=supinforme&admin=edi&idmes='.$idmes.'&idrec='.$idrec.'&id='.$informeCont->getidinf().'" style="color: #ffffff; background: #9d981c; font-size: 12px; font-weight: 800; "> EDITAR</a>';
 
               } ?>
            </td>
@@ -532,9 +518,9 @@ echo "dibujarPunto(".$auxc[0].",".$auxc[1].",map,'red');";
           <td style="background: #f8f6b9; ">
             <form role="form" method="post" action="index.php?action=supinforme&admin=actc">
              
-           <table border="2px"  bordercolor="#dbd66d" width="100%" lang="100%" >  
+           <table border="2px"  bordercolor="#dbd66d" width="100%" lang="100%" height="12px">  
              <tr>  
-              <td style="width: 20%; font-size: 10px; text-align: right; background: #f6f296; ">NOMBRE :</td>   
+              <td style="width: 20%; font-size: 10px; text-align: right; background: #f6f296; " height="25px">NOMBRE :</td>   
 
          
               <td style="width: 40%;  font-size: 10px; text-align: left; padding-left: 5px;"><?php 
@@ -547,7 +533,7 @@ echo "dibujarPunto(".$auxc[0].",".$auxc[1].",map,'red');";
                 }
               ?>             
           </td>
-          <td style="width: 20%; font-size: 10px; text-align: right; background: #f6f296;">CADENA :</td>   
+          <td style="width: 20%; font-size: 10px; text-align: right; background: #f6f296;" height="25px">CADENA :</td>   
 
           <td style="width: 30%;  font-size: 10px; text-align: left;"><?php 
            if ($admin=="edic"){
@@ -574,7 +560,7 @@ echo "dibujarPunto(".$auxc[0].",".$auxc[1].",map,'red');";
              </td>           
                </tr>
                <tr>
-        <td style="width: 10%; font-size: 10px; text-align: right; background: #f6f296;">TIPO TIENDA :</td>   
+        <td style="width: 10%; font-size: 10px; text-align: right; background: #f6f296;" height="25px">TIPO TIENDA :</td>   
 
           <td style="width: 20%;  font-size: 10px; padding-left: 5px; text-align: left;"><?php  
           if ($admin=="edic"){
@@ -598,7 +584,7 @@ echo "dibujarPunto(".$auxc[0].",".$auxc[1].",map,'red');";
           }   ?>
             
           </td>
-          <td style="width: 10%; font-size: 10px; text-align: right; background: #f6f296;">ID TIENDA :</td>   
+          <td style="width: 10%; font-size: 10px; text-align: right; background: #f6f296;" height="25px">ID TIENDA :</td>   
 
           <td style="width: 30%;  font-size: 10px; padding-left: 5px; text-align: left;">  
             <?php
@@ -617,7 +603,7 @@ echo "dibujarPunto(".$auxc[0].",".$auxc[1].",map,'red');";
         </tr>
 
         <tr>
-          <td style="width: 10%; font-size: 10px; text-align: right; background: #f6f296;">COORDENADAS :</td>   
+          <td style="width: 10%; font-size: 10px; text-align: right; background: #f6f296;" height="25px">COORDENADAS :</td>   
 
           <td style="width: 20%;  font-size: 10px; padding-left: 5px; text-align: left;"><?php 
             if ($admin=="edic"){
@@ -628,7 +614,7 @@ echo "dibujarPunto(".$auxc[0].",".$auxc[1].",map,'red');";
             }   ?>
             
           </td>
-          <td style="width: 10%; font-size: 10px; text-align: right; background: #f6f296;">ZONA :</td>   
+          <td style="width: 10%; font-size: 10px; text-align: right; background: #f6f296;" height="25px">ZONA :</td>   
 
           <td style="width: 30%;  font-size: 10px; padding-left: 5px; text-align: left;"><?php 
               if ($admin=="edic"){
@@ -655,25 +641,25 @@ echo "dibujarPunto(".$auxc[0].",".$auxc[1].",map,'red');";
         </tr>
 
          <?php 
-           if ($admin=="edic"){
-           }else{
+        //   if ($admin=="edic"){
+        //   }else{
             echo '    
         <tr>
 
-          <td style="width: 10%; font-size: 10px; text-align: right; background: #f6f296;">:</td>   
+          <td style="width: 10%; font-size: 10px; text-align: right; background: #f6f296;" height="25px"></td>   
 
           <td style="width: 20%;  font-size: 10px; padding-left: 5px; text-align: left;">
             
           </td>
-          <td style="width: 10%; font-size: 10px; text-align: right; background: #f6f296;">:</td>   
+          <td style="width: 10%; font-size: 10px; text-align: right; background: #f6f296;" height="25px"></td>   
 
           <td style="width: 30%;  font-size: 10px; padding-left: 5px; text-align: left;">
           </td>
         </tr>';
-   }
+   //}
         ?>
         <tr>
-           <td style="width: 10%; font-size: 10px; text-align: right; background: #f6f296;">DIRECCION :</td>   
+           <td style="width: 10%; font-size: 10px; text-align: right; background: #f6f296;" height="25px">DIRECCION :</td>   
 
           <td style="width: 10%;   font-size: 10px; padding-left: 5px; text-align: left;"  colspan="3"><?php 
 
@@ -690,7 +676,7 @@ echo "dibujarPunto(".$auxc[0].",".$auxc[1].",map,'red');";
 
 
         <tr>
-          <td style="width: 20%; font-size: 10px; text-align: right; background: #f6f296;">COMPLEMENTO DIR :</td>   
+          <td style="width: 20%; font-size: 10px; text-align: right; background: #f6f296;" height="25px">COMPLEMENTO DIR :</td>   
 
           <td style="width: 10%;  font-size: 10px; padding-left: 5px; text-align: left;"  colspan="3"><?php 
             if ($admin=="edic"){
@@ -707,19 +693,19 @@ echo "dibujarPunto(".$auxc[0].",".$auxc[1].",map,'red');";
         </tr>
         
           <?php 
-           if ($admin=="edic"){
+          // if ($admin=="edic"){
             //echo '</form>';
-           } else { 
+          // } else { 
             echo '
             <tr>
-         <td style="width: 10%; font-size: 10px; text-align: right; background: #f6f296;">: </td>   
+         <td style="width: 10%; font-size: 10px; text-align: right; background: #f6f296;" height="25px"> </td>   
 
           <td style="width: 10%;  font-size: 10px; padding-left: 5px; text-align: left;"  colspan="3"> 
             
           </td>
           
         </tr>';
-      }
+     // }
 ?>
 
                <tr>
@@ -727,11 +713,11 @@ echo "dibujarPunto(".$auxc[0].",".$auxc[1].",map,'red');";
             <?php 
 
                 if ($admin=="edic"){
-                    echo ' <button type="submit"  style="color: #000000; background: #bfba59; font-size: 12px; font-weight: 800; border-color:#bfba59; ">GUARDAR</button>'; 
+                    echo ' <button type="submit"  style="color: #ffffff; background: #bfba59; font-size: 12px; font-weight: 800; border-color:#bfba59; ">GUARDAR</button>'; 
                 } else {   
                   // echo '<button type="link"  style="color: #000000; font-size: 12px; font-weight: 800; border-color:#bfba59; background: #bfba59;  " <a href="index.php?action=supinforme&admin=edi&idmes='.$idmes.'&idrec='.$idrec.'&id='.$informeCont->getidinf().'"> EDITAR</a></button>';
 
-                  echo ' <a href="index.php?action=supinforme&admin=edic&idtien='.$idtienda.'&idmes='.$idmes.'&idrec='.$idrec.'&id='.$informeCont->getidinf().'" style="color: #000000; background: #9D981C; font-size: 12px; font-weight: 800; "> EDITAR</a>';
+                  echo ' <a href="index.php?action=supinforme&admin=edic&idtien='.$idtienda.'&idmes='.$idmes.'&idrec='.$idrec.'&id='.$informeCont->getidinf().'" style="color: #ffffff; background: #9D981C; font-size: 12px; font-weight: 800; "> EDITAR</a>';
 
                 } ?>
               </td>    
@@ -747,9 +733,9 @@ echo "dibujarPunto(".$auxc[0].",".$auxc[1].",map,'red');";
         <div id="map_canvas"></div> 
          </td>
         <td style="width: 50%; height: 90vh;">
-         <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3760.2899843746186!2d-99.1929319!3d19.5291307!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x52738f699069a7b3!2zMTnCsDMxJzQ1LjAiTiA5OcKwMTEnMzQuNyJX!5e0!3m2!1ses-419!2smx!4v1652490618684!5m2!1ses-419!2smx" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+         <!-- <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3760.2899843746186!2d-99.1929319!3d19.5291307!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x52738f699069a7b3!2zMTnCsDMxJzQ1LjAiTiA5OcKwMTEnMzQuNyJX!5e0!3m2!1ses-419!2smx!4v1652490618684!5m2!1ses-419!2smx" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>-->
        
-       <!-- <iframe src="https://www.google.com/maps/embed/v1/place?q=<?php echo $coordc?>&key=AIzaSyB4iIUMXD0GrrxFC2BbNRhXcVZtfLDrhEQ" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>-->
+       <iframe src="https://www.google.com/maps/embed/v1/place?q=<?php echo $coordc?>&key=AIzaSyB4iIUMXD0GrrxFC2BbNRhXcVZtfLDrhEQ" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
         </td> 
       </tr>
 </tbody>
@@ -771,7 +757,7 @@ echo "dibujarPunto(".$auxc[0].",".$auxc[1].",map,'red');";
                   ACTUALIZAR CATALOGO
                 </button> </td>   
 
-            <td style=" text-align: center; font-weight: 800; background: #9d981c; color: #000000; font-size: 12px; height=30px;" >
+            <td style=" text-align: center; font-weight: 800; background: #9d981c; color: #FFFFFF; font-size: 12px; height=30px;" >
                   PANTALLA 1
                  </td>
                </tr>  
@@ -785,7 +771,7 @@ echo "dibujarPunto(".$auxc[0].",".$auxc[1].",map,'red');";
 
    <table border="1px"  bordercolor="#9D981C" width="100%">
        <tr>
-          <td  style=" width: 50%; text-align: center; background: #9d981c;  border-color: #9d981c; font-size: 12px; font-weight: 800;  height=30px;" colspan="4">LA TIENDA VISITADA TIENE UNA BUENA DISTRIBUCION EN EL AREA DE MUESTREO?</td>  
+          <td  style=" width: 50%; text-align: center; background: #9d981c;  border-color: #9d981c; color: #ffffff; font-size: 12px; font-weight: 800;  height=30px;" colspan="4">LA TIENDA VISITADA TIENE UNA BUENA DISTRIBUCION EN EL AREA DE MUESTREO?</td>  
           <td style="width: 40px;  font-size: 10px; text-align: center; background: #9d981c;" >
 
              <div class="btn-group">
@@ -813,7 +799,7 @@ echo "dibujarPunto(".$auxc[0].",".$auxc[1].",map,'red');";
     //} else {
      echo '<td style="width: 20px; font-size: 16px; text-align: center; background: #9d981c; " >
 
-      <a href="index.php?action=supinforme&idmes='.$idmes.'&idrec='.$idrec.'&id='.$numtienda.'"> <i class="fa fa-step-backward" aria-hidden="true" style="color: #000000;"></i></a>';
+      <a href="index.php?action=supinforme&idmes='.$idmes.'&idrec='.$idrec.'&id='.$numtienda.'"> <i class="fa fa-step-backward" aria-hidden="true" style="color: #ffffff;"></i></a>';
       
       echo '</td>';
      //}  
@@ -821,7 +807,7 @@ echo "dibujarPunto(".$auxc[0].",".$auxc[1].",map,'red');";
           <td style="width: 20px; font-size: 16px; text-align: center; background: #9d981c; " >  
              <?php 
     //if ($infant==0){ 
-      echo '<a href="index.php?action=supinforme&idmes='.$idmes.'&idrec='.$idrec.'&id='.$numtienda.'"> <i class="fa fa-caret-left fa-lg" aria-hidden="true" style="color: #000000;"></i></a>';
+      echo '<a href="index.php?action=supinforme&idmes='.$idmes.'&idrec='.$idrec.'&id='.$numtienda.'"> <i class="fa fa-caret-left fa-lg" aria-hidden="true" style="color: #ffffff;"></i></a>';
     //} else {
     //  echo '<a href="index.php?action=supinforme&idmes='.$idmes.'&idrec='.$idrec.'&id='.$infant.'"> <i class="fa fa-caret-left" aria-hidden="true"></i></a>';
       
@@ -830,7 +816,7 @@ echo "dibujarPunto(".$auxc[0].",".$auxc[1].",map,'red');";
        </td>
        <td style="width: 20px;  font-size: 16px; text-align: center; background: #9d981c;">
   <?php 
-      echo '<a href="index.php?action=supinforme02&idmes='.$idmes.'&idrec='.$idrec.'&id='.$numtienda.'"> <i class="fa fa-caret-right fa-lg" aria-hidden="true" style="color: #000000;"></i></a>';
+      echo '<a href="index.php?action=supinforme02&idmes='.$idmes.'&idrec='.$idrec.'&id='.$numtienda.'"> <i class="fa fa-caret-right fa-lg" aria-hidden="true" style="color: #ffffff;"></i></a>';
    
   ?>
           </td>   
@@ -841,7 +827,7 @@ echo "dibujarPunto(".$auxc[0].",".$auxc[1].",map,'red');";
       // ($infsig==0){
         //inputbox("es el final de la lista");
       //7lse {
-  echo '<a href="index.php?action=supinforme02&idmes='.$idmes.'&idrec='.$idrec.'&id='.$numtienda.'"> <i class="fa fa-step-forward" aria-hidden="true" style="color: #000000;"></i></a>';
+  echo '<a href="index.php?action=supinforme02&idmes='.$idmes.'&idrec='.$idrec.'&id='.$numtienda.'"> <i class="fa fa-step-forward" aria-hidden="true" style="color: #ffffff;"></i></a>';
     //}
   ?>
 </td>

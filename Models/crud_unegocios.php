@@ -6,7 +6,7 @@ class DatosUnegocio extends Conexion {
 #vistaservicios
 
 public function consultaUnegocioModel($iduneg, $tabla){
-        $stmt = Conexion::conectar()-> prepare("SELECT `une_descripcion`, `une_direccion`, `une_dir_referencia`, `une_cla_pais`, `une_cla_ciudad`, `une_estatus`, `une_coordenadasxy`, `une_puntocardinal`, `une_tipotienda`, `une_cadenacomercial` FROM `ca_unegocios` WHERE `une_id`=:uneg;");
+        $stmt = Conexion::conectar()-> prepare("SELECT `une_descripcion`, `une_direccion`, `une_dir_referencia`, `une_cla_pais`, `une_cla_ciudad`, `une_estatus`, `une_coordenadasxy`, `une_puntocardinal`, `une_tipotienda`, `une_cadenacomercial`, `une_fotofachada`, `une_facrecolector`, `une_facindice` FROM `ca_unegocios` WHERE `une_id`=:uneg;");
         
         $stmt-> bindParam(":uneg", $iduneg, PDO::PARAM_INT);
         $stmt->execute();
@@ -15,7 +15,19 @@ public function consultaUnegocioModel($iduneg, $tabla){
         return $stmt->fetchAll();
     }
     
+public function actualizacatalogoimg($datosModel, $tabla){
 
+    // busca el numero de validacion
+    $stmt = Conexion::conectar()-> prepare("UPDATE `ca_unegocios` SET `une_fotofachada`=:nomimg WHERE `une_id`=:uneid;");
+
+        $stmt->bindParam(":nomimg", $datosModel["nomimg"], PDO::PARAM_STR);
+        $stmt->bindParam(":uneid", $datosModel["uneid"], PDO::PARAM_INT);
+        
+
+        $stmt->execute();
+
+    
+    }
 
 	public function vistaUnegocioModel( $tabla){
 		$stmt = Conexion::conectar()-> prepare("SELECT une_id, n3_nombre, n4_nombre, une_descripcion FROM `ca_unegocios` left JOIN ca_nivel3 ON `une_cla_pais`= N3_ID LEFT JOIN ca_nivel4 ON une_cla_ciudad= N4_ID ORDER BY une_id DESC;");

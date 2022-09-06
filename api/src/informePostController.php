@@ -8,6 +8,7 @@ require '../../Models/crud_informesDetalle.php';
 require '../../Models/crud_productoExhibido.php';
 require '../../Models/crud_imagenesDetalle.php';
 require '../../Models/crud_uneimagenes.php';
+
 require 'contratoapp.php';
 //clase para manejar el json e insertarlo
 class InformePostController{
@@ -128,6 +129,17 @@ class InformePostController{
             if(isset($informe[ContratoInformes::CAUSANOCOMPRA])&&$informe[ContratoInformes::CAUSANOCOMPRA]==4){
                $this->datosInf->actualizarUnegocioEstatus($tiendaid,2,"ca_unegocios");
             }
+            if(isset($informe_det)&&sizeof($informe_det)>0){
+                //si hubo
+                //si tenia habilitado el mes lo modifico
+                $datosController= array("idt"=>$tiendaid,
+                    "indice"=>$indice);
+                
+                $datosController =  DatosInforme::eliminauneghab($datosController, "ca_unegocioshabilitada");
+                
+            }
+            
+            
             $datosuneim=new DatosUneImagenes();
             if(isset($informe))
             $resp=$datosuneim->getUneImagenxCli($tiendaid, $informe[ContratoInformes::CLIENTESID], "ca_uneimagenes");

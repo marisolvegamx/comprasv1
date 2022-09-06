@@ -58,7 +58,7 @@ class EnlacesPaginas{
 			#AQUI INICIA SECCION REPORTE	
 			$enlacesModel == "editainforme" ||
 			
-			//$enlacesModel == "runegociocomp" ||
+			$enlacesModel == "supfotouno" ||
 			//$enlacesModel == "editarep" ||
 
 			//$enlacesModel == "nvorep" ||

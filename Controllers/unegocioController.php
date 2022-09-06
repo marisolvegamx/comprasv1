@@ -45,6 +45,7 @@ public $fecest;
 
 public function vistaunegocioController() {
   //echo "Entre a unegociocontroller";
+
 	$admin=filter_input(INPUT_GET, "admin",FILTER_SANITIZE_STRING);
 	if(isset($admin))
 		if($admin=="ins")
@@ -63,10 +64,25 @@ public function vistaunegocioController() {
       $totpages = 1;
 
     }
-//$totuneg=Datosunegocio::cuentaUnegocioModel($idc, "ca_unegocios");
+//$totuneg=Datosunegocio::cuentaUnegocioModel($paidc, "ca_unegocios");
 //$totpages = ceil($totuneg / $page_size);
+    include "Utilerias/leevar.php";
+      if ($idpais) {
+          $condi1= " and une_cla_pais =".$idpais; 
+      }
+      if ($idciudad) {
+          $condi2= " and une_cla_ciudad=".$idciudad;
+      }
+      if ($idtipotien) {
+          $condi3= " and une_tipotienda =".$idtipotien;   
+      }
+      if ($idcadena) {
+          $condi4= " and une_cadenacomercial =".$idcadena; 
+      }
+      
+      $condic= $condi1.$condi2.$condi3.$condi4;
 
-    $respuesta =Datosunegocio::vistaUnegocioModelCiudad("ca_unegocios");
+    $respuesta =Datosunegocio::vistaUnegocioModelCiudad($condic, "ca_unegocios");
    //var_dump($respuesta);
 
 
@@ -80,7 +96,10 @@ echo '  <tr>
 			<td>
 	                     <a href="index.php?action=editatienda&referencia='.$item["une_id"].'">' . $item["une_descripcion"] . '</a>
 	                  </td>
-                   <td> <a type="button" href="index.php?action=listaunegocio&admin=eli&id='.$item[0].'" onclick="return dialogoEliminar();"><i class="fa fa-times"></i></a>
+
+                    <td align="center"><a type="button" href="index.php?action=listauneghabil&admin=li&id='.$item["une_id"].'"><i class="fa fa-plus fa-lg"></i></a></td>
+
+                   <td align="center"> <a type="button" href="index.php?action=listaunegocio&admin=eli&id='.$item[0].'" onclick="return dialogoEliminar();"><i class="fa fa-times"></i></a>
                     </td>
 	                </tr>';
 	            
@@ -243,6 +262,77 @@ echo '<h3 class="box-title">' . $respuesta["une_descripcion"] . '</h3>
                  <a class="btn btn-block btn-primary"  href="index.php?action=runegociocomp&idc='.$idc.'&uneg='.$respuesta["une_id"].'&sv='.$serv.'"> Detalle </a>
 ';
 }
+
+
+
+public function vistaNuevouneghabil() {
+        // CALCULA EL NOMBRE DE LA TIENDA
+        include "Utilerias/leevar.php";
+        $rs = DatosUnegocio::nombreUnegociohabilitada($id, "ca_unegocios");
+        //ASIGNALO A LA VARIABLE TIENDA  
+        $this->nombreTienda = $rs["une_descripcion"]; 
+            
+
+        $rs = DatosMesasignacion::listaMesAsignacion("ca_mesasignacion");       
+        $this->listaIndice = null;
+        $sele="";
+        $mesnom="----";
+        foreach ($rs as $rowc) {
+           switch ($rowc["num_mes_asig"]) {
+                     case 1:
+                        $mesnom="ENERO";
+                      break;
+                     case 2:
+                        $mesnom="FEBRERO";
+                      break;
+                     case 3:
+                        $mesnom="MARZO";
+                      break;   
+                     case 4:
+                        $mesnom="ABRIL";
+                      break;   
+                     case 5:
+                        $mesnom="MAYO";
+                      break;   
+                     case 6:
+                        $mesnom="JUNIO";
+                      break;   
+                     case 7:
+                        $mesnom="JULIO";
+                      break;   
+                     case 8:
+                        $mesnom="AGOSTO";
+                      break;   
+                     case 9:
+                        $mesnom="SEPTIEMBRE";
+                      break;   
+                     case 10:
+                        $mesnom="OCTUBRE";
+                      break;   
+                     case 11:
+                        $mesnom="NOVIEMBRE";
+                      break;   
+                     case 12:
+                        $mesnom="DICIEMBRE";
+                      break;
+                     }
+
+           $this->listaIndice[] = "<option value=".$rowc["num_mes_asig"].".".$rowc["num_per_asig"]." ".$sele.">".$mesnom."-".$rowc["num_per_asig"]."</option>";
+        } 
+
+
+    }
+
+    public function getListaIndice() {
+       var_dump($this->listaIndice) ;
+       return $this->listaIndice;
+     }
+
+    public function getnombretienda() {
+       //var_dump($this->nombreTienda) ;
+       return $this->nombreTienda;
+     }
+
 
 public function vistaReportesunegocio() {
 $uneg = $_GET["un"];
@@ -767,6 +857,128 @@ function setListaCuentas($listaCuentas) {
 
 
 
+
+public function vistamesasigController(){
+    
+  include "Utilerias/leevar.php";
+  if(isset($admin))
+    if($admin=="ins")
+      $this->insertahab();
+    if($admin=="eli")
+      $this->eliminarhab();
+  
+    
+    $rs= DatosUnegocio::vistaUnegociohabilitada($id, "ca_unegocioshabilitada");
+    foreach ($rs as $row) {
+        $mes_asig= $row["une_idindice"];
+        $aux = explode(".", $mes_asig);
+                       
+          $solomes = $aux[0];
+          $soloanio = $aux[1];
+            
+            switch ($solomes) {
+              case 1:
+                $mesnom="ENERO";
+              break;
+             case 2:
+                $mesnom="FEBRERO";
+              break;
+             case 3:
+                $mesnom="MARZO";
+              break;   
+             case 4:
+                $mesnom="ABRIL";
+              break;   
+             case 5:
+                $mesnom="MAYO";
+              break;   
+             case 6:
+                $mesnom="JUNIO";
+              break;   
+             case 7:
+                $mesnom="JULIO";
+              break;   
+             case 8:
+                $mesnom="AGOSTO";
+              break;   
+             case 9:
+                $mesnom="SEPTIEMBRE";
+              break;   
+             case 10:
+                $mesnom="OCTUBRE";
+              break;   
+             case 11:
+                $mesnom="NOVIEMBRE";
+              break;   
+             case 12:
+                $mesnom="DICIEMBRE";
+              break;
+             }
+
+          $mesasignacion = $mesnom." - ".$soloanio;
+
+
+
+     echo '  
+    <tr>
+      <td  style="width: 70%">'.$mesasignacion .'</td>
+      <td align="center"><a type="button" href="index.php?action=listauneghabil&admin=eli&id='.$id.'&idm='.$row["une_idindice"].'" onclick="return dialogoEliminar();"><i class="fa fa-trash-alt fa-lg"></i></a></td>
+                    
+                </tr>';    
+    }
+
+    
+  }
+
+public function insertahab(){
+  include "Utilerias/leevar.php";
+  try{
+    $regresar="index.php?action=listauneghabil&id=".$idtienda;
+
+    $datosController= array("idt"=>$idtienda,
+                            "indice"=>$indice);
+    //var_dump($datosController); 
+    DatosUnegocio::insertarhab($datosController, "ca_unegocioshabilitada");
+      
+    
+    echo "
+            <script type='text/javascript'>
+              window.location='$regresar'
+                </script>
+                ";
+  }catch(Exception $ex){
+    echo Utilerias::mensajeError($ex->getMessage());
+  }
+  
+}
+
+
+public function eliminarhab(){
+    
+  //include "Utilerias/leevar.php";
+  try{
+    
+
+    $nuneg = $_GET["id"];
+    $indice = $_GET["idm"];
+    $regresar="index.php?action=listauneghabil&id=".$nuneg;
+
+    $datosController= array("idt"=>$nuneg,
+                            "indice"=>$indice);
+    
+    $datosController =  DatosUnegocio::eliminauneghab($datosController, "ca_unegocioshabilitada");
+    
+    
+    echo "
+            <script type='text/javascript'>
+              window.location='$regresar'
+                </script>
+                  ";
+  }catch(Exception $ex){
+    echo Utilerias::mensajeError($ex->getMessage());
+  }
+    
+  }
 
 
 }

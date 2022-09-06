@@ -18,9 +18,9 @@ vi_estatus estatus, vi_cverecolector claveUsuario,
  vi_createdat createdAt, vi_updatedat updatedAt,
 vi_direccion direccion ,
 cu.une_cadenacomercial cadenaComercial ,vi_complementodir complementodireccion,
-cu.une_puntocardinal puntocardinal,
+cu.une_puntocardinal puntoCardinal,
 cu.une_cla_ciudad ciudadId, '' ciudad,une_descripcion as tiendaNombre,
-une_tipotienda tipoId,cad_descripcionesp tipoTienda, 2 as estatusSync
+une_tipotienda tipoId,cad_descripcionesp tipoTienda, '2' as estatusSync
 FROM $tabla inner join ca_unegocios cu
  on vi_tiendaid =cu.une_id
 left join ca_catalogosdetalle on  une_tipotienda=cad_idopcion and cad_idcatalogo=2
@@ -32,7 +32,7 @@ where vi_indice=:vi_indice and vi_cverecolector=:vi_cverecolector;";
             $stmt->bindParam(":vi_cverecolector",  $CVEUSUARIO, PDO::PARAM_INT);
             
            $stmt-> execute();
-       //    $stmt->debugDumpParams();
+           //$stmt->debugDumpParams();
            return $stmt->fetchAll(PDO::FETCH_ASSOC); //para que solo devuelva los nombres de columnas
             
         
