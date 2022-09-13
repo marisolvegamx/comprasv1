@@ -660,5 +660,58 @@ function comprimirImagen($nombrearchivo,$rtOriginal,$tipo,$ruta){
 			error_log("\n".$fecvis.": ".$mensaje,3,getcwd()."/logs/errorescomprasv1.log");
 			}
 			
+	public static function indiceConLetra($mes_asig){
+			    
+			    
+		$aux = explode(".", $mes_asig);
+			    
+		$solomes = $aux[0];
+	    $soloanio = $aux[1];
+			    
+	    switch ($solomes) {
+	        case 1:
+	            $mesnom="ENERO";
+	            break;
+	        case 2:
+	            $mesnom="FEBRERO";
+	            break;
+	        case 3:
+	            $mesnom="MARZO";
+	            break;
+	        case 4:
+	            $mesnom="ABRIL";
+	            break;
+	        case 5:
+	            $mesnom="MAYO";
+	            break;
+	        case 6:
+	            $mesnom="JUNIO";
+	            break;
+	        case 7:
+	            $mesnom="JULIO";
+	            break;
+	        case 8:
+	            $mesnom="AGOSTO";
+	            break;
+	        case 9:
+	            $mesnom="SEPTIEMBRE";
+	            break;
+	        case 10:
+	            $mesnom="OCTUBRE";
+	            break;
+	        case 11:
+	            $mesnom="NOVIEMBRE";
+	            break;
+	        case 12:
+	            $mesnom="DICIEMBRE";
+	            break;
+	    }
+			    
+		$indice = $mesnom." - ".$soloanio;
+	    return $indice;
+			    
+	}
+			
+			
 		
 }

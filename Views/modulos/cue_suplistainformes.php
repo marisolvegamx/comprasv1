@@ -156,7 +156,7 @@
                       </select>
                       </br>
 
-                      <button type="submit" class="btn btn-info float-sm-right" style="margin-right: 10px; margin-top:0px; margin-bottom:10px; "> Filtrar </button></td>
+             <button type="submit" class="btn btn-info float-sm-right" style="margin-right: 10px; margin-top:0px; margin-bottom:10px; "> Filtrar </button></td>
       </tr>
   </table>
 </div>

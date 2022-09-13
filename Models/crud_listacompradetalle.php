@@ -15,6 +15,7 @@ class DatosListaCompraDet extends Conexion{
     $stmt->bindParam(":idliscomp", $idliscomp,PDO::PARAM_INT);
               
 		$stmt-> execute();
+		//$stmt->debugDumpParams();
 		return $stmt->fetchAll();
 
 	}

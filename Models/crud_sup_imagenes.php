@@ -50,5 +50,18 @@ public function actualizacatalogoimg($datosModel, $tabla){
 
     }
 
+public function LeeEstatusfoto($datosModel, $tabla){
+
+	// busca el id de validacion
+	$stmt = Conexion::conectar()-> prepare("SELECT `vai_id`, `vai_numfoto`, `vai_descripcionfoto`, `vai_estatus` FROM `sup_validafotos` WHERE vai_id=:idval and vai_numfoto=:idfoto;");
+
+		$stmt->bindParam(":idval", $datosModel["idval"], PDO::PARAM_INT);
+		$stmt->bindParam(":idfoto", $datosModel["idfoto"], PDO::PARAM_INT);
+		$stmt-> execute();
+
+	return $stmt->fetchall();
+
+	}
+
 
 }

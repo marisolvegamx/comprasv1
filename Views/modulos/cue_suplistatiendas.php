@@ -6,17 +6,12 @@
 <?php
 //include "Utilerias/leevar.php";
 $idsup=$_GET["idsup"];
-$idplan=$_GET["idplan"];
+$idciu=$_GET["idciu"];
 $idmes=$_GET["idmes"];
 
-
-
-
-$resp1=Datosncin::getDatosPlanta($idplan,"ca_nivel5");
-        $nomplan= $resp1["n5_nombre"];
-        $nomcliente =  $resp1["n1_nombre"]; 
-        $nomsup=$resp1["nomsup"];
-
+        $nomsup= DatosCatalogoDetalle::getCatalogoDetalle("ca_catalogosdetalle",18,$idsup);
+         //$respuesta5=Datosncua::vistaN4opcionModel($idciu, "ca_nivel4");
+        //$nomciudad= $respuesta5["nomciudad"];
         $aux = explode(".", $idmes);
                        
           $solomes = $aux[0];
@@ -70,26 +65,25 @@ $resp1=Datosncin::getDatosPlanta($idplan,"ca_nivel5");
 
  <table class="table table-bordered table-hover">
       <tr>
-        <td style="width: 50%">SUPERVISOR : <?php echo $nomsup ?></td>
-        <td style="width: 50%">PLANTA : <?php echo $nomplan ?></td>
+        <td style="width: 40%">SUPERVISOR : <?php echo $nomsup ?></td>
+        <td style="width: 30%">INDICE : <?php echo $mesasignacion ?></td>
+        <td style="width: 30%">CIUDAD : <?php echo $idciu ?></td>
+      </tr>
+      <tr>
+        
+        <td style="width: 30%" colspan="3"><td style="width: 10%">
+            <button  class="btn btn-default float-sm-right" ><a href="index.php?action=suplistainformes">   Regresar  </a></button>
+</td>  </td>
       </tr>
 </table>
-<table class="table table-bordered table-hover">
-       <tr>
-        
-        <td style="width: 50%">INDICE : <?php echo $mesasignacion ?></td>
-        <td style="width: 50%">CLIENTE : <?php echo $nomcliente ?></td>
-      </tr>
-      
- </table>     
-          
          <div class="box-body table-responsive no-padding">
               <table class="table table-hover">
                 <tr>
-                  <th style="width: 15%">No. de TIENDA</th>
-                  <th style="width: 20%">TIPO DE TIENDA</th>
-                  <th style="width: 20%">ZONA</th>
-                  <th style="width: 15%">ESTATUS</th>
+                  <th style="width: 40%">NOMBRE</th>
+                  <th style="width: 15%">TIENDA</th>
+                  <th style="width: 15%">PEPSI</th>
+                  <th style="width: 15%">PEÑAFIEL</th>
+                  <th style="width: 15%">ELECTROPURA</th>
                 </tr>	
 <?php
 

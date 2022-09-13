@@ -36,10 +36,9 @@ require_once "Models/crud_sup_informes.php";
 require_once "Models/crud_sup_visitas.php";
 
  require_once "Controllers/SupervisainformeController.php";
- //require_once "Controllers/indpostmix/graficaIndicadorController.php";
- //require_once "Controllers/indpostmix/resumenResultadosController.php";
- //require_once "Controllers/indpostmix/resumenResxRepController.php";
- //require_once "Controllers/indpostmix/generadorGraficas.php";
+ require_once "Models/crud_sup_imagenes.php";
+require_once "Models/crud_ciudadresidencia.php";
+ require_once "Controllers/SupInformesMuesController.php";
  //require_once "Controllers/indpostmix/TablaEstadistica.php";
  //require_once "Controllers/indpostmix/tablaDinamicaController.php";
  //require_once "Controllers/indpostmix/buscapvController.php";
@@ -76,8 +75,8 @@ require_once "Models/crud_listacompradetalle.php";
 require_once "Models/crud_ciudadresidencia.php";
 require_once "Models/crud_causas.php";
 require_once "Models/crud_Supvalidacion.php";
-//require_once "Models/crud_productos.php";
-//require_once "Models/crud_muestras.php";
+//require_once "Models/crud_supmuestras.php";
+require_once "Models/crud_valprodexhib.php";
 
 //require_once "Models/crud_solicitudes.php";
 //require_once "Models/crud_reporte.php";

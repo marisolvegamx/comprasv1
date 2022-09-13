@@ -58,15 +58,15 @@ class EnlacesPaginas{
 			#AQUI INICIA SECCION REPORTE	
 			$enlacesModel == "editainforme" ||
 			
-			$enlacesModel == "supfotouno" ||
-			//$enlacesModel == "editarep" ||
+			$enlacesModel == "supinforme02" ||
+			$enlacesModel == "supinforme03" ||
 
-			//$enlacesModel == "nvorep" ||
-			
+			$enlacesModel == "supinformecli01" ||
+		    $enlacesModel == "supinformecli02" ||
 			#AQUI INICIA SECCION muestras	
-			//$enlacesModel == "anapend" ||
-			//$enlacesModel == "anarealiza" ||
-			//$enlacesModel == "estanalisis" ||
+			$enlacesModel == "supmues01" ||
+			$enlacesModel == "imgchica" ||
+			$enlacesModel == "imggrande" ||
 			//$enlacesModel == "nuevoanalisis" ||
 			//$enlacesModel == "recepcion" ||
 			//$enlacesModel == "prueba" ||
