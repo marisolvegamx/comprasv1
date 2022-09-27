@@ -1,7 +1,7 @@
 <?php
 //error_reporting(E_ERROR);
 //ini_set("display_errors", 1);
-require_once '../../Models/conexion.php';
+
 require '../../Models/crud_visitas.php';
 require '../../Models/crud_informes.php';
 require '../../Models/crud_informesDetalle.php';

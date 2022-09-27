@@ -1,5 +1,10 @@
 <?php
 
+/***ayuda a saber el equivalente de las columnas en el json que viene de la app
+ * son las columnas de las tablas de la app
+ * @author Marisol
+ *
+ */
 class ContratoInformes {
    
     const  ID="id";
@@ -69,7 +74,7 @@ class ContratoInformesDet {
     const  COMPRASDETID="comprasDetId";
     
     const  CREATEDAT="createdAt";
-    
+    const  SIGLASPROD="siglas";
     const  UPDATEDAT="updatedAt";
     const ESTATUS="estatus";
     const  COMPRASIDBU="comprasIdbu";
@@ -135,6 +140,42 @@ class ContratoProductoEx{
     const CLIENTESID="clienteId";
    
     
+    
+    
+}
+class ContratoSupValidacion{
+    const  ID= "id"; //val_id
+const INFORMESID= "informesId";
+const  PLANTASID="plantasId";
+const  PLANTANOMBRE="plantaNombre";
+const  CLIENTESID="clientesId";
+const  CLIENTENOMBRE="clienteNombre";
+const  INDICE="indice";
+const  NOMBRETIENDA="nombreTienda";
+const  DESCRIPCIONFOTO="descripcionFoto";
+const  DESCRIPCIONID="descripcionId";
+const  NUMFOTO="numFoto"; //para inf etapa será el id del detalle, para compra el id de imagendet
+const  MOTIVO="motivo";
+const  TOTALFOTOS="total_fotos";
+const  ETAPA="etapa";
+const  ESTATUS="estatus";
+const  ESTATUSSYNC="estatusSync";
+
+const CREATEDAT= "createdAt";
+}
+
+class ContratoCorreccion{
+    
+    const  ID="id";
+   
+    const VALID="solicitudId";
+    const  CREATEDAT="createdAt";
+ 
+    const  ESTATUS="estatus";
+    const RUTAFOTO1="ruta_foto1";
+    const RUTAFOTO2="ruta_foto2";
+    const RUTAFOTO3="ruta_foto3";
+  
     
     
 }

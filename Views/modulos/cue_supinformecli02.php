@@ -12,21 +12,35 @@
    //echo "--".$idc;
   //clave mari AIzaSyANZ_tj0m9KI-W0MZKmXImqpH_V6AkJgfI
   ?>
-
+<script src="Views/dist/js/lupa.js"></script>
+   <script type="text/javascript">
+    $( document ).ready(function() {
+  
+	$(".ocodigosnop").css('display', 'none');
+	});
+	
+    function vercodigos(selector){
+    	$("."+selector).toggle(400);
+       
+    	
+    	}
+  
+    </script>
+  
 <div class="row" style="margin-top: 5px;">
       <div class="col-md-10 tituloSup" >INFORME DE COMPRA
       </div>
-      <div class="col-md-1 tituloSup2" >PANTALLA <?= $numpant?>
+      <div class="col-md-1 tituloSup2" >PANTALLA <?= $pan?>
       </div>
       <div class="col-md-1 " >
               <div class="row">
-                <div class="col-md-3 tituloSupBotones" ><a href="<?php echo "index.php?action=supinformecli02&idmes=".$supMuesCon->mesas."&idrec=".$supMuesCon->rec_id."&id=".$supMuesCon->idinf."&cli=".$supMuesCon->idcli."&numpant=".($numpant-1)."&nummues=".$supMuesCon->numuestra?>"><img src="Views/dist/img/Retrocede-Final.jpg"></a>
+                <div class="col-md-3 tituloSupBotones" ><a href="<?php echo $supMuesCon->getLigapanp()?>"><img src="Views/dist/img/Retrocede-Final.jpg"></a>
                 </div>
-                <div class="col-md-3 tituloSupBotones" ><a href="<?php echo "index.php?action=supinformecli02&idmes=".$supMuesCon->mesas."&idrec=".$supMuesCon->rec_id."&id=".$supMuesCon->idinf."&cli=".$supMuesCon->idcli."&numpant=".($numpant-1)."&nummues=".$supMuesCon->numuestra?>"><img src="Views/dist/img/Retrocede-1.jpg"></a>
+                <div class="col-md-3 tituloSupBotones" ><a href="<?php echo "index.php?action=supinformecli02&idmes=".$supMuesCon->mesas."&idrec=".$supMuesCon->rec_id."&id=".$supMuesCon->idinf."&cli=".$supMuesCon->idcli."&pan=".($pan-1)."&nummues=".$supMuesCon->numuestra?>"><img src="Views/dist/img/Retrocede-1.jpg"></a>
                 </div>
-                <div class="col-md-3 tituloSupBotones" ><a href="<?php echo "index.php?action=supinformecli02&idmes=".$supMuesCon->mesas."&idrec=".$supMuesCon->rec_id."&id=".$supMuesCon->idinf."&cli=".$supMuesCon->idcli."&numpant=".($numpant+1)."&nummues=".$supMuesCon->numuestra?>"><img src="Views/dist/img/Avanza-1.jpg"></a>
+                <div class="col-md-3 tituloSupBotones" ><a href="<?php echo "index.php?action=supinformecli02&idmes=".$supMuesCon->mesas."&idrec=".$supMuesCon->rec_id."&id=".$supMuesCon->idinf."&cli=".$supMuesCon->idcli."&pan=".($pan+1)."&nummues=".$supMuesCon->numuestra?>"><img src="Views/dist/img/Avanza-1.jpg"></a>
                 </div>
-                <div class="col-md-3 tituloSupBotones" ><a href="<?php echo "index.php?action=supinformecli02&idmes=".$supMuesCon->mesas."&idrec=".$supMuesCon->rec_id."&id=".$supMuesCon->idinf."&cli=".$supMuesCon->idcli."&numpant=".($numpant+1)."&nummues=".$supMuesCon->numuestra?>"><img src="Views/dist/img/Avanza-Final.jpg"></a>
+                <div class="col-md-3 tituloSupBotones" ><a href="<?php echo $supMuesCon->getLigapanu()?>"><img src="Views/dist/img/Avanza-Final.jpg"></a>
                 </div>
               </div>
       </div>
@@ -49,13 +63,25 @@
       <div class="col-md-1 ">
       <div class="row">
                 <div class="col-md-3 tituloSupBotones" >
-                <a href="<?php echo "index.php?action=supinformecli02&idmes=".$supMuesCon->mesas."&idrec=".$supMuesCon->rec_id."&id=".$supMuesCon->idinf."&cli=".$supMuesCon->idcli."&numpant=".$numpant."&nummues=".$supMuesCon->numuestra?>"><img src="Views/dist/img/Retrocede-Final.jpg"></a>
+               
+                <a href="<?php 
+                if($supMuesCon->numuestra>1)
+                echo "index.php?action=supinformecli02&idmes=".$supMuesCon->mesas."&idrec=".$supMuesCon->rec_id."&id=".$supMuesCon->idinf."&cli=".$supMuesCon->idcli."&pan=".$pan."&nummues=1"?>">
+           <?php if ($supMuesCon->numuestra==1) echo '<img src="Views/dist/img/Retrocede-Final-off.jpg">'; 
+           else echo '  <img src="Views/dist/img/Retrocede-Final.jpg">';  ?>
+              
+                
+                </a>
                 </div>
-                <div class="col-md-3 tituloSupBotones" ><a href="<?php echo "index.php?action=supinformecli02&idmes=".$supMuesCon->mesas."&idrec=".$supMuesCon->rec_id."&id=".$supMuesCon->idinf."&cli=".$supMuesCon->idcli."&numpant=".$numpant."&nummues=".($supMuesCon->numuestra-1)?>"><img src="Views/dist/img/Retrocede-1.jpg"></a>
+                <div class="col-md-3 tituloSupBotones" ><a href="<?php if ($supMuesCon->numuestra>1) echo "index.php?action=supinformecli02&idmes=".$supMuesCon->mesas."&idrec=".$supMuesCon->rec_id."&id=".$supMuesCon->idinf."&cli=".$supMuesCon->idcli."&pan=".$pan."&nummues=".($supMuesCon->numuestra-1)?>"><img src="Views/dist/img/Retrocede-1.jpg"></a>
                 </div>
-                <div class="col-md-3 tituloSupBotones" ><a href="<?php echo "index.php?action=supinformecli02&idmes=".$supMuesCon->mesas."&idrec=".$supMuesCon->rec_id."&id=".$supMuesCon->idinf."&cli=".$supMuesCon->idcli."&numpant=".$numpant."&nummues=".($supMuesCon->numuestra+1)?>"><img src="Views/dist/img/Avanza-1.jpg"></a>
+                <div class="col-md-3 tituloSupBotones" ><a href="<?php if($supMuesCon->numuestra<sizeof($supMuesCon->muestras))echo "index.php?action=supinformecli02&idmes=".$supMuesCon->mesas."&idrec=".$supMuesCon->rec_id."&id=".$supMuesCon->idinf."&cli=".$supMuesCon->idcli."&pan=".$pan."&nummues=".($supMuesCon->numuestra+1)?>"><img src="Views/dist/img/Avanza-1.jpg"></a>
                 </div>
-                <div class="col-md-3 tituloSupBotones" ><a href="<?php echo "index.php?action=supinformecli02&idmes=".$supMuesCon->mesas."&idrec=".$supMuesCon->rec_id."&id=".$supMuesCon->idinf."&cli=".$supMuesCon->idcli."&numpant=".$numpant."&nummues=".$supMuesCon->numuestra?>"><img src="Views/dist/img/Avanza-Final.jpg"></a>
+                <div class="col-md-3 tituloSupBotones" ><a  href="<?php 
+                if(sizeof($supMuesCon->muestras)>1) echo "index.php?action=supinformecli02&idmes=".$supMuesCon->mesas."&idrec=".$supMuesCon->rec_id."&id=".$supMuesCon->idinf."&cli=".$supMuesCon->idcli."&pan=".$pan."&nummues=".sizeof($supMuesCon->muestras)?>">
+                <?php if(sizeof($supMuesCon->muestras)<2) echo '<img src="Views/dist/img/Avanza-Final-off.jpg">';
+                else echo ' <img src="Views/dist/img/Avanza-Final.jpg">';?>
+               </a>
                 </div>
               </div>
       </div>
@@ -71,7 +97,7 @@
       </div>
       <div class="col-md-1 labelAzul1">FECHA:
       </div>
-      <div class="col-md-3 labelAzulDato"><?php echo $supMuesCon->visita["fecharep"]?>
+      <div class="col-md-3 labelAzulDato"><?php echo Utilerias::verFecha($supMuesCon->visita["fecharep"])?>
       </div>
       <div class="col-md-1 labelAzul1">HORA:
       </div>
@@ -98,7 +124,7 @@
     </div>
     <!-- esto va en otro archivo -->
    <?php   if ($admin=="edI"){
-             echo '<form role="form" method="post" action="index.php?action=supinformecli02&admin=act&idmes='.$supMuesCon->mesas.'&idrec='.$supMuesCon->rec_id.'&id='.$supMuesCon->idinf.'&cli='.$supMuesCon->idcli.'&nummues='.$supMuesCon->numuestra.'&numpant='.$numpant.'">';
+             echo '<form role="form" method="post" action="index.php?action=supinformecli02&admin=act&idmes='.$supMuesCon->mesas.'&idrec='.$supMuesCon->rec_id.'&id='.$supMuesCon->idinf.'&cli='.$supMuesCon->idcli.'&nummues='.$supMuesCon->numuestra.'&pan='.$pan.'">';
           }?>
     <div class="row">
     <div class="col-md-1 labelAzul1">PRODUCTO:
@@ -135,20 +161,41 @@
       <div class="col-md-1 labelAzul1">SIGLA PLANTA:
       </div>
       <div class="col-md-2 labelAzulDato"><?php 
-              echo $supMuesCon->informe["inf_consecutivo"];
+      if ($admin=="edI"){
+          echo '<input class="form-control form-control-informes" type="text" placeholder="" id="'.ContratoInformesDet::SIGLASPROD.'" name="'.ContratoInformesDet::SIGLASPROD.'" value="'.$supMuesCon->muestra["ind_siglasprod"].'">';
+      }else{echo $supMuesCon->muestra["ind_siglasprod"];}
           ?>
       </div>
       <div class="col-md-1 labelAzul1">CÓDIGO QR:
       </div>
       <div class="col-md-3 labelAzulDato"><?php 
-              echo $supMuesCon->muestra["ind_qr"];
+      if ($admin=="edI"){
+          echo '<input class="form-control form-control-informes" type="text" placeholder="" id="'.ContratoInformesDet::QR.'" name="'.ContratoInformesDet::QR.'" value="'.$supMuesCon->muestra["ind_qr"].'">';
+      }else{echo $supMuesCon->muestra["ind_qr"];
+      }
           ?>
       </div>
 
       <div class="col-md-1 labelAzul1">TOMADA DE:
       </div>
-      <div class="col-md-1 labelAzulDato"><?php  echo $supMuesCon->muestra["origen"];
+      <div class="col-md-1 labelAzulDato"><?php   if ($admin=="edI"){
+          $rso = DatosCatalogoDetalle::listaCatalogoDetalle( 8,"ca_catalogosdetalle");
+          echo '<select class="form-control form-control-select-informes" id="'.ContratoInformesDet::ORIGEN.'" name="'.ContratoInformesDet::ORIGEN.'">
+             <option value="">Seleccione una opción</option>';
           
+          
+          foreach ($rso as $row) {
+              if (($row["cad_idopcion"]) == $supMuesCon->muestra["ind_origen"]) {
+                  $opcion = "<option value='" . $row["cad_idopcion"] . "' selected>" . $row["cad_descripcionesp"] . "</option>";
+              } else {
+                  $opcion = "<option value='" . $row["cad_idopcion"] . "'>" . $row["cad_descripcionesp"] . "</option>";
+              }
+              echo $opcion;
+          }
+          echo '</select>';
+          
+      }else{echo $supMuesCon->muestra["origen"];
+      }
           ?>
       </div>
     </div>
@@ -162,8 +209,8 @@
  <input type="hidden"  name="nummues" id="nummues" value="'.$nummues.'">
           <input type="hidden"  name="idmes" id="idmes" value="'.$idmes.'">
           <input type="hidden" name="idrec" id="idrec" value="'.$idrec.'">';
-          echo '<input class="form-control form-control-informes" type="text" placeholder="" id="'.ContratoInformesDet::CADUCIDAD.'" name="'.ContratoInformesDet::CADUCIDAD.'" value="'.$supMuesCon->muestra["ind_caducidad"].'">';
-          }else{echo $supMuesCon->muestra["ind_caducidad"];
+          echo '<input class="form-control form-control-informes" type="text" placeholder="" id="'.ContratoInformesDet::CADUCIDAD.'" name="'.ContratoInformesDet::CADUCIDAD.'" value="'.$supMuesCon->muestra["caducidad"].'">';
+          }else{echo $supMuesCon->muestra["caducidad"];
           }
          
                 
@@ -180,7 +227,12 @@
       </div>
       <div class="col-md-1 labelAzul1">VIGENCIA <span style="font-size: 11px">(DIAS)</span>:
       </div>
-      <div class="col-md-3 labelAzulDato"><?php  echo $supMuesCon->muestra["ind_caducidad"];
+      <div class="col-md-3 labelAzulDato"><?php 
+      $diasvig=$supMuesCon->calcularVigencia($supMuesCon->visita["fecharep"], $supMuesCon->muestra["ind_caducidad"]);
+      if($diasvig<30){
+          echo '<span style="color:red;">'.$diasvig.'</span>';
+      }else
+      echo $diasvig;
           ?>
       </div>
       <div class="col-md-1 labelAzul1">COSTO ($):
@@ -272,11 +324,11 @@
        <?php 
         if ($admin=="edI"){
           echo '    
-          <button type="submit" class="btn btn-informes btn-sm btn-block">Guardar</button>';
+          <button type="submit" class="btn btn-informes btn-sm btn-block">GUARDAR</button>';
 
         } else {
              echo '
-            <a href="index.php?action=supinformecli02&admin=edI&idmes='.$supMuesCon->mesas.'&idrec='.$supMuesCon->rec_id.'&id='.$supMuesCon->idinf.'&cli='.$supMuesCon->idcli.'&numpant='.$numpant.'&nummues='.$nummues.'" class="btn btn-informes btn-block ">EDITAR</a>';
+            <a href="index.php?action=supinformecli02&admin=edI&idmes='.$supMuesCon->mesas.'&idrec='.$supMuesCon->rec_id.'&id='.$supMuesCon->idinf.'&cli='.$supMuesCon->idcli.'&pan='.$pan.'&nummues='.$nummues.'" class="btn btn-informes btn-block ">EDITAR</a>';
         } 
         ?>
      
@@ -285,7 +337,60 @@
     <div class="row">
       <div class="col-md-12 espacioHor"></div>
     </div>
- <?php include "suppanelfotos.php";?>
+    
+    
+ <?php 
+ if($pan==5){
+     include "suppanelfotos.php";}
+     if($pan==7){
+         include "suppanelfotos02.php";}
+     ?>
+
+ 
+    <div class="row">
+
+      <div class="col-md-2 areaBoton" > 
+    <?php
+   
+    if ($supMuesCon->correccionFoto["vai_estatus"]==1){
+          $clase= "btn-informesActivado";
+          
+      } else {
+        $clase= "btn-informes";
+       
+      }
+ echo '
+      <a href="'.$supMuesCon->liga.'&admin=solcor&est=1&eta='.$supMuesCon->etapa.'&numimg='.$supMuesCon->listaimagenes[0]["id"].'" class="btn '.$clase .' btn-sm btn-block" >CORREGIR</a>';
+   
+    ?> 
+        
+      </div>
+ <?php if ($supMuesCon->correccionFoto["vai_estatus"]==2){
+          $clase= "btn-informesActivado";
+          
+      } else {
+        $clase= "btn-informes";
+       
+      }
+      ?>
+      <div class="col-md-2 areaBoton"><a href="<?= $supMuesCon->liga.'&admin=solcor&est=2&eta='.$supMuesCon->etapa.'&numimg='.$supMuesCon->listaimagenes[0]["id"]?>" class="btn <?= $clase?> btn-sm btn-block ">CANCELAR</a>
+      </div>
+      <?php if ($supMuesCon->correccionFoto["vai_estatus"]==3){
+          $clase= "btn-informesActivado";
+          
+      } else {
+        $clase= "btn-informes";
+       
+      }
+      ?>
+      <div class="col-md-2 areaBoton"><a href="<?= $supMuesCon->liga.'&admin=solcor&est=3&eta='.$supMuesCon->etapa.'&numimg='.$supMuesCon->listaimagenes[0]["id"] ?>" class="btn <?= $clase?> btn-sm btn-block ">ACEPTAR</a>
+      </div>
+    
+        <div class="col-md-6 vacio">
+      </div>
+    
+    </div>
+
  
     <div class="row">
       <div class="col-md-12 espacioHor">
@@ -304,7 +409,7 @@
        
         }
         echo '
-        <a href="'.$supMuesCon->liga.'&admin=aceptar&sec='.$numpant.'&eta=2" class="btn '.$clase .' btn-sm btn-block ">SI</a>';
+        <a href="'.$supMuesCon->liga.'&admin=aceptarsec&sec='.$pan.'&eta=2&vasid='.$supMuesCon->idval.'&iddet='.$supMuesCon->muestra["ind_id"].'" class="btn '.$clase .' btn-sm btn-block ">SI</a>';
         ?>
       </div>
       <div class="col-md-3 areaBoton">
@@ -317,7 +422,7 @@
        
       }
       echo '
-        <a href="'.$supMuesCon->liga.'&admin=noaceptar&sec='.$numpant.'&eta=2" class="btn '.$clase .' btn-sm btn-block " data-toggle="modal" data-target="#modal-correccion">NO</a>';
+        <a href="" class="btn '.$clase .' btn-sm btn-block " data-toggle="modal" data-target="#modal-correccion">NO</a>';
         ?>
       </div>
     
@@ -328,22 +433,22 @@
           <div class="modal-content">
 
             <div class="modal-header">
-              <h4 class="modal-title">No está bien distribuida</h4>
+              <h4 class="modal-title"></h4>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
             <div class="modal-body">
               
-            <form role="form" method="post" action="index.php?action=supinforme&admin=cor&sec=1&eta=2&idmes='.<?php echo $informeCont->getidmes(); ?>.'&idrec='.<?php echo $informeCont->getidrec(); ?> .'&id='.<?php echo $informeCont->getidmes(); ?>">
+            <form role="form" method="post" action="<?php echo $supMuesCon->liga.'&admin=noaceptarsec&sec='.$pan.'&eta=2&vasid='.$supMuesCon->idval.'&iddet='.$supMuesCon->muestra["ind_id"]; ?>">
               <?php echo '
-                 <input type="hidden" name="id" id="id" value="'.$numtienda.'">
+                
                  <input type="hidden" name="idplan" id="idplan" value="'.$idplan.'"> 
-                 <input type="hidden"  name="indice" id="idmes" value="'.$idmes.'">
-                 <input type="hidden" name="idrec" id="idrec" value="'.$idrec.'">';
+              
+                ';
             ?>
               <p> Escribe el motivo </p>
-              <input type="text"  name="solicitud" id="solicitud" style="width: 450px;">
+              <input type="text"  name="observacionessec" id="observacionessec" style="width: 450px;">
               <p>  </p>
 
               <button type="submit" class="btn btn-primary">Actualizar</button>
@@ -357,3 +462,14 @@
       </div>
       <!-- /.modal -->
     </div>
+    
+ <script type="text/javascript">
+   
+   <?php $idimagen=1; foreach($supMuesCon->listaimagenes as $imagen){
+    /* Initiate Magnify Function
+    with the id of the image, and the strength of the magnifier glass:*/
+   echo  'magnify("myimage'.$idimagen.'", 3);';
+   $idimagen++;
+   }
+   ?>
+    </script>

@@ -743,5 +743,26 @@ where inf_indice=:indice and inf_usuario=:cverecolector and inf_id=:id ";
             
     }
     
+    public function vistaSupInformeDetalleModel($datosModel, $tabla){
+        
+        $stmt = Conexion::conectar()-> prepare("SELECT informes.inf_id, informes.inf_plantasid,
+ informes.inf_indice, informes.inf_usuario, ca_recolectores.rec_nombre,
+ informes.inf_plantasid, n5_nombre, n5_idn1, n1_nombre, informes.inf_consecutivo,inf_comentarios, inf_ticket_compra,
+inf_visitasIdlocal
+FROM informes inner join ca_recolectores on inf_usuario=rec_id
+inner join ca_nivel5 on n5_id=inf_plantasid
+ inner join ca_nivel1 on n1_id=n5_idn1
+where informes.inf_id=:idinf and
+ inf_indice=:idmes and inf_usuario=:idrec;");
+        
+        $stmt->bindParam(":idinf", $datosModel["idinf"], PDO::PARAM_INT);
+        $stmt->bindParam(":idmes", $datosModel["idmes"], PDO::PARAM_STR);
+        $stmt->bindParam(":idrec", $datosModel["idrec"], PDO::PARAM_INT);
+        $stmt-> execute();
+        //$stmt->debugDumpParams();
+        return $stmt->fetchall();
+        
+    }
+    
     
 }

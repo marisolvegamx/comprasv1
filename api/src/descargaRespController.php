@@ -4,11 +4,7 @@ namespace api\src;
 //error_reporting(E_ERROR);
 //ini_set("display_errors", 1);
 include "informeEnvio.php";
-require_once '../../Models/conexion.php';
-require_once '../../Models/crud_informes.php';
-require_once '../../Models/crud_informesDetalle.php';
-require_once '../../Models/crud_imagenesDetalle.php';
-require_once '../../Models/crud_productoExhibido.php';
+
 require_once '../../Models/crud_visitas.php';
 require_once '../../Utilerias/constantes.php';
 

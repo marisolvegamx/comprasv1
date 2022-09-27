@@ -9,9 +9,9 @@ $sql="SELECT
   `cad_descripcionesp`,
   `cad_descripcioning`,
   `cad_otro`
-FROM $tabla where ca_catalogosdetalle.cad_idcatalogo= :id";
+FROM $tabla where ca_catalogosdetalle.cad_idcatalogo= :id order by cad_descripcionesp";
 
-if ($datosModel =13) {
+if ($datosModel==13) {
     $sql=$sql. " order by cad_descripcionesp";
 }
 
@@ -70,18 +70,6 @@ public function listaCatalogoDetalleOpc($datosModel, $op, $tabla){
     return $stmt->fetch();
   }
   
-  public function listaVolumenes( $tabla){
-  	$stmt = Conexion::conectar()-> prepare("SELECT
-  `cav_presion`,
-  `cav_temperatura`,
-  `cav_volumen`
-FROM `ca_volumenes`");
-  	
-
-  	$stmt-> execute();
-  	
-  	return $stmt->fetchAll();
-  }
   
   public function borrarCatalogoDetalle($idcatalogo,$idopcion,$tabla){
   	$stmt = Conexion::conectar()-> prepare("DELETE
@@ -200,158 +188,20 @@ cad_descripcionesp, cad_descripcioning, cad_otro)
   	
   }
   
-  public function insertarVolumen($clapresion,$clatemp,$volco,$tabla){
-  	try{
-  		
-  		$sSQL= "insert into $tabla (cav_presion, cav_temperatura,cav_volumen)
- values (:clapresion, :clatemp, :volco)";
-  		
-  		$stmt = Conexion::conectar()->prepare($sSQL);
-  		
-  		$stmt->bindParam(":clapresion", $clapresion, PDO::PARAM_STR);
-  		$stmt->bindParam(":clatemp", $clatemp, PDO::PARAM_STR);
-  		$stmt->bindParam(":volco", $volco, PDO::PARAM_STR);
-  		
-  		
-  		
-  		if(!$stmt-> execute()){
-  			throw new Exception("Error al insertar opcion");
-  		}
-  	}catch(Exception $ex){
-  		throw new Exception("Error al insertar opcion");
-  	}
-  	
-  	
-  }
-  
-  public function actualizarVolumen($clatemp,$volco,$tabla){
-  	try{
-  		
-  		$sSQL=("update $tabla set cav_volumen=:volco
- where concat(cav_presion,'.',cav_temperatura)=:id");
-  		
-  		
-  		$stmt = Conexion::conectar()->prepare($sSQL);
-  		
-  		$stmt->bindParam(":id", $clatemp, PDO::PARAM_STR);
-  		$stmt->bindParam(":volco", $volco, PDO::PARAM_STR);
-  		
-  		
-  		
-  		if(!$stmt-> execute()){
-  		
-  			throw new Exception("Error al actualizar opcion");
-  		}
-  	}catch(Exception $ex){
-  		throw new Exception("Error al actualizar opcion");
-  	}
-  	
-  	
-  }
-  
-  public function insertarTipoMercado($cvetm,$nomtm,$tabla){
-  	try{
-  		
-  		$sSQL= "insert into $tabla (tm_clavetipo, tm_nombretipo)
- values (:cvetm, :nomtm)";
-  		
-  		
-  		$stmt = Conexion::conectar()->prepare($sSQL);
-  		
-  		$stmt->bindParam(":cvetm", $cvetm, PDO::PARAM_STR);
-  		$stmt->bindParam(":nomtm", $nomtm, PDO::PARAM_STR);
-  			
-  		
-  		
-  		if(!$stmt-> execute()){
-  			throw new Exception("Error al insertar opcion");
-  		}
-  	}catch(PDOException $ex){
-  		throw new Exception("Error al insertar opcion");
-  	}
-  	
-  	
-  }
-  public function borrarTipoMercado($id,$tabla){
-  	try{
-  		
-  		$sSQL="Delete From $tabla Where tm_clavetipo like :id";
-  		
-  		
-  		
-  		$stmt = Conexion::conectar()->prepare($sSQL);
-  		
-  		$stmt->bindParam(":id", $id, PDO::PARAM_STR);
-  			
-  		
-  		if(!$stmt-> execute()){
-  			throw new Exception("Error al borrar opcion");
-  		}
-  	}catch(PDOException $ex){
-  		throw new Exception("Error al borrar opcion");
-  	}
-  	
-  }
-  public function actualizarTipoMercado($id,$nombre,$tabla){
-  	try{
-  		
-  		$sSQL="UPDATE `ca_tipomercado`
-SET 
-  `tm_nombretipo` =:nombretipo
-WHERE `tm_clavetipo` = :clavetipo";
-  		
-  		
-  		
-  		$stmt = Conexion::conectar()->prepare($sSQL);
-  		
-  		$stmt->bindParam(":clavetipo", $id, PDO::PARAM_STR);
-  		$stmt->bindParam(":nombretipo", $nombre, PDO::PARAM_STR);
-  		
-  		
-  		if(!$stmt-> execute()){
-  			throw new Exception("Error al actualizar opcion");
-  		}
-  	}catch(PDOException $ex){
-  		throw new Exception("Error al actualizar opcion");
-  	}
-  	
-  }
-  
-  public function getTipoMercado($id,$tabla){
-  
-  		
-  		$sSQL="SELECT
-  `tm_clavetipo`,
-  `tm_nombretipo`
-FROM `ca_tipomercado` where  tm_clavetipo=:id";
-  		
-  		$stmt = Conexion::conectar()->prepare($sSQL);
-  		
-  		$stmt->bindParam(":id", $id, PDO::PARAM_STR);
-  		$stmt-> execute();
-  		$res=$stmt->fetch();
-  		
-  		return $res;
-  	
-  }
- 
-  
-  public function listaCatalogo($idcatalogo, $tabla){
-      $stmt = Conexion::conectar()-> prepare("SELECT ca_idcatalogo as cad_idcatalogo,
-ca_nombrecatalogo as cad_nombreCatalogo,
+  public function getDetallexDesc($descrip, $op, $tabla){
+      $stmt = Conexion::conectar()-> prepare("SELECT
+  `cad_idcatalogo`,
   `cad_idopcion`,
   `cad_descripcionesp`,
   `cad_descripcioning`,
   `cad_otro`
-FROM $tabla inner join ca_catalogos on ca_catalogos.ca_idcatalogo=cad_idcatalogo
-where ca_catalogosdetalle.cad_idcatalogo=:id");
+     FROM $tabla where ca_catalogosdetalle.cad_idcatalogo= :id and cad_descripcionesp=:op");
       
-      $stmt->bindParam(":id", $idcatalogo, PDO::PARAM_INT);
+      $stmt->bindParam(":id", $op, PDO::PARAM_INT);
+      $stmt->bindParam(":op", $descrip, PDO::PARAM_STR);
       
       $stmt-> execute();
-      
-      return $stmt->fetchAll(PDO::FETCH_ASSOC); //para que solo devuelva los nombres de columnas
+    //  $stmt->debugDumpParams();
+      return $stmt->fetch();
   }
-  
-  
 }

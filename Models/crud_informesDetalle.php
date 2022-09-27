@@ -38,7 +38,7 @@ ind_tipoanalisis tipoAnalisis,
             cta.cad_descripcionesp  as tipoAnalisis,
 ind_nummuestra numMuestra, ind_comprasid comprasId,
 ind_compraddetid comprasDetId, ind_comprasIdbu comprasIdbu, 
-ind_comprasDetIdbu comprasDetIdbu
+ind_comprasDetIdbu comprasDetIdbu,ind_siglasprod
 FROM $tabla
 inner join ca_productos cp on cp.pro_id =ind_productos_id
             inner join ca_catalogosdetalle ccp on ccp.cad_idopcion =cp.pro_categoria and ccp.cad_idcatalogo =5
@@ -82,7 +82,7 @@ ind_tipoanalisis tipoAnalisis,
             cta.cad_descripcionesp  as nombreAnalisis,
 ind_nummuestra numMuestra, ind_comprasid comprasId,
 ind_compraddetid comprasDetId, ind_comprasIdbu comprasIdbu,
-ind_comprasDetIdbu comprasDetIdbu
+ind_comprasDetIdbu comprasDetIdbu,ind_siglasprod
 FROM $tabla
 inner join ca_productos cp on cp.pro_id =ind_productos_id
             inner join ca_catalogosdetalle ccp on ccp.cad_idopcion =cp.pro_categoria and ccp.cad_idcatalogo =5
@@ -127,7 +127,7 @@ ind_foto_atributoc foto_atributoc, ind_azucares azucares,
 ind_tipoanalisis tipoAnalisis,
        ind_nummuestra numMuestra, ind_comprasid comprasId,
 ind_compraddetid comprasDetId, ind_comprasIdbu comprasIdbu,
-ind_comprasDetIdbu comprasDetIdbu
+ind_comprasDetIdbu comprasDetIdbu,ind_siglasprod
 FROM $tabla
 where ind_indice=:indice and ind_recolector=:cverecolector and ind_id=:id";
         
@@ -154,7 +154,7 @@ where ind_indice=:indice and ind_recolector=:cverecolector and ind_id=:id";
 ind_foto_atributoa, ind_atributob, ind_foto_atributob, ind_etiqueta_evaluacion, 
  ind_comentarios, 
 ind_estatus, ind_atributoc, ind_foto_atributoc, ind_azucares, ind_tipoanalisis, ind_nummuestra,
- ind_comprasid, ind_compraddetid,ind_recolector,ind_indice, ind_qr)
+ ind_comprasid, ind_compraddetid,ind_recolector,ind_indice, ind_qr,ind_siglasprod)
 VALUES(:ind_id,:ind_informes_id, :ind_productos_id, :ind_tamanio, :ind_empaque, :ind_codigo, :ind_caducidad, 
 :ind_backup, :ind_origen, :ind_costo, :ind_foto_codigo_produccion,
  :ind_energia,
@@ -163,7 +163,7 @@ VALUES(:ind_id,:ind_informes_id, :ind_productos_id, :ind_tamanio, :ind_empaque, 
   :ind_comentarios, 
 :ind_estatus, :ind_atributoc, :ind_foto_atributoc, :ind_azucares, :ind_tipoanalisis,
  :ind_nummuestra,
- :ind_comprasid, :ind_compraddetid, :ind_recolector,:ind_indice,:ind_qr); ";
+ :ind_comprasid, :ind_compraddetid, :ind_recolector,:ind_indice,:ind_qr,:ind_siglasprod); ";
             
             $stmt=$pdo->prepare($sSQL);
             $stmt->bindParam(":ind_id", $datosModel[ContratoInformesDet::ID],PDO::PARAM_INT);
@@ -206,6 +206,7 @@ VALUES(:ind_id,:ind_informes_id, :ind_productos_id, :ind_tamanio, :ind_empaque, 
             $stmt->bindParam(":ind_indice", $indice, PDO::PARAM_STR);
             $stmt->bindParam(":ind_recolector", $recolector, PDO::PARAM_INT);
             $stmt->bindParam(":ind_qr", $datosModel[ContratoInformesDet::QR], PDO::PARAM_STR);
+            $stmt->bindParam(":ind_siglasprod", $datosModel[ContratoInformesDet::SIGLASPROD], PDO::PARAM_STR);
             
            
             if(!$stmt-> execute())
@@ -216,7 +217,7 @@ VALUES(:ind_id,:ind_informes_id, :ind_productos_id, :ind_tamanio, :ind_empaque, 
             
         //    $stmt->debugDumpParams();
         }catch(PDOException $ex){
-            Utilerias::guardarError("DatosInformeDetalle.inesertar "+$ex->getMessage());
+            Utilerias::guardarError("DatosInformeDetalle.insertar "+$ex->getMessage());
             throw new Exception("Hubo un error al insertar el informe");
         }
         
@@ -230,7 +231,7 @@ VALUES(:ind_id,:ind_informes_id, :ind_productos_id, :ind_tamanio, :ind_empaque, 
 cem.cad_descripcionesp  empaque,
  ctp.cad_descripcionesp  as nombreTipoMuestra,
    cta.cad_descripcionesp  as tipoAnalisis,
-`ind_codigo`, `ind_caducidad`,
+`ind_codigo`,DATE_FORMAT(ind_caducidad,'%d-%m-%y') as caducidad, ind_caducidad,
 `ind_tipomuestra`, `ind_origen`, `ind_costo`, `ind_comentarios`, `ind_estatus`,
  `ind_tipoanalisis`, `ind_nummuestra`, `ind_comprasid`, `ind_compraddetid`, `ind_indice`,
  `ind_recolector`, pro_producto, inf_ticket_compra, inf_plantasid, 
@@ -245,7 +246,7 @@ cem.cad_descripcionesp  empaque,
   ind_foto_atributoa,
   ind_foto_atributob,ind_foto_atributoc,
   ind_etiqueta_evaluacion,
-  ind_condiciones_traslado
+  ind_condiciones_traslado,ind_siglasprod
 FROM $tabla
 inner join pr_listacompradetalle ON ind_comprasid=lid_idlistacompra
 and ind_compraddetid=lid_idprodcompra
@@ -278,11 +279,12 @@ and pro_cliente=:cliente
         
     }
     
-    public static function actualizar($ind_id,$codigo, $costo,$caducidad, $atributoa, $atributob, $atributoc,$recolector,$indice,$tabla){
+    public static function actualizar($ind_id,$origen,$qr,$siglasprod,$codigo, $costo,$caducidad, $atributoa, $atributob, $atributoc,$recolector,$indice,$tabla){
         try{
             
-            $sSQL= "UPDATE comprasdata.informe_detalle
+            $sSQL= "UPDATE informe_detalle
                     SET 
+ind_origen=:origen,ind_qr=:qr,ind_siglasprod=:siglasprod,
                     ind_codigo=:ind_codigo, ind_caducidad=:ind_caducidad,
                     ind_costo=:ind_costo, 
                      ind_atributoa=:ind_atributoa,  ind_atributob=:ind_atributoa,  ind_atributoc=:ind_atributoc
@@ -293,11 +295,44 @@ and pro_cliente=:cliente
             $stmt->bindParam(":ind_codigo", $codigo, PDO::PARAM_STR);
             $stmt->bindParam(":ind_caducidad", $caducidad, PDO::PARAM_STR);
              $stmt->bindParam(":ind_costo", $costo,PDO::PARAM_STR);
+             $stmt->bindParam(":origen", $origen, PDO::PARAM_STR);
+             $stmt->bindParam(":qr", $qr, PDO::PARAM_STR);
+             $stmt->bindParam(":siglasprod", $siglasprod,PDO::PARAM_STR);
             $stmt->bindParam(":ind_atributoa", $atributoa,PDO::PARAM_INT);
-            
+        
             $stmt->bindParam(":ind_atributob", $atributob, PDO::PARAM_INT);
              $stmt->bindParam(":ind_atributoc", $atributoc, PDO::PARAM_INT);
              $stmt->bindParam(":ind_indice", $indice, PDO::PARAM_STR);
+            $stmt->bindParam(":ind_recolector", $recolector, PDO::PARAM_INT);
+            
+            
+            if(!$stmt-> execute())
+            {
+                
+                throw new Exception($stmt->errorCode()."-".$stmt->errorInfo()[2]);
+            }
+            
+             //   $stmt->debugDumpParams();
+        }catch(PDOException $ex){
+            Utilerias::guardarError("DatosInformeDetalle.actualizar "+$ex->getMessage());
+            throw new Exception("Hubo un error al actualizar el informe detalle");
+        }
+        
+    }
+    
+    public static function actualizarEstatus($ind_id,$recolector,$indice,$estatus,$tabla){
+        try{
+            
+            $sSQL= "UPDATE informe_detalle
+                    SET
+                    ind_estatus=:ind_estatus
+                     WHERE ind_id=:ind_id AND ind_indice=:ind_indice AND ind_recolector=:ind_recolector; ";
+            
+            $stmt=DatosInformeDetalle::getInstance()->prepare($sSQL);
+            $stmt->bindParam(":ind_id", $ind_id,PDO::PARAM_INT);
+           
+            $stmt->bindParam(":ind_estatus", $estatus, PDO::PARAM_INT);
+            $stmt->bindParam(":ind_indice", $indice, PDO::PARAM_STR);
             $stmt->bindParam(":ind_recolector", $recolector, PDO::PARAM_INT);
             
             
@@ -317,7 +352,44 @@ and pro_cliente=:cliente
     
    
     public function getByCompraBu(  $idcompra,  $iddet,$INDICE,$CVEUSUARIO,$tabla){
-        $sSQL= "SELECT * FROM $tabla where ind_comprasid=:idcompra 
+        $sSQL= "SELECT
+	`ind_id`,
+	`ind_informes_id`,
+	`ind_productos_id`,
+	`ind_tamanio_id`,
+	`ind_empaque`,
+	cem.cad_descripcionesp empaque,
+	ctp.cad_descripcionesp as nombreTipoMuestra,
+	cta.cad_descripcionesp as tipoAnalisis,
+	`ind_codigo`,
+	`ind_caducidad`,
+	`ind_tipomuestra`,
+	`ind_origen`,
+	`ind_costo`,
+	`ind_comentarios`,
+	`ind_estatus`,
+	`ind_tipoanalisis`,
+	`ind_nummuestra`,
+	`ind_comprasid`,
+	`ind_compraddetid`,
+	`ind_indice`,
+	`ind_recolector`,ind_siglasprod,
+	pro_producto,
+	cc.cad_descripcionesp as presentacion
+FROM $tabla
+INNER JOIN ca_productos on
+	ind_productos_id = ca_productos.pro_id
+inner join ca_catalogosdetalle cc on
+	cc.cad_idopcion = ind_tamanio_id
+	and cc.cad_idcatalogo = 13
+inner join ca_catalogosdetalle cem on
+	cem.cad_idopcion = ind_empaque
+	and cem.cad_idcatalogo = 12
+inner join ca_catalogosdetalle cta on
+	cta.cad_idopcion = ind_tipoanalisis
+	and cta.cad_idcatalogo = 7
+	    inner join ca_catalogosdetalle ctp on ctp.cad_idopcion =ind_tipomuestra and ctp.cad_idcatalogo =15
+          where ind_comprasid=:idcompra 
 and ind_compraddetid=:iddet and ind_tipomuestra=3 and ind_recolector=:recolector
  and ind_indice=:indice";
         
@@ -347,6 +419,23 @@ and ind_compraddetid=:iddet and ind_tipomuestra<>3 and ind_recolector=:recolecto
         $stmt-> execute();
         //   $stmt->debugDumpParams();
         return $stmt->fetchAll(PDO::FETCH_ASSOC); //para que solo devuelva los nombres de columnas
+        
+    }
+    
+    # CLASE NIVEL 1n1
+    public function getListaComDet($idliscomp, $tabla){
+        
+        $stmt = Conexion::conectar()-> prepare("SELECT lid_idprodcompra,lid_idlistacompra,lis_idplanta, pro_id, pro_orden, lis_idindice, lid_idproducto, `lid_fechapermitida`,`lid_fecharestringida`,`lid_backup`, lid_idprodcompra, lid_cantidad, pro_producto, lid_idtamano, lid_idempaque, lid_idtipoanalisis, desctam, ordtam,lid_saldoaceptado, lid_tipo, idemp, descemp, ordemp, idtipa, desctipa, ordtipa, idtipm, desctipm, ordtipm FROM (
+    SELECT lis_idplanta,lid_idlistacompra, lid_idprodcompra, lis_idindice, `lid_fechapermitida`, `lid_fecharestringida`, `lid_backup`, lid_idproducto, lid_cantidad, pro_id, pro_orden, pro_producto, lid_idtamano, lid_idempaque, lid_idtipoanalisis, lid_tipo, lid_saldoaceptado FROM pr_listacompradetalle inner join pr_listacompra ON lis_idlistacompra=lid_idlistacompra inner join ca_productos ON lid_idproducto=pro_id where lid_idlistacompra=:idliscomp) as A inner JOIN (SELECT cad_idopcion as idtam, cad_descripcionesp as desctam, cad_otro as ordtam FROM `ca_catalogosdetalle` WHERE cad_idcatalogo=13) as B ON A.lid_idtamano=B.idtam INNER JOIN (SELECT cad_idopcion as idemp, cad_descripcionesp as descemp, cad_otro as ordemp FROM `ca_catalogosdetalle` WHERE cad_idcatalogo=12) as C ON A.lid_idempaque=C.idemp INNER JOIN (SELECT cad_idopcion as idtipa, cad_descripcionesp as desctipa, cad_otro as ordtipa FROM `ca_catalogosdetalle` WHERE cad_idcatalogo=7) as D ON A.lid_idtipoanalisis=D.idtipa INNER JOIN (SELECT cad_idopcion as idtipm, cad_descripcionesp as desctipm, cad_otro as ordtipm FROM `ca_catalogosdetalle` WHERE cad_idcatalogo=15) as E ON A.lid_tipo=E.idtipm ORDER BY pro_orden ASC, ordtam DESC, ordemp ASC, ordtipa ASC, ordtipm;");
+        
+        
+        //$stmt = Conexion::conectar()-> prepare("SELECT lis_idplanta, pro_id, lis_idindice, lid_idproducto, `lid_fechapermitida`,`lid_fecharestringida`,`lid_backup`, lid_idprodcompra, lid_cantidad, pro_producto, lid_idtamano, lid_idempaque, lid_idtipoanalisis, cad_descripcionesp, cad_otro, lid_tipo FROM (SELECT lis_idplanta, lid_idprodcompra, lis_idindice, `lid_fechapermitida`, `lid_fecharestringida`, `lid_backup`, lid_idproducto, lid_cantidad, pro_id, pro_producto, lid_idtamano, lid_idempaque, lid_idtipoanalisis, lid_tipo FROM $tabla inner join pr_listacompra ON lis_idlistacompra=lid_idlistacompra inner join ca_productos ON lid_idproducto=pro_id where lid_idlistacompra=:idliscomp) as a INNER JOIN (SELECT cad_idopcion, cad_descripcionesp, cad_otro FROM `ca_catalogosdetalle` WHERE cad_idcatalogo=13) as b ON lid_idtamano=cad_idopcion ORDER BY pro_id, cad_otro ASC, lid_idempaque ASC, lid_idtipoanalisis ASC, lid_tipo;");
+        
+        $stmt->bindParam(":idliscomp", $idliscomp,PDO::PARAM_INT);
+        
+        $stmt-> execute();
+        //$stmt->debugDumpParams();
+        return $stmt->fetchAll();
         
     }
 }

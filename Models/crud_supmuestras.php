@@ -1,6 +1,6 @@
 <?php
 
-require_once "Models/conexion.php";
+
 class DatosInfoMues extends Conexion{
 
 	

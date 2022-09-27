@@ -1,5 +1,5 @@
 <?php
-
+include 'Models/crud_supmuestras.php';
 class SupInfmuestraController{
     
 

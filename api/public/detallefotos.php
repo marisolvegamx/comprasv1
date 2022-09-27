@@ -40,10 +40,8 @@ $idvisita=0;
  function buscarProductoEx($idvisita, $indice,$recolector,$cliente) {
      
      $sql = "SELECT imd_descripcion,imd_ruta
-
 FROM producto_exhibido pe
 inner join imagen_detalle imd on imd.imd_idlocal =pe_imagenId  and  imd_indice =pe.pe_indice and imd_usuario =pe.pe_recolector 
-
 where pe.pe_visitasId =$idvisita and  pe_indice ='$indice' and pe_recolector =$recolector
 and pe_clienteId=$cliente;";
      

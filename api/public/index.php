@@ -14,9 +14,10 @@ include "../src/listaComController.php";
 include "../src/usuarioController.php";
 include "../src/idsInfController.php";
 include "../src/sustitucionController.php";
-
+include "../src/solCorreccionController.php";
 include "../src/plantaPenController.php";
 include "../src/descargaRespController.php";
+include '../src/correccionPostController.php';
 use api\Subefotos;
 use api\src\DescargaRespController;
 // Create and configure Slim app
@@ -331,8 +332,120 @@ $app->get('/descresp', function ($request, $response, $args) {
             ->getBody()
             ->write( $cc->response($indice,$recolector));
         });
-      
 
+    $app->get('/solcorreccion', function ($request, $response, $args) {
+        $solc = new solCorreccionController();
+        $recolector = filter_input(INPUT_GET, "usuario", FILTER_SANITIZE_NUMBER_INT);
+       // $fechal = filter_input(INPUT_GET, "version_lista", FILTER_SANITIZE_STRING);
+       // $fechad = filter_input(INPUT_GET, "version_detalle", FILTER_SANITIZE_STRING);
+        $indice = filter_input(INPUT_GET, "indice", FILTER_SANITIZE_STRING);
+        $etapa = filter_input(INPUT_GET, "etapa", FILTER_SANITIZE_NUMBER_INT);
+        $this->get('logger')->addInfo('solcorreccion: Llegó una peticion  ' . $recolector.".".$etapa."--".$indice);
+        
+        return $response->withHeader('Content-type', 'application/json')
+        ->getBody()
+        ->write($solc->response(  $indice,$recolector,$etapa));
+    });
+    
+        $app->post('/infetapa/create', function (Request $request, Response $response) {
+            // Si necesitamos acceder a alguna variable global en el framework
+            // Tenemos que pasarla con use($variable) en la cabecera de la función.
+            // Va a devolver un objeto JSON con los datos de usuarios.
+            
+            $campos = $request->getParsedBody();
+            $this->get('logger')
+            ->addInfo('InforemesEtapa: Llegaron varios informes' . $request->getBody());
+            
+            try {
+              /*  $informeContrl = new InformePostController();
+                $informeContrl->insertarPend($campos);
+                
+                $datos = array(
+                    'status' => 'ok',
+                    'data' => 'Informes guardados correctamente.'
+                );
+                $this->get('logger')
+                ->addInfo('InforemesPend: Respuesta Informes guardados correctamente');
+                return $response->withJson($datos, 200);*/
+            } catch (Exception $e) {
+                $datos = array(
+                    'status' => 'error',
+                    'data' => $e->getMessage()
+                );
+                $this->get('logger')
+                ->addInfo('InforemesPend: hubo un error ' . $e->getMessage());
+                
+                return $response->withJson($datos, 500);
+            }
+        });
+      
+            $app->post('/correccion/create', function (Request $request, Response $response) {
+                
+                // Si necesitamos acceder a alguna variable global en el framework
+                // Tenemos que pasarla con use($variable) en la cabecera de la función.
+                // Va a devolver un objeto JSON con los datos de usuarios.
+                
+                $campos = $request->getParsedBody();
+                $this->get('logger')
+                ->addInfo('CrearCorreccion: Llegó una ' . $request->getBody());
+                
+                try {
+                    
+                    $correcContrl = new CorreccionPostController();
+                    // var_dump($campos);
+                    //  die();
+                    $correcContrl->insertarTodo($campos);
+                    
+                    $datos = array(
+                        'status' => 'ok',
+                        'data' => 'Correccion dada de alta correctamente.'
+                    );
+                    $this->get('logger')
+                    ->addInfo('CrearCorreccion: Correccion dada de alta correctamente');
+                    return $response->withJson($datos, 200);
+                } catch (Exception $e) {
+                    echo "hubo un error";
+                    $datos = array(
+                        'status' => 'error',
+                        'data' => $e->getMessage()
+                    );
+                    $this->get('logger')
+                    ->addInfo('CrearCorreccion: hubo un error ' . $e->getMessage());
+                    
+                    return $response->withJson($datos, 500);
+                }
+            });
+                $app->post('/correcciones/create', function (Request $request, Response $response) {
+                    // Si necesitamos acceder a alguna variable global en el framework
+                    // Tenemos que pasarla con use($variable) en la cabecera de la función.
+                    // Va a devolver un objeto JSON con los datos de usuarios.
+                    
+                    $campos = $request->getParsedBody();
+                    $this->get('logger')
+                    ->addInfo('CorrecPend: Llegaron varias' . $request->getBody());
+                    
+                    try {
+                        $correcContrl = new CorreccionPostController();
+                        $correcContrl->insertarPend($campos);
+                        
+                        $datos = array(
+                            'status' => 'ok',
+                            'data' => 'Correcciones guardados correctamente.'
+                        );
+                        $this->get('logger')
+                        ->addInfo('CorrecPend: Respuesta correcciones guardados correctamente');
+                        return $response->withJson($datos, 200);
+                    } catch (Exception $e) {
+                        $datos = array(
+                            'status' => 'error',
+                            'data' => $e->getMessage()
+                        );
+                        $this->get('logger')
+                        ->addInfo('CorrecPend: hubo un error ' . $e->getMessage());
+                        
+                        return $response->withJson($datos, 500);
+                    }
+                });
     //$this->logger->addInfo('Something interesting happened');
 //para grupos
  /*   $app->group('/user/', function () {

@@ -192,19 +192,21 @@ static function cortarPalabra($cadena){
    {
    		
    	
-   		$nva_fecha=str_split('/',$fecha);
+   		$nva_fecha=explode('/',$fecha);
 		
 		return $nva_fecha[2].'/'.$nva_fecha[1].'/'.$nva_fecha[0];
 	
    }
 
-   static function mysql_fecha2($fecha)	//pasa la fecha de d/m/a?o a formato a?o/m/d
+   static function verFecha($fecha)	//pasa la fecha de d/m/a?o a formato a?o/m/d
    {
    		
-   	
-   		$nva_fecha=str_split('/',$fecha);
+   //	echo $fecha;
+   		$nva_fecha=explode('-',$fecha);
+   		$anio=substr($nva_fecha[2],2,2);
+   		//var_dump($nva_fecha);
 		
-		return $nva_fecha[2].'-'.$nva_fecha[1].'-'.$nva_fecha[0];
+		return $nva_fecha[0].'-'.$nva_fecha[1].'-'.$anio;
 	
    }
 
@@ -536,16 +538,7 @@ static function fecha_comp($fecha){
     return $lafecha;
 }
 
-function creaFiltro($filtro) {
-	
-	$titulo_fil = array('unidadneg' => "UNIDAD DE NEGOCIO: ", "franquicia" => "FRANQUICIA: ", "region" => "REGION/GRUPO: ", "zona" => "ZONA/ESTADO: ", "cedis" => "CEDIS/CIUDAD: ");
-	$clase="Titulo2";
-	if (isset ($_SESSION["f" . $filtro])&&$_SESSION["f" . $filtro]!="")
-	{ 
-		
-	 return '<div class="col-md-6">' . $titulo_fil[$filtro] . $_SESSION["f" . $filtro] . "</div>";
-	}
-}
+
 
 function michr($indice){
 	if($indice>=65&&$indice<=90){
@@ -659,7 +652,7 @@ function comprimirImagen($nombrearchivo,$rtOriginal,$tipo,$ruta){
 		
 			error_log("\n".$fecvis.": ".$mensaje,3,getcwd()."/logs/errorescomprasv1.log");
 			}
-			
+		/****pasa del indice 5.2022 a MAYO - 2022****/	
 	public static function indiceConLetra($mes_asig){
 			    
 			    

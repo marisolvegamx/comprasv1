@@ -91,7 +91,7 @@ class DatosValidacion extends Conexion{
      $sql= 'INSERT INTO sup_validasecciones (vas_id, vas_idseccion, vas_descripcion, vas_aprobada, vas_noaplica, vas_observaciones, vas_estatus) VALUES ('.$datosModel["idval"].','.$datosModel["idsec"].',"'.$datosModel["descrip"].'",'.$datosModel["idaprob"].','.$datosModel["noap"].',"'.$datosModel["observ"].'",'.$datosModel["estatus"].');';
 
    
-//	var_dump($sql);
+	//var_dump($sql);
 	$stmt = Conexion::conectar()-> prepare($sql);
 
 	//$stmt = Conexion::conectar()-> prepare("INSERT INTO sup_validasecciones (vas_id, vas_idseccion, vas_descripcion, vas_apro$datosModel["idaprob"].'b'.ada, vas_noaplica, vas_observaciones, vas_estatus) VALUES (:idval,:idsec,:descrip,:aprob,:noap,:observ,:est);");
@@ -105,7 +105,6 @@ class DatosValidacion extends Conexion{
 		//$stmt->bindParam(":est", $datosModel["estatus"], PDO::PARAM_INT);
 		//var_dump($stmt);
 		$stmt-> execute();
-	
 
 	}
 
@@ -160,8 +159,8 @@ public function actualizaValidacionimg($datosModel, $tabla){
 	$stmt = Conexion::conectar()-> prepare("UPDATE $tabla SET `vai_estatus`=:estatus WHERE `vai_id`=:idval and `vai_numfoto`=:numimg");
 
 		$stmt->bindParam(":idval", $datosModel["idval"], PDO::PARAM_INT);
-		$stmt->bindParam(":estatus", $datosModel["estatus"], PDO::PARAM_INT);
-		$stmt->bindParam(":numimg", $datosModel["numimg"], PDO::PARAM_INT);
+		$stmt->bindParam(":estatus", $datosModel["est"], PDO::PARAM_INT);
+		$stmt->bindParam(":numimg", $datosModel["idimg"], PDO::PARAM_INT);
 	
 		$stmt-> execute();
 		    return "success";
@@ -175,13 +174,17 @@ public function actualizaValidacionimg($datosModel, $tabla){
     public function ingresaValidacionimg($datosModel, $tabla){
 
 	// busca el id de validacion
-	$stmt = Conexion::conectar()-> prepare("INSERT INTO `sup_validafotos`(`vai_id`, `vai_numfoto`, `vai_descripcionfoto`, `vai_estatus`) VALUES (:idval,:numimg,:descripfoto,:estatus);");
+    $sql='INSERT INTO `sup_validafotos`(`vai_id`, `vai_numfoto`, `vai_descripcionfoto`, `vai_estatus`, `vai_observaciones`)
+ VALUES ('.$datosModel["idval"].','.$datosModel["idimg"].','.$datosModel["desimg"].','.$datosModel["est"].',"'.$datosModel["observ"].'");';
+   	//	echo $sql;
+	$stmt = Conexion::conectar()-> prepare($sql);
 
-		$stmt->bindParam(":idval", $datosModel["idval"], PDO::PARAM_INT);
-		$stmt->bindParam(":estatus", $datosModel["estatus"], PDO::PARAM_INT);
-		$stmt->bindParam(":numimg", $datosModel["numimg"], PDO::PARAM_INT);
-		$stmt->bindParam(":descripfoto", $datosModel["descripimg"], PDO::PARAM_STR);
-		
+	//	$stmt->bindParam(":idval", $datosModel["idval"], PDO::PARAM_INT);
+	//	$stmt->bindParam(":estatus", $datosModel["est"], PDO::PARAM_INT);
+	//	$stmt->bindParam(":numimg", $datosModel["idimg"], PDO::PARAM_INT);
+	//	$stmt->bindParam(":descripfoto", $datosModel["desimg"], PDO::PARAM_STR);
+	//	$stmt->bindParam(":idcli", $datosModel["idcli"], PDO::PARAM_INT);
+	//	$stmt->bindParam(":observ", $datosModel["observ"], PDO::PARAM_STR);
 		$stmt-> execute();
 		        
 	}
@@ -204,17 +207,36 @@ public function LeeImgticket($uneid, $recid, $indice, $tabla){
 	public function LeeEstatusSec($datosModel, $tabla){
 
 	// busca el id de validacion
-	$stmt = Conexion::conectar()-> prepare("SELECT vas_aprobada, vas_noaplica FROM $tabla inner join sup_validasecciones on val_id=vas_id where val_inf_id=:idinf and val_rec_id=:valrec and val_indice = :indice  and val_etapa=:ideta;");
+	$stmt = Conexion::conectar()-> prepare("SELECT vas_aprobada, vas_noaplica FROM $tabla inner join sup_validasecciones on val_id=vas_id where val_inf_id=:idinf and val_rec_id=:valrec and val_indice = :indice  and val_etapa=:ideta and vas_idseccion=:idsec;");
 
 		$stmt->bindParam(":indice", $datosModel["idmes"], PDO::PARAM_STR);
 		$stmt->bindParam(":idinf", $datosModel["idinf"], PDO::PARAM_INT);
 		$stmt->bindParam(":valrec", $datosModel["idrec"], PDO::PARAM_INT);
 		$stmt->bindParam(":ideta", $datosModel["ideta"], PDO::PARAM_INT);
+		$stmt->bindParam(":idsec", $datosModel["idsec"], PDO::PARAM_INT);
 		$stmt-> execute();
 
 	return $stmt->fetchall();
 
 	}
 
+
+
+public function LeeEstatusFoto($datosModel, $tabla){
+
+	// busca el id de validacion
+	$stmt = Conexion::conectar()-> prepare("SELECT `vai_id`, `vai_numfoto`, `vai_descripcionfoto`, `vai_observaciones`, `vai_estatus` FROM `sup_validafotos` INNER JOIN sup_validacion ON sup_validacion.val_id= sup_validafotos.vai_id WHERE val_indice=:indice AND val_rec_id=:idrec and val_etapa =:ideta and val_inf_id=:idinf and vai_numfoto = :idfoto;
+");
+
+		$stmt->bindParam(":indice", $datosModel["idmes"], PDO::PARAM_STR);
+		$stmt->bindParam(":idinf", $datosModel["idinf"], PDO::PARAM_INT);
+		$stmt->bindParam(":idrec", $datosModel["idrec"], PDO::PARAM_INT);
+		$stmt->bindParam(":ideta", $datosModel["ideta"], PDO::PARAM_INT);
+		$stmt->bindParam(":idfoto", $datosModel["idfoto"], PDO::PARAM_INT);
+		$stmt-> execute();
+
+	return $stmt->fetchall();
+
+	}
 
 }	

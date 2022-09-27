@@ -31,8 +31,22 @@ class TiendasController{
             
             //return $stmt->fetchAll(PDO::FETCH_ASSOC);
            // echo "watt";
+      $estpe=$estpen=$estele=3;
             foreach ($rs as $row) {
-                
+                //busco para cada cliente si ya se visitó
+               $resp= $this->getInformexcliente($row["une_id"], $fechafin, 4);
+               if($resp!=null)
+                    $estpe=$resp["color"];
+               $row["estpep"]=$estpe;
+               $resp= $this->getInformexcliente($row["une_id"], $fechafin, 5);
+               if($resp!=null)
+                   $estpen=$resp["color"];
+               $row["estpen"]=$estpen;
+                   $resp= $this->getInformexcliente($row["une_id"], $fechafin, 6);
+               if($resp!=null)
+                    $estele=$resp["color"];
+               $row["estele"]=$estele;
+               
                 $this->result[] = $row;
             }
         
@@ -53,7 +67,7 @@ class TiendasController{
     public function response($pais,$ciudad, $cadenacomercial,$unedescripcion,$planta,$fechaini,$fechafin,$cliente)
     {
         if(isset($planta)&&$planta!="") 
-        $this->getTiendas($pais,$ciudad, $cadenacomercial,$unedescripcion,$planta,$fechaini,$fechafin,$cliente);
+             $this->getTiendas($pais,$ciudad, $cadenacomercial,$unedescripcion,$planta,$fechaini,$fechafin,$cliente);
         $this->getZonas($pais, $ciudad);
         //busco las geocercas
         
@@ -147,13 +161,14 @@ une_tipotienda, une_cadenacomercial FROM ca_unegocios WHERE 1=1 ";
      //   $stmt = Conexion::conectar()-> prepare($sql." order by une_descripcion" );
      //   $stmt-> bindParam(":ciudad", $ciudad, PDO::PARAM_STR);
         // $stmt-> bindParam(":pais", $pais, PDO::PARAM_INT);
-       // echo $pais."--".$ciudad."--".$planta."--".$fechaini."--".$fechafin."--".$tremini."--".$cliente;
-        if($cliente==4&&isset($fechafin)&&$fechafin!="") {
+      //  echo $pais."--".$ciudad."--".$planta."--".$fechaini."--".$fechafin."--".$tremini."--".$cliente;
+        //if($cliente==4&&isset($fechafin)&&$fechafin!="") {
+     /*   if(isset($fechafin)&&$fechafin!="") {
                
             $sqlcol=" ,if(une_estatus=2,'rojo',if(une_idindice is not null,'verde',if(une_estatus=1 and  str_to_date(concat('01.',vi_indice ),'%d.%m.%Y') < DATE_ADD(:fechafin, interval 1 month)
  and str_to_date(concat('01.',vi_indice ),'%d.%m.%Y') >= DATE_ADD(:fechafin, interval -3 month),'amarillo','verde' ))) as color ";
             }else
-            $sqlcol=",'verde' as color";
+            $sqlcol=",'verde' as color";*/
         
         $sql="select cu.une_id,une_descripcion, une_direccion, une_dir_referencia, une_cla_pais, une_cla_ciudad,
  une_estatus, une_coordenadasxy, une_puntocardinal,
@@ -162,7 +177,7 @@ str_to_date(concat('01.', vi_indice ),'%d.%m.%Y') as fec,
 	DATE_ADD(:fechaini, interval 1 month) fini,
 DATE_ADD(:fechafin, interval 1 month) ffin,
 	DATE_ADD(:fechafin, interval -3 month) 3m,
-une_tipotienda, une_cadenacomercial, une_estatus ".$sqlcol."
+une_tipotienda, une_cadenacomercial, une_estatus
  from ca_unegocios cu 
 inner join visitas on vi_tiendaid=cu.une_id ";
         if(isset($fechaini)&&$fechaini!=""&&isset($fechafin)&&$fechafin!="") {
@@ -177,14 +192,14 @@ and vi_cverecolector=i.inf_usuario  and vi_indice=i.inf_indice ";
             $sql.=" and inf_plantasid=:planta";
             
         }
-         $sql.=" left join ca_unegocioshabilitada cuh on cuh.une_id=cu.une_id and  str_to_date(concat('01.',une_idindice ),'%d.%m.%Y')=:fechafin";
+      //   $sql.=" left join ca_unegocioshabilitada cuh on cuh.une_id=cu.une_id and  str_to_date(concat('01.',une_idindice ),'%d.%m.%Y')=:fechafin";
      
        // $sql.=" left join ca_nivel5 on n5_id=inf_plantasid
 //where  une_cla_ciudad=:ciudad ";
 //and une_cla_pais=:pais";
         // agregando filtros
        $sql.="  group by cu.une_id";
-             //    echo $sql;
+   //              echo $sql;
         $stmt = Conexion::conectar()-> prepare($sql." order by une_descripcion" );
      //   $stmt-> bindParam(":ciudad", $ciudad, PDO::PARAM_STR);
        // $stmt-> bindParam(":pais", $pais, PDO::PARAM_INT);
@@ -202,7 +217,7 @@ and vi_cverecolector=i.inf_usuario  and vi_indice=i.inf_indice ";
             
         }*/
         
-        if(isset($planta)){
+       if(isset($planta)){
             
             if($planta!="") {
                 
@@ -226,8 +241,71 @@ and vi_cverecolector=i.inf_usuario  and vi_indice=i.inf_indice ";
         */
     //     $stmt-> bindParam(":indice", $indice, PDO::PARAM_STR);
         $stmt->execute();
-       // $stmt->debugDumpParams();
+     //   $stmt->debugDumpParams();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
+    public function getInformexcliente($uneid,$fechafin,$cliente){
+    
+           
+            $sql="select
+if(une_estatus=2,'1',if(une_idindice is not null,'3','2')) as color
+          from
+	ca_unegocios cu
+inner join visitas on
+	vi_tiendaid = cu.une_id
+	and str_to_date(concat('01.', vi_indice ),
+	'%d.%m.%Y') < DATE_ADD(:fechafin, interval 1 month)
+	and str_to_date(concat('01.', vi_indice ),
+	'%d.%m.%Y') >= DATE_ADD(:fechafin, interval -3 month)
+inner join informes i on
+	i.inf_visitasIdlocal = vi_idlocal
+	and vi_cverecolector = i.inf_usuario
+	and vi_indice = i.inf_indice
+	left join ca_nivel5 on n5_id=inf_plantasid
+left join ca_unegocioshabilitada cuh on
+	cuh.une_id = cu.une_id
+	and str_to_date(concat('01.', une_idindice ),
+	'%d.%m.%Y')= :fechafin
+where cu.une_id=:uneid
+and n5_idn1=:cliente
+";
+            //              echo $sql;
+            $stmt = (new Conexion())->conectar()-> prepare($sql." order by vi_createdat desc limit 1" );
+               $stmt-> bindParam(":uneid", $uneid, PDO::PARAM_INT);
+             $stmt-> bindParam(":cliente", $cliente, PDO::PARAM_INT);
+            
+           
+                $stmt-> bindParam(":fechafin", $fechafin, PDO::PARAM_STR);
+              
+                
+            
+          
+            /* if(isset($unedescripcion)&&$unedescripcion!="") {
+             $stmt-> bindValue(":descripcion", "%".$unedescripcion."%", PDO::PARAM_STR);
+             
+             }*/
+            
+           
+            /* if(isset($cadenacomercial)){
+            
+            if($cadenacomercial!="") {
+            
+            $stmt-> bindParam(":cadena", $cadenacomercial, PDO::PARAM_STR);
+            }
+            }
+            if(isset($pais)){
+            
+            if($pais!="") {
+            
+            $stmt-> bindParam(":pais", $pais, PDO::PARAM_INT);
+            }
+            }
+            */
+            //     $stmt-> bindParam(":indice", $indice, PDO::PARAM_STR);
+            $stmt->execute();
+         
+            return $stmt->fetch(PDO::FETCH_ASSOC);
     }
     
     public function getUnegocioxFiltrosAma($pais,$ciudad, $planta,$fechaini,$fechafin,$cliente){

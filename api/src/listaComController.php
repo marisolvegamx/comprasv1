@@ -1,9 +1,9 @@
 <?php
 //error_reporting(E_ERROR);
 //ini_set("display_errors", 1);
-require_once '../../Models/conexion.php';
 
-require_once '../../Models/crud_informes.php';
+
+
 require_once '../../Models/crud_n6.php';
 //para devolver los catalogos en json
 class listaComController{

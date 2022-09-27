@@ -4,6 +4,10 @@
 include "Models/crud_pantalla.php";
 include 'Models/crud_informesDetalle.php';
 include 'Models/crud_imagenesDetalle.php';
+include 'Models/crud_supvalmuestras.php';
+include 'Models/crud_supvalseccion.php';
+include 'Models/crud_productoExhibido.php';
+include 'Models/crud_informes.php';
 
 class SupMuestraController
 {
@@ -23,31 +27,30 @@ class SupMuestraController
      public $liga;
      
      public $listaCompra;
+     public $correccionFoto;
+     public $valSeccion;
+     public $etapa=2;
+     public $seccion;
+     public $idval;
+     public $numpan;
      
     public function vistaMuestra(){
         $this->idinf=$_GET["id"];
         $this->mesas=$_GET["idmes"];
         $this->rec_id=$_GET["idrec"];
         $this->idcli=$_GET["cli"];
-        $numpantalla=$_GET["numpant"];
+        $numpantalla=$_GET["pan"];
         $this->numuestra=$_GET["nummues"];
         $admin=$_GET["admin"];
-        
-        $this->liga="index.php?action=supinformecli02&idmes=".$this->mesas."&idrec=".$this->rec_id."&id=".$this->idinf.'&cli='.$this->idcli.'&numpant='.$numpantalla.'&nummues='. $this->numuestra;
+        $this->numpan=$numpantalla;
+        $this->liga="index.php?action=supinformecli02&idmes=".$this->mesas."&idrec=".$this->rec_id."&id=".$this->idinf.'&cli='.$this->idcli.'&pan='.$numpantalla.'&nummues='. $this->numuestra;
           
         if($admin=="act"){
             $this->actualizarMuestra();
         }
-        if($admin=="aceptar"){
-            $this->aceptarsec(1);
-        }
-        if($admin=="noaceptar"){
-            $this->aceptarsec(0);
-        }
+       
         
-        $this->buscarMuestras();
-      //  var_dump($this->muestras);
-      $this->destruirSesion();
+      
     
         $datosCont= array("idinf"=>$this->idinf,
             "idmes"=>$this->mesas,
@@ -55,7 +58,7 @@ class SupMuestraController
         );
         $this->indiceletra=Utilerias::indiceConLetra($this->mesas);
         
-        $resp =DatosSupInformes::vistaSupInformeDetalleModel($datosCont, "informes");
+        $resp =DatosInforme::vistaSupInformeDetalleModel($datosCont, "informes");
      //  var_dump($resp);
         if($resp!=null)
         $this->informe=$resp[0];
@@ -71,6 +74,9 @@ class SupMuestraController
         $soloanio = $aux[1];
         $this->dirimagen = "fotografias\\".$solomes."_".$soloanio;
          $resp2=DatosSupvisita::vistaSupInfvisModel($datosCont, "visitas");
+         $this->buscarMuestras();
+         //  var_dump($this->muestras);
+         $this->destruirSesion();
         if($resp2!=null)
             $this->visita=$resp2[0];
         $this->pantalla=DatosPantalla::getPantalla($numpantalla,"sup_pantallas");
@@ -81,7 +87,33 @@ class SupMuestraController
             $this->getListaCompra($this->muestra["ind_comprasid"]);
         }
        // var_dump( $this->muestra);
-        $this->buscarImagenes();
+       if($numpantalla==7)
+           $this->buscarImagenesPan7();
+       else
+             $this->buscarImagenes();
+       // var_dump($this->listaimagenes);
+        $datosController= array("id"=>$this->idinf,
+            "idrec"=>$this->rec_id,
+            "indice"=>$this->mesas,
+            "ideta"=>$this->etapa,
+        );
+        $this->buscarSeccion($datosController,$numpantalla);
+        $datoscorr=array("idval"=>$this->idval,
+            "idfoto"=>$this->listaimagenes[0]["id"]
+        );
+        
+        $this->buscarCorreccionFoto($datoscorr);
+        
+        if($admin=="aceptarsec"){
+            $this->aceptarsec(1);
+        }
+        if($admin=="noaceptarsec"){
+            $this->aceptarsec(0);
+        }
+        if($admin=="solcor"){
+            $this->solcorreccion($est);
+        }
+        
         
     }
     
@@ -101,8 +133,8 @@ class SupMuestraController
     public function actualizarMuestra(){
         include "Utilerias/leevar.php";
             try{
-                
-                DatosInformeDetalle::actualizar($ind_id,$codigo,$costo,$caducidad,$atributoa,$atributob,$atributoc, $idrec, $idmes, "informe_detalle");
+                //$fcaducidad=Utilerias::$caducidad
+                DatosInformeDetalle::actualizar($ind_id,$origen,$qr,$siglasprod,$codigo,$costo,$caducidad,$atributoa,$atributob,$atributoc, $idrec, $idmes, "informe_detalle");
             }catch(Exception $ex){
                 echo "hubo un error ".$ex->getMessage();
             }
@@ -143,92 +175,113 @@ class SupMuestraController
        // var_dump($this->listaimagenes);
         
     }
+    
+    public function buscarImagenesPan7(){
+        //de lo que tengo en la tabla pantalla busco en los campos de la muestra con ind_
+        //por el id en la tabla de imagenes
+       // var_dump($this->informe);
+        //  echo "+++".$this->pantalla["pa_foto1"];
+       
+        $idfoto1=$this->informe["inf_ticket_compra"];
+      
+        //busco la ruta
+        $result=DatosImagenDetalle::getImagen($this->mesas,$this->rec_id,$idfoto1,"imagen_detalle");
+        
+        $this->listaimagenes[]=$result;
+        
+        if($this->pantalla["pa_foto2"]!=null&&$this->pantalla["pa_foto2"]=="foto producto exhibido"){
+             
+            //busco en productos exhibidos
+          //  echo $this->mesas."--".$this->rec_id."--".$this->informe["inf_visitasIdlocal"]."--".$this->idcli;
+            $result=DatosProductoExhibido::getProdExxCliente($this->mesas,$this->rec_id,$this->informe["inf_visitasIdlocal"],$this->idcli,"producto_exhibido");
+          /*  if($result!=null)//paso a imagen
+            {
+                $imagenex=array("imd_idlocal"=>$result["imagenId"],
+                    "imd_descripcion"=>$result["foto producto exhibido"], 
+                    "imd_ruta"=>$result["id"], 
+                    "imd_estatus"=>$result["id"], 
+                    "imd_indice"=>$result["id"],
+                    "imd_usuario"=>$result["id"]);
+
+
+                    
+            }*/
+           // var_dump($result);
+            $this->listaimagenes[]=$result;
+            
+        }
+       
+        // var_dump($this->listaimagenes);
+        
+    }
     public function aceptarsec($aprob){
         
         include "Utilerias/leevar.php";
+      //  var_dump($_GET);
         try{
             if ($pan) {
                 $pan= "0".$pan;
             }
-            $est=0;
+            $estatus=0;
               $datosController= array("id"=>$id,
                 "idrec"=>$idrec,
                   "indice"=>$idmes,
                 "ideta"=>$eta,
             );
-            
-            $respuesta =DatosValidacion::LeeIdValidacion($datosController, "sup_validacion");
-            // valido si se encuentra
-            if (sizeof($respuesta)>0) {
-                foreach($respuesta as $row => $item){
-                    $idval= $item["val_id"];
-                }
-                //var_dump($idval);
-                // valida si existe validacion en seccion
-                // revisa si ya existe
-                $datosController= array("idval"=>$idval,
-                    "idsec"=>$sec,
-                );
-                //var_dump($datosController);
-                $respuestaS =DatosValidacion::LeeIdImgValidacion($datosController, "sup_validasecciones");
-                //var_dump($respuestaS);
-                if (sizeof($respuestaS)>0) {
+                //ya tenía respuesta
+              //var_dump($this->valSeccion);
+              if($aprob==0){
+                  $estatus=2;
+              }else
+              {    $estatus=3; //aceptada
+              
+              
+              }
+            if ($this->valSeccion!=null) {
                     //echo "lo encontre";
-                    $datosController= array("idval"=>$idval,
+                    $datosController= array("idval"=>$this->idval,
                         "idsec"=>$sec,
                         "idaprob"=>$aprob,
                         "noap"=>0,
-                        "observ"=>"",
-                        "estatus"=>$est,
+                        "observ"=>$observacionessec,
+                        "estatus"=>$estatus,
+                        "nummuestra"=>$iddet
                     );
-                    DatosValidacion::actualizaValidacionsec($datosController,"sup_validasecciones");
-                }else{
-                    //echo "no esta la seccion";
-                    if ($sec==1){
-                        $descrip="ubicacion de la tienda";
-                    }else{
-                        if ($sec==2){
-                            $descrip="direccion en ticket";
+                    DatosValSeccion::actualizaValidacionsecmues($datosController,"sup_validasecciones");
+            }else{
+              
+                if($this->idval==0)
+                {
+                
+               
+                    //echo "no hay nada";
+                    // inserta validacion
+                    $datosController= array("id"=>$id,
+                        "idrec"=>$idrec,
+                        "indice"=>$idmes,
+                        "estatus"=>1,
+                        "ideta"=>2,
+                    );
+                    
+                    // inserta validacion detalle
+                    DatosValidacion::InsertaValidacion($datosController, "sup_validacion");
+                
+                    // busca numero de validacion
+                    $datosController= array("id"=>$id,
+                        "idrec"=>$idrec,
+                        "indice"=>$idmes,
+                        "ideta"=>2
+                    );
+                    
+                    $respuesta =DatosValidacion::LeeIdValidacion($datosController, "sup_validacion");
+                  //  var_dump($respuesta);
+                    if (sizeof($respuesta)>0) {
+                        foreach($respuesta as $row => $item){
+                            $this->idval= $item["val_id"];
                         }
                     }
-                    
-                    $datosController2= array("idval"=>$idval,
-                        "idsec"=>$sec,
-                        "descrip"=>$descrip,
-                        "idaprob"=>$aprob,
-                        "noap"=>0,
-                        "observ"=>$solicitud,
-                        "estatus"=>$est,
-                    );
-                    //var_dump($datosController2);
-                    DatosValidacion::ingresaregvalsec($datosController2, "sup_validasecciones");
-                }  // if validacion de seccion
-                
-            }else {
-                //echo "no hay nada";
-                // inserta validacion
-                $datosController= array("id"=>$id,
-                    "idrec"=>$idrec,
-                    "indice"=>$idmes,
-                    "estatus"=>1,
-                    "ideta"=>2,
-                );
-                
-                // inserta validacion detalle
-                DatosValidacion::InsertaValidacion($datosController, "sup_validacion");
-                // busca numero de validacion
-                $datosController= array("id"=>$id,
-                    "idrec"=>$idrec,
-                    "indice"=>$idmes,
-                );
-                
-                $respuesta =DatosValidacion::LeeIdValidacion($datosController, "sup_validacion");
-                
-                if (sizeof($respuesta)>0) {
-                    foreach($respuesta as $row => $item){
-                        $idval= $item["val_id"];
-                    }
                 }
+              //  die($idval);
                 // var_dump($idval);
                 if ($sec==1){
                     $descrip="ubicacion de la tienda";
@@ -237,20 +290,63 @@ class SupMuestraController
                         $descrip="direccion en ticket";
                     }
                 }
-                $datosController2= array("idval"=>$idval,
+                $datosController2= array("idval"=> $this->idval,
                     "idsec"=>$sec,
                     "descrip"=>$descrip,
                     "idaprob"=>$aprob,
                     "noap"=>0,
-                    "observ"=>$solicitud,
-                    "estatus"=>$est,
+                    "observ"=>$observacionessec,
+                    "estatus"=>$estatus,
+                    "nummuestra"=>$iddet
                 );
-                //var_dump($datosController2);
-                DatosValidacion::ingresaregvalsec($datosController2, "sup_validasecciones");
-                
+               // var_dump($datosController2);
+                DatosValSeccion::ingresaregvalsecmues($datosController2, "sup_validasecciones");
+                $datosController= array("idval"=>$this->idval,
+                    "idsec"=>$sec,
+                );
+                //var_dump($datosController);
+                $respuestaS =DatosValidacion::LeeIdImgValidacion($datosController, "sup_validasecciones");
+                if (sizeof($respuestaS)>0) {
+                    $this->valSeccion=$respuestaS[0];   
+                }
                 
             }  // if existe en validacion
-          //  die("--".$aprob);
+            //inserto la muestra en la tabla de supervision para poner el resultado
+            
+          //  $respmue=DatosValMuestra::getValidacionMuestra($idval,$this->numuestra,"sup_validamuestras");
+                 
+         //  var_dump($respmue);
+          
+           /* if($respmue!=null&&sizeof($respmue)>0){
+                //actualizo
+                $respmue["vam_estatus"]=$estatus;
+                DatosValMuestra::UpdateValidacion($respmue,"sup_validamuestras");
+            }else //inserto
+            { */
+            //todo ver primero si la muestra ya se acepto o se rechazo para antes de sumar o restar
+            
+                if($aprob==1){
+                    //actualizo los aceptados en la lista de compra
+                    
+                    DatosListaCompraDet::sumaAceptadosLista($this->muestra["ind_comprasid"],$this->muestra["ind_compraddetid"],1,"pr_listacompradetalle");
+                    
+                }else 
+                    //quito una comprada
+                    DatosListaCompraDet::restaAceptadosLista($this->muestra["ind_comprasid"],$this->muestra["ind_compraddetid"],1,"pr_listacompradetalle");
+                    
+              /*  $datosControllermu= array("vam_id"=>$idval,
+                    "vam_idprod"=>$this->muestra["ind_comprasid"],
+                    "vam_cantidad"=>1,
+                    "vam_idmuestra"=>$this->numuestra,
+                    "vam_prodcompra"=>$this->muestra["ind_compraddetid"],
+                    "vam_estatus"=>$estatus
+                );*/
+                 //   echo "****".$this->muestra["ind_id"];
+               //     DatosValMuestra::InsertaValidacion($datosControllermu,"sup_validamuestras");
+                DatosInformeDetalle::actualizarEstatus($this->muestra["ind_id"], $idrec, $idmes, $estatus, "informe_detalle");
+            
+           // die($this->muestra["ind_comprasid"]."--".$this->muestra["ind_compraddetid"]);
+           // die();
             echo "
             <script type='text/javascript'>
               window.location='$this->liga'
@@ -263,7 +359,7 @@ class SupMuestraController
         }
     }
     
-    public function solcorreccion(){
+    public function solcorreccion($aprob){
         
         include "Utilerias/leevar.php";
         
@@ -280,112 +376,195 @@ class SupMuestraController
         }
         
         try{
-            
-            
-            // busca si el registro ya existe
-            $datosController= array("id"=>$id,
-                "idrec"=>$idrec,
-                "indice"=>$idmes,
-                "ideta"=>$eta,
-            );
-         //   var_dump($datosController);
-            $respuesta =DatosValidacion::LeeIdValidacion($datosController, "sup_validacion");
-            
-            if (sizeof($respuesta)>0) {
-                echo "lo encontre";
-                foreach($respuesta as $rogw => $item){
-                    $idval= $item["val_id"];
-                    
-                }
-             //   var_dump($idval);
-            //    var_dump($numimg);
+          
                 //revisa si existe validacion en imagenes
-                $respuesta1 =DatosValidacion::LeeIdvalidafoto($idval, $numimg, "sup_validafotos");
-                if (sizeof($respuesta1)>0) {
+                 if ($this->correccionFoto!=null) {
                     // actualiza g
-                    echo "encontre la foto";
-                    $datosController= array("idval"=>$idval,
+                   // echo "encontre la foto";
+                    $datosController= array("idval"=>$this->idval,
                         "numimg"=>$numimg,
-                        "estatus"=>$est,
+                        "estatus"=>$est
+                      
                     );
-                    var_dump($idval);
-                    var_dump($datosController);
+                 //   var_dump($idval);
+                 //   var_dump($datosController);
                     $ex= DatosValidacion::actualizaValidacionimg($datosController, "sup_validafotos");
-                    
+                    $datoscorr=array("idval"=>$this->idval,
+                        "idfoto"=>$numimg
+                    );
+                    $this->buscarCorreccionFoto($datoscorr);
                     
                 } else {
-                    // ingresa registro de imagen
-                    $datosController= array("idval"=>$idval,
-                        "numimg"=>$numimg,
-                        "descripimg"=>1,
-                        "estatus"=>$est,
-                    );
-                    
-                    DatosValidacion::ingresaValidacionimg($datosController, $tabla);
-                }
-            }else {
-                echo "no hay nada";
-                // inserta validacion
-                $datosController= array("id"=>$id,
-                    "idrec"=>$idrec,
-                    "indice"=>$idmes,
-                    "ideta"=>$eta,
-                    "estatus"=>1,
-                );
-                
-                // inserta validacion detalle
-                DatosValidacion::InsertaValidacion($datosController, "sup_validacion")
-                ;
-                // busca numero de validacion
-                $datosController= array("id"=>$id,
-                    "idrec"=>$idrec,
-                    "indice"=>$idmes,
-                    "ideta"=>$eta,
-                );
-                
-                $respuesta =DatosValidacion::LeeIdValidacion($datosController, "sup_validacion");
-                
-                if (sizeof($respuesta)>0) {
-                    foreach($respuesta as $row => $item){
-                        $idval= $item["val_id"];
+                    if ($this->idval==0) {
+                       
+                        
+                     //   echo "no hay nada";
+                        // inserta validacion
+                        $datosController= array("id"=>$id,
+                            "idrec"=>$idrec,
+                            "indice"=>$idmes,
+                            "ideta"=>$eta,
+                            "estatus"=>1,
+                        );
+                        
+                        // inserta validacion detalle
+                        DatosValidacion::InsertaValidacion($datosController, "sup_validacion")
+                        ;
+                        // busca numero de validacion
+                        $datosController= array("id"=>$id,
+                            "idrec"=>$idrec,
+                            "indice"=>$idmes,
+                            "ideta"=>$eta,
+                        );
+                        
+                        $respuesta =DatosValidacion::LeeIdValidacion($datosController, "sup_validacion");
+                        
+                        if (sizeof($respuesta)>0) {
+                            foreach($respuesta as $row => $item){
+                                $this->idval= $item["val_id"];
+                            }
+                        }
                     }
                     // inserta validacion de imagen
-                    
-                    $datosController= array("idval"=>$idval,
-                        "numimg"=>$numimg,
-                        "descripimg"=>1,
-                        "estatus"=>$est,
+                    //busco el id descripcion foto
+                    $resfoto= DatosCatalogoDetalle::getDetallexDesc($this->pantalla["pa_foto1"],20,"ca_catalogosdetalle");
+                   // var_dump($resfoto);
+                   if($resfoto!=null)
+                        $numfoto=$resfoto["cad_idopcion"];
+                    $datosController= array("idval"=>$this->idval,
+                        "idimg"=>$numimg,
+                        "desimg"=>$numfoto,
+                        "est"=>$est,
+                        "observ"=>$observ
                     );
-                    DatosValidacion::ingresaValidacionimg($datosController, $tabla);
-                    
-                }
+                //    var_dump($datosController);
+                    DatosValidacion::ingresaValidacionimg($datosController, "sup_validafotos");
+                    $datoscorr=array("idval"=>$this->idval,
+                        "idfoto"=>$numimg
+                    );
+                    $this->buscarCorreccionFoto($datoscorr);
                 
             }
             
-            echo "
+          /*  echo "
             <script type='text/javascript'>
               window.location='$regresar'
-                </script>
-                  ";
+                </script>  ";*/
         }catch(Exception $ex){
             echo Utilerias::mensajeError($ex->getMessage());
         }
         
     }
+    
+    public function buscarCorreccionFoto($datosController){
+       // var_dump($datosController);
+        $respuesta =DatosImgInformes::LeeEstatusfoto($datosController, "sup_validafotos");
+        // valido si se encuentra
+        if (sizeof($respuesta)>0) {
+           
+                $this->correccionFoto=$respuesta[0];
+                
+            }
+        
+    }
+    
+    public function buscarSeccion($datosController,$sec){
+        // var_dump( $this->muestra);
+        $respuesta =DatosValidacion::LeeIdValidacion($datosController, "sup_validacion");
+        // valido si se encuentra
+        if (sizeof($respuesta)>0) {
+            foreach($respuesta as $row => $item){
+                $this->idval= $item["val_id"];
+            }
+            //var_dump($idval);
+            // valida si existe validacion en seccion
+            // revisa si ya existe
+            $datosController= array("idval"=>$this->idval,
+                "idsec"=>$sec,
+                "nummuestra"=>$this->muestra["ind_id"]
+            );
+            //var_dump($datosController);
+            $respuestaS =DatosValSeccion::getValSeccionMues($datosController, "sup_validasecciones");
+           //echo "**********";
+           // var_dump($respuestaS);
+            if (sizeof($respuestaS)>0) {
+                $this->valSeccion=$respuestaS[0];   
+                $resnoap= $this->valSeccion["vas_noaplica"];
+                if ($resnoap==0){
+                    $resacep= $this->valSeccion["vas_aprobada"];
+                    if ($resacep==0){
+                        $this->opcsel=3;
+                    } else {
+                        $this->opcsel=1;
+                    }
+                } else {
+                    $this->opcsel=2;
+                }  
+            
+            }
+        }
+    }
+    
+ 
     public function getopcsel() {
         return $this->opcsel;
     }
     
     public function getListaCompra($idcompra){
         
-        $respuesta =DatosListaCompraDet::vistalistacomModel($idcompra,"pr_listacompradetalle");
+        $respuesta =DatosInformeDetalle::getListaComDet($idcompra,"pr_listacompradetalle");
         $i=0;
      
         if($respuesta!=null){
-            $detalles=$this->buscarTotMuestras($idcompra,$respuesta);
+            $listanueva=array();
+            //busco codigos no permitidos
+            foreach($respuesta as $row => $item){
+                $nuevaitem= $item;
+               
+                $mes_asig=$item["lis_idindice"];
+                
+                $aux = explode(".", $mes_asig);
+                
+                $solomes = $aux[0];
+                $soloanio = $aux[1];
+                
+                $mes1 = $solomes -1;
+                if ($mes1==0){
+                    $mes1=12;
+                    $soloanio = $aux[1]-1;
+                }
+                $mes2 = $solomes -2;
+                if ($mes2==-1){
+                    $mes2=11;
+                    $soloanio = $aux[1]-1;
+                } else if ($mes2==0){
+                    $mes2=12;
+                    $soloanio = $aux[1]-1;
+                }
+                
+                
+                $mesant1=$mes1.".".$soloanio;
+                $mesant2=$mes2.".".$soloanio;
+                
+                //       solicita codigos del primer mes
+                $datosCont= array("cnpindi1"=>$mesant1,
+                    "cnpindi2"=>$mesant2,
+                    "mesasig" =>$mes_asig,
+                    "planta"=>$item["lis_idplanta"],
+                    "cnpprod"=>$item["lid_idproducto"],
+                    "cnptam"=>$item["lid_idtamano"],
+                    "cnpempa"=> $item["lid_idempaque"],
+                    "cnptipana"=>$item["lid_idtipoanalisis"],
+                );
+                $nuevaitem["codigosnop"]= $this->getCodigosNoPerm($datosCont);
+                $listanueva[]=$nuevaitem;
+                
+            }
+            $detalles=$this->buscarTotMuestras($idcompra,$listanueva);
            
         //   var_dump($detalles);
            $detalles = $this->buscarBU($idcompra,$detalles);
+           
            
        // calcularTotales(detalles);
         
@@ -452,22 +631,35 @@ class SupMuestraController
         foreach ($listalcd as $lcdo ) {
                 // Log.d(Constantes.TAG, "revisando nuevos codigos " +lcd.getNvoCodigo());
                $nuevaitem= $lcdo;
-                
+              // echo "<br>";
+             //   var_dump($nuevaitem);
                $comprabu = $this->getBackup($idlistacompra,$lcdo["lid_idprodcompra"]);
                $totbu=sizeof($comprabu);
-              // echo "<br>".$lcdo["lid_idprodcompra"]."--".$totbu;
+             //  echo "<br>".$lcdo["lid_idprodcompra"]."--".$totbu;
                 if (sizeof($comprabu) > 0) {
                     
                     //  listacomprasbu.addAll(comprabu);
-                  
-                  //  $nuevaitem["comprados"]=$nuevaitem["comprados"]-$totbu;
-                  //  $nuevaitem["Infcd"]=$comprabu;
-                    if($nuevaitem["comprados"]==$nuevaitem["cantidad"])
+                   // $nuevaitem["comprados"]=$nuevaitem["comprados"]-$totbu;
+                  //  $nuevaitem["lid_cantidad"]=$nuevaitem["lid_cantidad"]-$totbu;
+                    if($comprabu["ind_estatus"]==3) //aceptada
+                        $nuevaitem["lid_saldoaceptado"]= $nuevaitem["lid_saldoaceptado"]-$totbu;
+                    $nuevaitem["Infcd"]=$comprabu;
+                    if($nuevaitem["comprados"]==$nuevaitem["lid_cantidad"])
                         $nuevaitem["completado"]=true;
                 }
                 $listanueva[]=$nuevaitem;
             }
             return $listanueva;
+    }
+    
+    public function calcularVigencia($fechacompra,$fechacad){
+        
+        $fechacompf=new DateTime($fechacompra);
+        $fechacadf=new DateTime($fechacad);
+      //  echo $fechacompra."--".$fechacad;
+        $vig=$fechacadf->diff($fechacompf);
+        return $vig->days;
+        
     }
     
     public function getBackup($idcompra,$iddetalle) {
@@ -479,7 +671,42 @@ class SupMuestraController
         $resp=DatosInformeDetalle::getByCompra($idcompra,$iddetalle,$this->mesas,$this->rec_id,"informe_detalle");
         return sizeof($resp);
     }
+    
+    public function getCodigosNoPerm($datosCont){
+      //  solicita codigos del primer mes
        
+        //var_dump($datosCont);
+        
+        $CodNoPerm="";
+        
+        $resp1 =DatosListaCompraDet::vistacodigosnopermitidos($datosCont, "informe_detalle");
+        //var_dump($resp1);
+        foreach($resp1 as $row => $item1){
+            //    var_dump($item1["ind_caducidad"]);
+            $fecpartida=explode("-", $item1["ind_caducidad"]);
+            
+            $codnop = $fecpartida[2]."-".$fecpartida[1]."-".substr($fecpartida[0],2,2);
+            //var_dump($codnop);
+            $CodNoPerm= $CodNoPerm."=".$codnop." , ";
+        } 
+        return $CodNoPerm;
+    }
+    
+    public function getLigapanp(){
+        //devuelve a la 1er pantalla
+        if($this->numpan>4)
+            return "index.php?action=supinformecli01&idmes=".$this->mesas."&idrec=".$this->rec_id."&id=".$this->idinf.'&cli='.$this->idcli;
+        return "";
+        
+    }
+    public function getLigapanu(){
+        //devuelve a la ultima pantalla
+       
+        if($this->numpan<9)
+            return "index.php?action=supinformecli09&idmes=".$this->mesas."&idrec=".$this->rec_id."&id=".$this->idinf.'&cli='.$this->idcli;
+        return "";
+    }
+    
     
     
     

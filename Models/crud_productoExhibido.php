@@ -53,6 +53,30 @@ where pe_indice=:indice and pe_recolector=:cverecolector and pe_visitasId=:visit
         
     }
     
+    public  function getProdExxCliente($INDICE,$CVEUSUARIO,$visita,$cliente,$tabla){
+        
+        
+        $sSQL= "SELECT imd_idlocal id, imd_descripcion descripcion, imd_ruta ruta,
+ imd_estatus estatus,2 estatusSync, imd_indice indice,
+imd_created_at createdAt, imd_updated_at updatedAt
+FROM $tabla inner join ca_nivel1 cn
+on cn.n1_id =pe_clienteId
+inner join imagen_detalle imd on imd.imd_idlocal =pe_imagenId  and  imd_indice =producto_exhibido.pe_indice and imd_usuario =producto_exhibido.pe_recolector 
+where pe_indice=:indice and pe_recolector=:cverecolector and pe_visitasId=:visita and pe_clienteId=:cliente ";
+        
+        $stmt=DatosProductoExhibido::getInstance()->prepare($sSQL);
+        $stmt->bindParam(":indice", $INDICE, PDO::PARAM_STR);
+        
+        $stmt->bindParam(":cverecolector",  $CVEUSUARIO, PDO::PARAM_INT);
+        $stmt->bindParam(":visita",  $visita, PDO::PARAM_INT);
+        $stmt->bindParam(":cliente",  $cliente, PDO::PARAM_INT);
+        $stmt-> execute();
+       // $stmt->debugDumpParams();
+        return $stmt->fetch(PDO::FETCH_ASSOC); //para que solo devuelva los nombres de columnas
+        
+        
+    }
+    
     public static function insertaru($datosModel,$usuario,$indice,$tabla,$pdo){
         try{
             
