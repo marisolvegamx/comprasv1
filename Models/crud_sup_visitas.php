@@ -26,7 +26,15 @@ class DatosSupvisita extends Conexion{
 	//	$stmt = Conexion::conectar()-> prepare("SELECT vi_unedesc, vi_indice, inf_id, vi_cverecolector, inf_plantasid FROM `visitas` inner join informes on inf_indice=vi_indice and inf_usuario=vi_cverecolector and vi_idlocal=inf_id left join ca_nivel5 on n5_id=inf_plantasid WHERE vi_indice=:indice and n5_supervisor=:idsup and n5_idn4=:idciu;");
 
 
-		$stmt = Conexion::conectar()-> prepare("SELECT vi_unedesc, vi_indice, inf_id, vi_cverecolector, n4_nombre, n5_supervisor, vi_tiendaid FROM `visitas` inner join informes on inf_indice=vi_indice and inf_usuario=vi_cverecolector and vi_idlocal=inf_id left join ca_nivel5 on n5_id=inf_plantasid INNER JOIN ca_nivel4 ON n5_idn4=n4_id WHERE vi_indice=:indice and n5_supervisor=:idsup and n4_nombre=:idciu;");
+		$stmt = Conexion::conectar()-> prepare("SELECT vi_idlocal,(inf_id) AS ID, N4_NOMBRE AS CIUDAD, vi_unedesc, vi_cverecolector, sum(val_estatus) as EST, sum(PEPSI) AS TPEPSI, SUM(penafiel) AS TPENA, SUM(electrop) AS TELEC 
+FROM ( SELECT vi_idlocal,inf_id, vi_unedesc, n5_idn4, val_estatus, if(n5_idn1=4,1,0) as pepsi, 
+if(n5_idn1=5,1,0) as penafiel, if(n5_idn1=6,1,0) as electrop, vi_cverecolector 
+FROM `informes` inner join visitas on inf_indice=vi_indice and inf_visitasIdlocal=vi_idlocal
+ and inf_usuario= vi_cverecolector left join sup_validacion on inf_indice=val_indice
+ and inf_visitasIdlocal=val_inf_id and inf_usuario= val_rec_id left join ca_nivel5
+ on n5_id=inf_plantasid where inf_indice =:indice and n5_supervisor =:idsup order by inf_id) AS A 
+inner join ca_nivel4 on n5_idn4=n4_id where n4_nombre= :idciu
+ GROUP BY vi_idlocal order by inf_id;");
 
 		$stmt->bindParam(":idsup", $datosModel["idsup"], PDO::PARAM_INT);
 		$stmt->bindParam(":indice", $datosModel["idmes"], PDO::PARAM_STR);

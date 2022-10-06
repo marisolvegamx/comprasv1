@@ -196,7 +196,7 @@ public function LeeImgticket($uneid, $recid, $indice, $tabla){
 ");
 
 	$stmt->bindParam(":uneid", $uneid, PDO::PARAM_INT);
-    $stmt->bindParam(":indice", $indice, PDO::PARAM_INT);
+    $stmt->bindParam(":indice", $indice, PDO::PARAM_STR);
     $stmt->bindParam(":recid", $recid, PDO::PARAM_INT);
 	$stmt-> execute();
 
@@ -238,5 +238,23 @@ public function LeeEstatusFoto($datosModel, $tabla){
 	return $stmt->fetchall();
 
 	}
+
+public function LeeEstatusinforme($datosModel, $tabla){
+
+	// busca el id de validacion
+	$stmt = Conexion::conectar()-> prepare("SELECT val_estatus FROM `sup_validafotos` inner join `sup_validacion` on val_id=vai_id where val_indice=:indice and val_rec_id=:idrec and val_inf_id=idinf and vai_cliente=:idcli  and val_etapa =:ideta and vai_numfoto>2 group by val_estatus;
+");
+
+		$stmt->bindParam(":indice", $datosModel["idmes"], PDO::PARAM_STR);
+		$stmt->bindParam(":idinf", $datosModel["idinf"], PDO::PARAM_INT);
+		$stmt->bindParam(":idrec", $datosModel["idrec"], PDO::PARAM_INT);
+		$stmt->bindParam(":ideta", $datosModel["ideta"], PDO::PARAM_INT);
+		$stmt->bindParam(":idcli", $datosModel["idcli"], PDO::PARAM_INT);
+		$stmt-> execute();
+
+	return $stmt->fetchall();
+
+	}
+
 
 }	

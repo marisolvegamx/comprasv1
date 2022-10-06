@@ -71,7 +71,7 @@ $idmes=$_GET["idmes"];
       </tr>
       <tr>
         
-        <td style="width: 30%" colspan="3"><td style="width: 10%">
+        <td style="width: 30%" colspan="2"><td style="width: 10%">
             <button  class="btn btn-default float-sm-right" ><a href="index.php?action=suplistainformes">   Regresar  </a></button>
 </td>  </td>
       </tr>
@@ -79,7 +79,8 @@ $idmes=$_GET["idmes"];
          <div class="box-body table-responsive no-padding">
               <table class="table table-hover">
                 <tr>
-                  <th style="width: 40%">NOMBRE</th>
+                  <th style="width: 5%">NO.</th>
+                  <th style="width: 35%">NOMBRE</th>
                   <th style="width: 15%">TIENDA</th>
                   <th style="width: 15%">PEPSI</th>
                   <th style="width: 15%">PEÑAFIEL</th>

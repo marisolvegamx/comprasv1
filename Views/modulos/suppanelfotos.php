@@ -17,7 +17,7 @@ foreach($supMuesCon->listaimagenes as $imagen){
 <!---Termina carrusel-->	    
 	  
   </div>
-      <div class="col-md-6 areaImagenDer areaScrollP5">
+      <div class="col-md-6 areaImagen areaScrollP6">
 <!---Inicia listado-->	 
 
      <?php 

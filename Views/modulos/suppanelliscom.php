@@ -5,7 +5,7 @@
          $clasesel="background-color: #ffffcc;";
          else $clasesel="";
  ?>
- <div class="listado" style="<?= $clasesel?>">
+ <div class="listado" style="<?= $clasesel?>" >
                       <div class="row">
                         <div class="col-md-10 listadoTitulo"><?= $detalle["pro_producto"]?></div>
                         <div class="col-md-2"><?= ($detalle["lid_saldoaceptado"]==""?0:$detalle["lid_saldoaceptado"])."/".$detalle["comprados"]."/".$detalle["lid_cantidad"]?></div>
