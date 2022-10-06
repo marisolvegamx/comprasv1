@@ -752,12 +752,15 @@ inf_visitasIdlocal
 FROM informes inner join ca_recolectores on inf_usuario=rec_id
 inner join ca_nivel5 on n5_id=inf_plantasid
  inner join ca_nivel1 on n1_id=n5_idn1
-where informes.inf_id=:idinf and
+inner join visitas v on v.vi_idlocal =inf_visitasIdlocal and v.vi_indice =inf_indice
+ and v.vi_cverecolector =inf_usuario 
+where inf_visitasIdlocal=:idinf and n5_idn1=:cli and
  inf_indice=:idmes and inf_usuario=:idrec;");
         
         $stmt->bindParam(":idinf", $datosModel["idinf"], PDO::PARAM_INT);
         $stmt->bindParam(":idmes", $datosModel["idmes"], PDO::PARAM_STR);
         $stmt->bindParam(":idrec", $datosModel["idrec"], PDO::PARAM_INT);
+        $stmt->bindParam(":cli", $datosModel["cli"], PDO::PARAM_INT);
         $stmt-> execute();
         //$stmt->debugDumpParams();
         return $stmt->fetchall();

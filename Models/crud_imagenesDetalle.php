@@ -148,4 +148,24 @@ where imd_indice=:indice and imd_usuario=:cverecolector and imd_idlocal=:id";
         
         
     }
+
+    public  function getnomImagen($INDICE,$CVEUSUARIO,$idlocal,$tabla){
+        
+        
+        $sSQL= "SELECT imd_idlocal, imd_descripcion, imd_ruta,
+ imd_estatus, imd_indice 
+FROM $tabla
+where imd_indice=:indice and imd_usuario=:cverecolector and imd_idlocal=:id";
+        
+        $stmt=DatosImagenDetalle::getInstance()->prepare($sSQL);
+        $stmt->bindParam(":indice", $INDICE, PDO::PARAM_STR);
+        $stmt->bindParam(":id", $idlocal, PDO::PARAM_STR);
+        $stmt->bindParam(":cverecolector",  $CVEUSUARIO, PDO::PARAM_INT);
+        
+        $stmt-> execute();
+        //$stmt->debugDumpParams();
+        return $stmt->fetch(); 
+        
+        
+    }
 }

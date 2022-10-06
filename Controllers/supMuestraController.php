@@ -3,7 +3,7 @@
 //ini_set("display_errors", 1); 
 include "Models/crud_pantalla.php";
 include 'Models/crud_informesDetalle.php';
-include 'Models/crud_imagenesDetalle.php';
+//include 'Models/crud_imagenesDetalle.php';
 include 'Models/crud_supvalmuestras.php';
 include 'Models/crud_supvalseccion.php';
 include 'Models/crud_productoExhibido.php';
@@ -35,15 +35,15 @@ class SupMuestraController
      public $numpan;
      
     public function vistaMuestra(){
-        $this->idinf=$_GET["id"];
+        $vis=$_GET["id"];
         $this->mesas=$_GET["idmes"];
         $this->rec_id=$_GET["idrec"];
         $this->idcli=$_GET["cli"];
+        $this->idinf=$_GET["inf"];
         $numpantalla=$_GET["pan"];
         $this->numuestra=$_GET["nummues"];
         $admin=$_GET["admin"];
         $this->numpan=$numpantalla;
-        $this->liga="index.php?action=supinformecli02&idmes=".$this->mesas."&idrec=".$this->rec_id."&id=".$this->idinf.'&cli='.$this->idcli.'&pan='.$numpantalla.'&nummues='. $this->numuestra;
           
         if($admin=="act"){
             $this->actualizarMuestra();
@@ -52,16 +52,20 @@ class SupMuestraController
         
       
     
-        $datosCont= array("idinf"=>$this->idinf,
+        $datosCont= array("idinf"=>$vis,
             "idmes"=>$this->mesas,
             "idrec"=>$this->rec_id,
+            "cli"=>$this->idcli
         );
         $this->indiceletra=Utilerias::indiceConLetra($this->mesas);
         
         $resp =DatosInforme::vistaSupInformeDetalleModel($datosCont, "informes");
-     //  var_dump($resp);
+      // var_dump($resp);
         if($resp!=null)
         $this->informe=$resp[0];
+        $this->idinf=$this->informe["inf_id"];
+        $this->liga="index.php?action=supinformecli02&idmes=".$this->mesas."&idrec=".$this->rec_id."&id=".$vis.'&cli='.$this->idcli.'&pan='.$numpantalla.'&nummues='. $this->numuestra.'&inf='.$this->idinf;
+        
        // $logemail= $_SESSION['Usuario'];
         // busca el email y lee el numero de sugetsupervisorpervisor
       //  $resp1 =UsuarioModel::getsupervisor($logemail,"cnfg_usuarios");
@@ -73,6 +77,12 @@ class SupMuestraController
         $solomes = $aux[0];
         $soloanio = $aux[1];
         $this->dirimagen = "fotografias\\".$solomes."_".$soloanio;
+        
+        $datosCont= array("idinf"=>$this->idinf,
+            "idmes"=>$this->mesas,
+            "idrec"=>$this->rec_id,
+            "cli"=>$this->idcli
+        );
          $resp2=DatosSupvisita::vistaSupInfvisModel($datosCont, "visitas");
          $this->buscarMuestras();
          //  var_dump($this->muestras);
@@ -172,6 +182,10 @@ class SupMuestraController
            
             
         }
+        $idfoto4=$this->informe["inf_ticket_compra"];
+        $result=DatosImagenDetalle::getImagen($this->mesas,$this->rec_id,$idfoto4,"imagen_detalle");
+        
+        $this->listaimagenes[]=$result;
        // var_dump($this->listaimagenes);
         
     }
@@ -223,7 +237,7 @@ class SupMuestraController
                 $pan= "0".$pan;
             }
             $estatus=0;
-              $datosController= array("id"=>$id,
+              $datosController= array("id"=>$inf,
                 "idrec"=>$idrec,
                   "indice"=>$idmes,
                 "ideta"=>$eta,
@@ -256,7 +270,7 @@ class SupMuestraController
                
                     //echo "no hay nada";
                     // inserta validacion
-                    $datosController= array("id"=>$id,
+                    $datosController= array("id"=>$inf,
                         "idrec"=>$idrec,
                         "indice"=>$idmes,
                         "estatus"=>1,
@@ -267,7 +281,7 @@ class SupMuestraController
                     DatosValidacion::InsertaValidacion($datosController, "sup_validacion");
                 
                     // busca numero de validacion
-                    $datosController= array("id"=>$id,
+                    $datosController= array("id"=>$inf,
                         "idrec"=>$idrec,
                         "indice"=>$idmes,
                         "ideta"=>2
@@ -331,9 +345,19 @@ class SupMuestraController
                     DatosListaCompraDet::sumaAceptadosLista($this->muestra["ind_comprasid"],$this->muestra["ind_compraddetid"],1,"pr_listacompradetalle");
                     
                 }else 
-                    //quito una comprada
+                {   //quito una comprada
                     DatosListaCompraDet::restaAceptadosLista($this->muestra["ind_comprasid"],$this->muestra["ind_compraddetid"],1,"pr_listacompradetalle");
                     
+                    //reviso si es la unica muestra para cancelar el informe
+                    if(sizeof($this->muestras)==1){
+                        $datosController2= array("idval"=> $this->idval,
+                           
+                            "estatus"=>3,
+                          
+                        );
+                        DatosValidacion::actualizaValidacionpr($datosController2,"sup_validacion");
+                    }
+                }
               /*  $datosControllermu= array("vam_id"=>$idval,
                     "vam_idprod"=>$this->muestra["ind_comprasid"],
                     "vam_cantidad"=>1,
@@ -384,7 +408,7 @@ class SupMuestraController
                     $datosController= array("idval"=>$this->idval,
                         "numimg"=>$numimg,
                         "estatus"=>$est
-                      
+                       
                     );
                  //   var_dump($idval);
                  //   var_dump($datosController);
@@ -400,7 +424,7 @@ class SupMuestraController
                         
                      //   echo "no hay nada";
                         // inserta validacion
-                        $datosController= array("id"=>$id,
+                        $datosController= array("id"=>$inf,
                             "idrec"=>$idrec,
                             "indice"=>$idmes,
                             "ideta"=>$eta,
@@ -411,7 +435,7 @@ class SupMuestraController
                         DatosValidacion::InsertaValidacion($datosController, "sup_validacion")
                         ;
                         // busca numero de validacion
-                        $datosController= array("id"=>$id,
+                        $datosController= array("id"=>$inf,
                             "idrec"=>$idrec,
                             "indice"=>$idmes,
                             "ideta"=>$eta,
@@ -435,7 +459,8 @@ class SupMuestraController
                         "idimg"=>$numimg,
                         "desimg"=>$numfoto,
                         "est"=>$est,
-                        "observ"=>$observ
+                        "observ"=>$observ,
+                        "cli"=>$cli
                     );
                 //    var_dump($datosController);
                     DatosValidacion::ingresaValidacionimg($datosController, "sup_validafotos");
@@ -465,11 +490,11 @@ class SupMuestraController
                 $this->correccionFoto=$respuesta[0];
                 
             }
-        
+          //  var_dump($this->correccionFoto);
     }
     
     public function buscarSeccion($datosController,$sec){
-        // var_dump( $this->muestra);
+       // var_dump( $datosController);
         $respuesta =DatosValidacion::LeeIdValidacion($datosController, "sup_validacion");
         // valido si se encuentra
         if (sizeof($respuesta)>0) {
@@ -502,7 +527,9 @@ class SupMuestraController
                 }  
             
             }
+            
         }
+      //  var_dump($this->valSeccion);
     }
     
  
