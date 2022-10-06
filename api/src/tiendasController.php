@@ -248,9 +248,17 @@ and vi_cverecolector=i.inf_usuario  and vi_indice=i.inf_indice ";
     public function getInformexcliente($uneid,$fechafin,$cliente){
     
            
-            $sql="select
-if(une_estatus=2,'1',if(une_idindice is not null,'3','2')) as color
-          from
+            $sql="select ";
+            if($cliente==4)
+                $sqlcolor="
+if(une_estatus=2,'1',if(une_idindice is not null,'3','2')) as color ";
+            if($cliente==5)
+                $sqlcolor="
+if(une_estatuspen=2,'1',if(une_idindice is not null,'3','2')) as color ";
+            if($cliente==6)
+                $sqlcolor="
+if(une_estatuselec=2,'1',if(une_idindice is not null,'3','2')) as color ";
+      $sql=$sql.$sqlcolor."    from
 	ca_unegocios cu
 inner join visitas on
 	vi_tiendaid = cu.une_id
@@ -264,12 +272,13 @@ inner join informes i on
 	and vi_indice = i.inf_indice
 	left join ca_nivel5 on n5_id=inf_plantasid
 left join ca_unegocioshabilitada cuh on
-	cuh.une_id = cu.une_id
-	and str_to_date(concat('01.', une_idindice ),
+	cuh.une_id = cu.une_id ";
+      
+      $sqlhab=" and une_idcliente=:cliente ";
+	$sql=$sql.$sqlhab." and str_to_date(concat('01.', une_idindice ),
 	'%d.%m.%Y')= :fechafin
 where cu.une_id=:uneid
-and n5_idn1=:cliente
-";
+and n5_idn1=:cliente";
             //              echo $sql;
             $stmt = (new Conexion())->conectar()-> prepare($sql." order by vi_createdat desc limit 1" );
                $stmt-> bindParam(":uneid", $uneid, PDO::PARAM_INT);

@@ -89,8 +89,9 @@ class Subefotos{
                             }
                          else{ //comprimimos
                               //	echo $tmp_name."voy a comprimir";
-                                            
-                               Utilerias::comprimirImagen($name, $tmp_name, $tipo,  $carpeta );
+                                 //se está comprimiendo en la app, probar no comprimir aqui           
+                             //  Utilerias::comprimirImagen($name, $tmp_name, $tipo,  $carpeta );
+                             
                               // $this->insertarInfo();
                                             
                               $this->respuesta[]=$name."-".$this->mensaje_exito;
