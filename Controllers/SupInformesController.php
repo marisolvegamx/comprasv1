@@ -944,7 +944,7 @@ public function SuplistaTiendasController(){
         }
            echo
             '  <tr>
-	        <td>'.$idvis.'</td>       
+	        <td>'.$id.'</td>       
 					<td>'.$nomtien.'</td>
 					<td>
 					 <a href="index.php?action=supinforme&idmes='.$this->idmes.'&idrec='.$idrec.'&id='.$id.'&sec=1&eta=2"><i class="fa fa-circle fa-2x" style="color:'.$nomesttien.';"></i></a></td>  
