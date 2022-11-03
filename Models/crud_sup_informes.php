@@ -149,7 +149,7 @@ public function vistaFirtstiendaModel($datosModel, $tabla){
     public function leeticketinforme($datosModel, $tabla){
 
 	// actualiza tienda
-    $stmt = Conexion::conectar()-> prepare("SELECT inf_id,inf_ticket_compra, n5_idn1 as cliente FROM `informes` inner join ca_nivel5 ON n5_id=inf_plantasid
+    $stmt = Conexion::conectar()-> prepare("SELECT inf_ticket_compra, n5_idn1 as cliente FROM `informes` inner join ca_nivel5 ON n5_id=inf_plantasid
  where inf_indice=:indice and inf_usuario=:numrec and inf_visitasIdlocal=:numvis order by n5_idn1;");
 
     	$stmt->bindParam(":indice", $datosModel["idmes"], PDO::PARAM_STR);

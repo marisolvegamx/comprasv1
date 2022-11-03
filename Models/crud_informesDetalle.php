@@ -225,7 +225,7 @@ VALUES(:ind_id,:ind_informes_id, :ind_productos_id, :ind_tamanio, :ind_empaque, 
     
     public  function getMuestrasxcliente($idlocal,$INDICE,$CVEUSUARIO,$cliente,$tabla){
         
-        
+      //  echo $idlocal."--".$INDICE."--".$CVEUSUARIO."--".$cliente."--".$tabla;
         $sSQL= "SELECT `ind_id`, `ind_informes_id`,
 `ind_productos_id`, `ind_tamanio_id`, `ind_empaque`,
 cem.cad_descripcionesp  empaque,
@@ -273,7 +273,7 @@ and pro_cliente=:cliente
         
          $stmt-> execute();
           
-        //  $stmt->debugDumpParams();
+       //  echo $sSQL;
         return $stmt->fetchAll(PDO::FETCH_ASSOC); //para que solo devuelva los nombres de columnas
       
         

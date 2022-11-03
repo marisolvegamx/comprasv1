@@ -14,7 +14,7 @@ class CatalogosController{
     private $datosInf;
     function __construct(){
         
-        $this->listaCatalogos=[2=>"TIPO DE TIENDA",8=>"UBICACION DE LA MUESTRA",
+        $this->listaCatalogos=[1=>"CADENA COMERCIAL",2=>"TIPO DE TIENDA",8=>"UBICACION DE LA MUESTRA",
             15=>"TIPO DE MUESTRA"
         ];
        // $this->datosCatdet=new DatosInforme();

@@ -62,21 +62,17 @@ class EnlacesPaginas{
 			$enlacesModel == "supinforme03" ||
 
 			$enlacesModel == "supinformecli01" ||
-		    $enlacesModel == "supinformecli02" ||
+			$enlacesModel == "supinformecli02" ||
+			$enlacesModel == "supinformecli03" ||
+			
 			#AQUI INICIA SECCION muestras	
 			$enlacesModel == "supmues01" ||
-			$enlacesModel == "imgchica" ||
-			$enlacesModel == "imggrande" ||
-			//$enlacesModel == "nuevoanalisis" ||
-			//$enlacesModel == "recepcion" ||
-			//$enlacesModel == "prueba" ||
-			//$enlacesModel == "listapruebasdet" ||
-			//$enlacesModel == "analisisFQ" ||
-			//$enlacesModel == "listarecepcion" ||
-			//$enlacesModel == "recepciondetalle" ||
-			//$enlacesModel == "nuevarecepcion" ||
-			//$enlacesModel == "nuevaprueba" ||
-			//$enlacesModel == "nuevarecepciondet" ||
+			$enlacesModel == "supinformecli04" ||
+			$enlacesModel == "supinformecli05" ||
+			$enlacesModel == "supinformecli06" ||
+			$enlacesModel == "pantalla-9" ||
+			$enlacesModel == "pantalla-10" ||
+		
 
 			#AQUI INICIA LA SECCION DE SEGURIDAD
 			$enlacesModel == "login" ||			
@@ -99,8 +95,8 @@ class EnlacesPaginas{
 			$enlacesModel == "listacatalogosgen2"||  
 			$enlacesModel == "listamesas"||  
 			#AQUI INICIA SECCION INDICADORES   
-			//$enlacesModel == "indgraficaindicadorgrv2" ||
-            //$enlacesModel == "indgraficaindicadorgr" ||
+			$enlacesModel == "suplistaetapas" ||
+            $enlacesModel == "suppreparacion" ||
             //$enlacesModel == "indestadisticares"  ||
             //$enlacesModel == "indindicadoresgrid"  ||
             //$enlacesModel == "indcumplimientoestabl" ||

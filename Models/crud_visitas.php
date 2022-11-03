@@ -144,5 +144,29 @@ where vi_indice=:vi_indice and vi_cverecolector=:vi_cverecolector and vi_idlocal
         
     }
     
-    
+    public  function actualizardir($ID,$INDICE,$CVEUSUARIO,$DIRECCION,$tabla){
+        try{
+            
+            $sSQL= " UPDATE $tabla
+SET  
+vi_direccion=:direccion
+WHERE vi_idlocal=:idlocal and  vi_indice=:indice and vi_cverecolector=:reco;";
+            
+            $stmt=$this->conexion->prepare($sSQL);
+            $stmt->bindParam(":idlocal", $ID,PDO::PARAM_INT);
+            $stmt->bindParam(":indice", $INDICE, PDO::PARAM_STR);
+            $stmt->bindParam(":reco",  $CVEUSUARIO, PDO::PARAM_STR);
+             $stmt->bindParam(":direccion", $DIRECCION, PDO::PARAM_STR);
+             if(!$stmt-> execute())
+                throw new Exception("Hubo un error al actualizar ".$stmt->errorInfo()[2]);
+                //   $stmt->debugDumpParams();
+                
+        }catch(PDOException $ex){
+            Utilerias::guardarError("DatosVisita.actualizarDir "+$ex->getMessage());
+            
+            
+            throw new Exception("Hubo un error al actualizar dir del informe");
+        }
+        
+    }
 }

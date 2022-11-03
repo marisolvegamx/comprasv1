@@ -101,18 +101,19 @@ class InformePostController{
             if($idtienda>0)
             { foreach ($fotos_ex as $lisfotos_ex)
                 {
+                    if($lisfotos_ex["imagenId"]>0)
                     $datosui->insertar($lisfotos_ex,$idtienda,$cverecolector,$indice, "ca_uneimagenes");
                    
                 }
               
                 if(isset($informe))
                 {  $resp=$datosui->getUneImagenxCli($idtienda, $informe[ContratoInformes::CLIENTESID], "ca_uneimagenes");
-                if($resp!=null){
-                     
-                    $datosui->actualizarTicket($informe, $idtienda, $cverecolector, $indice, "ca_uneimagenes");
-                }else 
-                    //insertar
-                    $datosui->insertarTicket($informe,$idtienda,$cverecolector,$indice, "ca_uneimagenes");
+                    if($resp!=null){
+                         
+                        $datosui->actualizarTicket($informe, $idtienda, $cverecolector, $indice, "ca_uneimagenes");
+                    }else 
+                        //insertar
+                        $datosui->insertarTicket($informe,$idtienda,$cverecolector,$indice, "ca_uneimagenes");
                     
                 }
                 

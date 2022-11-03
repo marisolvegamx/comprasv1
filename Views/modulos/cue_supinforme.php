@@ -28,13 +28,14 @@ $informeCont=new SupInformesController();
         $tipotiendac=$informeCont->gettipotiendac();
         
         $idplan=$informeCont->getidplan();
-        $idsup=$informeCont->getnumsup();
+        //$idsup=$informeCont->getnumsup();
         $infsig=$informeCont->getidsig();
         $infant=$informeCont->getidant();
         $direc2=$informeCont->asdirec2();
         $inffirst=$informeCont->getidfirst();
-
+        //var_dump($inffirst);
         $inflast=$informeCont->getidlast();
+      
 
         // datos de edicion
            $nomtiendaC=$informeCont->getnomtienc();
@@ -59,14 +60,16 @@ $informeCont=new SupInformesController();
            $fotofacc=$informeCont->getfotofacc(); 
            $nomimg=$informeCont->getnombreimg(); 
            $descest=$informeCont->getdescest();
-           $nomciudad= $informeCont->getnomciudad();
+           //$nomciudad= $informeCont->getnomciudad();
 
       include "Utilerias/leevar.php";
+      $nomciudad=$_GET["idciu"];
       if(isset($_GET["admin"])){
           $admin=$_GET["admin"];
           $id=$_GET["id"];
           $idmes=$_GET["idmes"];
           $idrec=$_GET["idrec"];
+
           if($admin=="act"){
             $informeCont->actualizar();  
           } else if ($admin=="actc"){
@@ -157,7 +160,7 @@ window.onload = function () {
   
   
 
-drawingManager.setOptions({
+    drawingManager.setOptions({
     drawingControl: false
   });
 //console.log("Esto es en el mapa");
@@ -174,7 +177,7 @@ echo "dibujarPunto(".$auxc[0].",".$auxc[1].",map,'red');";
   $long=0; //de la lista de tiendas que ya traje dibujo el punto sacando las coordenadas
  
   $listatiendas=$informeCont->getTiendasxindice(0,  $informeCont->idciudadres, "", "", 0, $informeCont->mesas,$idrec);
- //var_dump($listatiendas);
+ 
  //die();
  if($listatiendas!=null)
      foreach($listatiendas as $tienda){
@@ -207,7 +210,90 @@ echo "dibujarPunto(".$auxc[0].",".$auxc[1].",map,'red');";
     }
     ?>
 
-}; 
+
+	  const geocoder = new google.maps.Geocoder();
+	<?php if($direccionc=="Ubicación registrada")
+	    
+	    echo "actualizarDireccionCat(geocoder);";
+	if($infdir=="Ubicación registrada")
+	    echo "actualizarDireccionInf(geocoder);";
+	?>
+};
+
+var informe=<?= $nunminf ?>;
+var idrec="<?= $idrec ?>";
+var mesas="<?=$idmes ?>";
+var idtienda=<?=$idtienda?>;
+
+function actualizarDireccionCat(geocoder){
+	input=document.getElementById("divcoorcat").innerHTML;
+//	console.log("--"+input+"---");
+	txtdireccionc=document.getElementById("divdircat");
+	 geocodeLatLng(geocoder, input.trim(), txtdireccionc,"c")
+}
+function actualizarDireccionInf(geocoder){
+	input=document.getElementById("divcoorinf").innerHTML;
+	//console.log("--"+input+"---");
+	txtdireccioni=document.getElementById("divdirinf");
+	 geocodeLatLng(geocoder, input.trim(), txtdireccioni,"i")
+	
+}
+function geocodeLatLng(geocoder, input, txtdireccioni,tabla) {
+	console.log(input);
+	  if(input!=""){
+	  const latlngStr = input.split(",", 2);
+			
+	  const latlng = {
+	    lat: parseFloat(latlngStr[0]),
+	    lng: parseFloat(latlngStr[1]),
+	  };
+
+	  geocoder
+	    .geocode({ location: latlng })
+	    .then((response) => {
+	      if (response.results[0]) {
+	       nvadir=response.results[0].formatted_address;
+		
+	        txtdireccioni.innerHTML=nvadir;
+	      	//actualizo en la tabla
+			
+			console.log(nvadir);
+			   txtdireccioni.innerHTML=nvadir;
+	      	mandarDir(nvadir, informe, idrec, mesas,idtienda, tabla);
+	     
+	       
+	      
+	      } else {
+	       // window.alert("No se encontro dirección");
+	      }
+	    })
+	    .catch((e) => window.alert("No se pudo encontrar la direccion " + e));
+	  }
+	}
+	
+function mandarDir(direccion, informe, idrec, mesas,idtienda, tabla){
+
+	 // console.log(ciudad+"--"+ punto);
+	   $.ajax({
+	       type: 'POST',
+	       url: 'actualizarDir.php',
+	    
+	       data: { dir: direccion,
+		       		infid:informe,
+		       		idrec:idrec,
+		       		idtienda:idtienda,
+		       		tab:tabla,
+		       		mesas,mesas},
+	       dataType: 'json',
+	   }).done(function (data) {
+	      
+	       console.log("todo bien");
+	    //   console.log(data);
+	      
+	         
+	      
+	   });
+	}	 
 </script>
 <script src="js/geomapas.js"></script>
 
@@ -226,9 +312,9 @@ echo "dibujarPunto(".$auxc[0].",".$auxc[1].",map,'red');";
 
                 <div class="col-md-3 tituloSupBotones" ><a href="index.php?action=supinforme&idmes='.$idmes.'&idrec='.$idrec.'&id='.$nunminf.'&sec=1&eta=2"><img src="Views/dist/img/Retrocede-1-off.jpg"></a>
                 </div>
-                <div class="col-md-3 tituloSupBotones" ><a href="index.php?action=supinforme02&idmes='.$idmes.'&idrec='.$idrec.'&id='.$nunminf.'&sec=1&eta=2"><img src="Views/dist/img/Avanza-1.jpg"></a>
+                <div class="col-md-3 tituloSupBotones" ><a href="index.php?action=supinforme02&idmes='.$idmes.'&idrec='.$idrec.'&id='.$nunminf.'&sec=1&eta=2&idsup='.$idsup.'&idciu='.$nomciudad.'"><img src="Views/dist/img/Avanza-1.jpg"></a>
                 </div>
-                <div class="col-md-3 tituloSupBotones" ><a href="index.php?action=supinforme02&idmes='.$idmes.'&idrec='.$idrec.'&id='.$nunminf.'&sec=1&eta=2"><img src="Views/dist/img/Avanza-Final.jpg"></a>
+                <div class="col-md-3 tituloSupBotones" ><a href="index.php?action=supinforme02&idmes='.$idmes.'&idrec='.$idrec.'&id='.$nunminf.'&sec=1&eta=2&idsup='.$idsup.'&idciu='.$nomciudad.'"><img src="Views/dist/img/Avanza-Final.jpg"></a>
                 </div>';
                 ?>
               </div>
@@ -252,13 +338,13 @@ echo "dibujarPunto(".$auxc[0].",".$auxc[1].",map,'red');";
       <div class="col-md-1 ">
         <div class="row">
            <?php
-           if ($infant==0){ 
+           if ($inffirst==0){ 
             echo '  
             <div class="col-md-3 tituloSupBotones" ><a href="#"><img src="Views/dist/img/Retrocede-Final-off.jpg"></a>
             </div>';
           }else{
                 echo '      
-        <div class="col-md-3 tituloSupBotones" ><a href="index.php?action=supinforme&idmes='.$idmes.'&idrec='.$idrec.'&id='.$inffirst.'&sec=1&eta=2"><img src="Views/dist/img/Retrocede-Final.jpg"></a>
+        <div class="col-md-3 tituloSupBotones" ><a href="index.php?action=supinforme&idmes='.$idmes.'&idrec='.$idrec.'&id='.$inffirst.'&sec=1&eta=2&idsup='.$idsup.'&idciu='.$nomciudad.'"><img src="Views/dist/img/Retrocede-Final.jpg"></a>
             </div>';
           }  
             //var_dump($infant);
@@ -268,7 +354,7 @@ echo "dibujarPunto(".$auxc[0].",".$auxc[1].",map,'red');";
             </div>';
           }else{
             echo '  
-            <div class="col-md-3 tituloSupBotones" ><a href="index.php?action=supinforme&idmes='.$idmes.'&idrec='.$idrec.'&id='.$infant.'&sec=1&eta=2"><img src="Views/dist/img/Retrocede-1.jpg"></a>
+            <div class="col-md-3 tituloSupBotones" ><a href="index.php?action=supinforme&idmes='.$idmes.'&idrec='.$idrec.'&id='.$infant.'&sec=1&eta=2&idsup='.$idsup.'&idciu='.$nomciudad.'"><img src="Views/dist/img/Retrocede-1.jpg"></a>
             </div>';
           }  
 
@@ -278,16 +364,16 @@ echo "dibujarPunto(".$auxc[0].",".$auxc[1].",map,'red');";
             </div>';
           } else {
               echo '
-            <div class="col-md-3 tituloSupBotones" ><a href="index.php?action=supinforme&idmes='.$idmes.'&idrec='.$idrec.'&id='.$infsig.'&sec=1&eta=2"><img src="Views/dist/img/Avanza-1.jpg"></a>
+            <div class="col-md-3 tituloSupBotones" ><a href="index.php?action=supinforme&idmes='.$idmes.'&idrec='.$idrec.'&id='.$infsig.'&sec=1&eta=2&idsup='.$idsup.'&idciu='.$nomciudad.'"><img src="Views/dist/img/Avanza-1.jpg"></a>
             </div>';
           }  
-          if ($infsig==0){
+          if ($inflast==0){
               echo '
             <div class="col-md-3 tituloSupBotones" ><a href="#"><img src="Views/dist/img/Avanza-Final-off.jpg"></a>
             </div>';
           } else {
             echo '
-            <div class="col-md-3 tituloSupBotones" ><a href="index.php?action=supinforme&idmes='.$idmes.'&idrec='.$idrec.'&id='.$inflast.'&sec=1&eta=2"><img src="Views/dist/img/Avanza-Final.jpg"></a>
+            <div class="col-md-3 tituloSupBotones" ><a href="index.php?action=supinforme&idmes='.$idmes.'&idrec='.$idrec.'&id='.$inflast.'&sec=1&eta=2&idsup='.$idsup.'&idciu='.$nomciudad.'"><img src="Views/dist/img/Avanza-Final.jpg"></a>
             </div>';
           }  
             ?>
@@ -421,6 +507,10 @@ echo "dibujarPunto(".$auxc[0].",".$auxc[1].",map,'red');";
             if ($admin=="edI"){
               echo '
                  <input type="hidden" name="id" id="id" value="'.$nunminf.'">
+                 <input type="hidden" name="idt" id="idt" value="'.$idtienda.'">
+                 <input type="hidden" name="idsup" id="idsup" value="'.$idsup.'">
+                 <input type="hidden" name="idciu" id="idciu" value="'.$nomciudad.'">
+             
                  <input type="hidden"  name="indice" id="idmes" value="'.$idmes.'">
                  <input type="hidden" name="idrec" id="idrec" value="'.$idrec.'">';
 
@@ -476,7 +566,7 @@ echo "dibujarPunto(".$auxc[0].",".$auxc[1].",map,'red');";
     <div class="row">
       <div class="col-md-1 labelAzul1">COORDENADAS:
       </div>
-      <div class="col-md-3 labelAzulDato">
+      <div class="col-md-3 labelAzulDato" id="divcoorinf">
         <?php 
           //$admin="edI4";
           if ($admin=="edI"){
@@ -512,7 +602,7 @@ echo "dibujarPunto(".$auxc[0].",".$auxc[1].",map,'red');";
       </div>
       <div class="col-md-1 labelAzul1MitadIzq">COORDENADAS:
       </div>
-      <div class="col-md-3 labelAzulDato">
+      <div class="col-md-3 labelAzulDato"  id="divcoorcat">
         <?php
         //$admin="ediC";
         if ($admin=="ediC"){
@@ -569,7 +659,7 @@ echo "dibujarPunto(".$auxc[0].",".$auxc[1].",map,'red');";
     <div class="row">
       <div class="col-md-1 labelAzul1">DIRECCIÓN:
       </div>
-      <div class="col-md-5 labelAzulDatoMitadDer">
+      <div class="col-md-5 labelAzulDatoMitadDer" id="divdirinf">
         <?php 
           //$admin="edI";
           if ($admin=="edI"){
@@ -582,7 +672,7 @@ echo "dibujarPunto(".$auxc[0].",".$auxc[1].",map,'red');";
       <div class="col-md-1 labelAzul1MitadIzq">DIRECCIÓN:
       
       </div>
-      <div class="col-md-5 labelAzulDato">
+      <div class="col-md-5 labelAzulDato" id="divdircat">
         <?php
           //$admin="ediC";
          if ($admin=="ediC"){
@@ -646,7 +736,7 @@ echo "dibujarPunto(".$auxc[0].",".$auxc[1].",map,'red');";
 
         } else {
              echo '
-            <a href="index.php?action=supinforme&admin=edI&idmes='.$idmes.'&idrec='.$idrec.'&id='.$nunminf.'" class="btn btn-informes  btn-sm btn-block ">EDITAR</a>';
+            <a href="index.php?action=supinforme&admin=edI&idmes='.$idmes.'&idrec='.$idrec.'&id='.$nunminf.'&idsup='.$idsup.'&idciu='.$nomciudad.'" class="btn btn-informes  btn-sm btn-block ">EDITAR</a>';
         } 
         ?>
       </div>
@@ -656,7 +746,7 @@ echo "dibujarPunto(".$auxc[0].",".$auxc[1].",map,'red');";
           echo '
             <button type="submit" class="btn btn-informes btn-sm btn-block">Guardar</button>';
         }else{    
-         echo '<a href="index.php?action=supinforme&admin=ediC&idmes='.$idmes.'&idrec='.$idrec.'&id='.$nunminf.'" class="btn btn-informes btn-sm btn-block "> EDITAR</a>';
+         echo '<a href="index.php?action=supinforme&admin=ediC&idmes='.$idmes.'&idrec='.$idrec.'&id='.$nunminf.'&idsup='.$idsup.'&idciu='.$nomciudad.'" class="btn btn-informes btn-sm btn-block "> EDITAR</a>';
         }
         ?>
       </div>
@@ -682,7 +772,8 @@ echo "dibujarPunto(".$auxc[0].",".$auxc[1].",map,'red');";
       <div class="col-md-2 areaBoton" >
         <?php 
         $opcsel=$informeCont->getopcsel();
-        //var_dump($opcsel);
+        //
+        ($opcsel);
         if ($opcsel==1){
           $clase= "btn-informesActivado";
           
@@ -691,7 +782,7 @@ echo "dibujarPunto(".$auxc[0].",".$auxc[1].",map,'red');";
        
         }
         echo '
-        <a href="index.php?action=supinforme&admin=aceptar&indice='.$idmes.'&idrec='.$idrec.'&id='.$nunminf.'&sec=1&eta=2&est=3" class="btn '.$clase .' btn-sm btn-block ">SI</a>';
+        <a href="index.php?action=supinforme&admin=aceptar&indice='.$idmes.'&idrec='.$idrec.'&id='.$nunminf.'&sec=1&eta=2&est=3&idsup='.$idsup.'&idciu='.$nomciudad.'" class="btn '.$clase .' btn-sm btn-block ">SI</a>';
         ?>
       </div>
       <div class="col-md-2 areaBoton">
@@ -717,7 +808,7 @@ echo "dibujarPunto(".$auxc[0].",".$auxc[1].",map,'red');";
        
       }
         echo '
-        <a href="index.php?action=supinforme&admin=noap&indice='.$idmes.'&idrec='.$idrec.'&id='.$nunminf.'&sec=1&eta=2"  class="btn '.$clase .' btn-sm btn-block ">NO APLICA</a>';
+        <a href="index.php?action=supinforme&admin=noap&indice='.$idmes.'&idrec='.$idrec.'&id='.$nunminf.'&sec=1&eta=2&idsup='.$idsup.'&idciu='.$nomciudad.'"  class="btn '.$clase .' btn-sm btn-block ">NO APLICA</a>';
         ?>
       </div>
     </div>
@@ -734,8 +825,12 @@ echo "dibujarPunto(".$auxc[0].",".$auxc[1].",map,'red');";
             </div>
             <div class="modal-body">
               
-            <form role="form" method="post" action="index.php?action=supinforme&admin=cor&est=1&sec=1&eta=2&idmes='.<?php echo $informeCont->getidmes(); ?>.'&idrec='.<?php echo $informeCont->getidrec(); ?> .'&id='.<?php echo $informeCont->getidmes(); ?>">
-              <?php echo '
+            <form role="form" method="post" action=
+            <?php
+            echo '
+            "index.php?action=supinforme&admin=cor&sec=1&eta=2&est=1&idmes='.$idmes.'&idrec='.$idrec.'&id='.$nunminf.'&idsup='.$idsup.'&idciu='.$nomciudad.'"';
+
+              echo '
                  <input type="hidden" name="id" id="id" value="'.$numtienda.'">
                  <input type="hidden" name="idplan" id="idplan" value="'.$idplan.'"> 
                  <input type="hidden"  name="indice" id="idmes" value="'.$idmes.'">

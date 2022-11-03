@@ -1,10 +1,7 @@
 <?php
-//error_reporting(E_ERROR);
-//ini_set("display_errors", 1);
-
+error_reporting(E_ERROR);
+ini_set("display_errors", 1);
 require '../../Models/crud_supcorrecciones.php';
-
-
 
 //clase para manejar el json e insertarlo
 class CorreccionPostController{
@@ -24,9 +21,9 @@ class CorreccionPostController{
             //   $imagenes_det=$campos["imagenDetalles"]; //es array
             
         //TODO lo pongo en una transaccion
-       
+         //   var_dump($correccion);
         $resp= $this->datosCor->getCorreccionxid($indice,$cverecolector,$correccion[ContratoCorreccion::ID],$this->tabla);
-       // var_dump($resp);
+        
        // die();
         if($resp!=null&&$resp[ContratoCorreccion::ID]==$correccion[ContratoCorreccion::ID]){
        

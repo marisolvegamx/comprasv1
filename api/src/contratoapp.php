@@ -79,11 +79,11 @@ class ContratoInformesDet {
     const ESTATUS="estatus";
     const  COMPRASIDBU="comprasIdbu";
     const COMPRASDETIDBU="comprasDetIdbu";
-    
-   
-    
+      
     
 }
+
+
 class ContratoVisitas{
     
     const  ID="id";
@@ -179,3 +179,40 @@ class ContratoCorreccion{
     
     
 }
+
+class ContratoInfEtapa {
+    
+    const  ID="id";
+   const PLANTASID="plantasId";
+   const CLIENTESID="clientesId";
+   const INDICE="indice";
+  const ETAPA="etapa";
+      
+    const COMENTARIOS="comentarios";
+    const TOTALCAJAS="total_cajas";
+    const TOTALMUESTRAS="total_muestras";
+    const CAUSANOCOMPRA="causa_nocompra";
+    
+    const CREATEDAT= "createdAt";
+    
+    
+
+    
+    
+}
+class ContratoInfEtapaDet {
+    
+    const  ID="id";
+   
+    const INFETAPAID="informeEtapaId";
+    const ETAPA="etapa";
+    const RUTAFOTO="ruta_foto";
+    const QR="qr";
+    const NUMMUESTRA="num_muestra";
+    const DESCRIPCIONID="descripcionId";   
+    const NUMCAJA="num_caja";
+    
+    
+    
+}
+

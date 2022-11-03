@@ -55,6 +55,7 @@ class Subefotos{
             
                   $uploadfile = $carpeta."/". basename ( $name );
                 // echo "aqui".$name;
+                  Utilerias::guardarError("aqui".$name);
             if (! is_file ( $uploadfile )) {
                 
                 $tipo = $imagen ["type"];
@@ -77,7 +78,8 @@ class Subefotos{
                                     return true;
                                          // guardar en la bd
                                 } else {
-                                   
+                                    Utilerias::guardarError($name."-Error al cargar el archivo, intenta de nuevo");
+                                    
                                 $this->respuesta[]=$name."-Error al cargar el archivo, intenta de nuevo";
                                                     $ban = 1;
                                                     return false;
@@ -93,7 +95,27 @@ class Subefotos{
                              //  Utilerias::comprimirImagen($name, $tmp_name, $tipo,  $carpeta );
                              
                               // $this->insertarInfo();
-                                            
+                             try{
+                             if (move_uploaded_file ( $tmp_name, $uploadfile )) {
+                                 
+                                 //inserto en la bd
+                                 //  $this->insertarInfo();
+                                 
+                                 // me regreso
+                                 $this->respuesta[]=$name."-".$this->mensaje_exito;
+                                 return true;
+                                 // guardar en la bd
+                             } else {
+                                 Utilerias::guardarError($name."-Error al cargar el archivo, intenta de nuevo");
+                                 
+                                 $this->respuesta[]=$name."-Error al cargar el archivo, intenta de nuevo";
+                                 $ban = 1;
+                                 return false;
+                             }
+                         }catch(Exception $ex){
+                             Utilerias::guardarError(" error al subir imagen".$ex->getMessage());
+                             throw new \Exception("Error al guardar archivo");
+                         }
                               $this->respuesta[]=$name."-".$this->mensaje_exito;
                                             // guardar en la bd
                                      return true;       
@@ -108,13 +130,18 @@ class Subefotos{
                } else {
                       $this->respuesta[]=$name."-".$this->mensaje_ya_existe;
                       $ban = 1;
+                      Utilerias::guardarError($name."-".$this->mensaje_ya_existe);
+                      
                       return true;
                }
                             } else if ($imagen ["error"] == UPLOAD_ERR_FORM_SIZE) {
+                                Utilerias::guardarError($name."-".$this->archivo_grande);
                                 $this->respuesta[]=$name."-".$this->archivo_grande;
                                 $ban = 1;
                                 return false;
                             } else if ($imagen ["error"] == UPLOAD_ERR_CANT_WRITE) {
+                                Utilerias::guardarError($name."-".$this->directorio_no_existe);
+                                
                                 $this->respuesta[]=$name."-".$this->directorio_no_existe;
                                 $ban = 1;
                                 return false;
@@ -135,9 +162,11 @@ class Subefotos{
     }
     public function crearCarpeta($ruta){
        // echo "revisando carpeta".$ruta;
+        Utilerias::guardarError("revisando carpeta".$ruta);
         if (! is_dir (  $ruta )) {
           
             try {
+                Utilerias::guardarError("no existe... creando");
                     mkdir ( $ruta, 0777, true );
                 } catch ( Exception $ex ) {
                     throw $ex;

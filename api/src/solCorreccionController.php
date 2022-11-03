@@ -12,6 +12,7 @@ class solCorreccionController{
     private $listasolicitudesi;
    
     private $listasolicitudesu;
+    private $listacanceladas;
    
     private $datosInf;
     private $fechaini="";
@@ -42,6 +43,20 @@ class solCorreccionController{
        
         
     }
+    public function getCanceladas($indice,$recolector){
+        
+        
+        $rs = $this->datosInf->getMuestrasCanceladas($indice,$recolector, 2);
+        // var_dump($rs);
+        //  die();
+        $this->listacanceladas=$rs;
+        //actualizo el estatus a leido
+        foreach ($this->listacanceladas as $muestra){
+            DatosInformeDetalle::actualizarEstatus($muestra["ind_id"], $recolector, $indice, 4, "informe_detalle");
+            
+        }
+     
+    }
    
     
     public function getUpdate($indice,$recolector, $etapa){
@@ -53,9 +68,13 @@ class solCorreccionController{
     {
         $response=array();
         $this->getNuevos($indice,$recolector, $etapa);
+        
        // $this->getUpdate($fecha, $recolector,$indice);
+       $this->getCanceladas($indice, $recolector,2);
         if(sizeof($this->listasolicitudesi)>0)
-        { $response["inserts"]=$this->listasolicitudesi;
+        { 
+            $response["inserts"]=$this->listasolicitudesi;
+            $response["canceladas"]=$this->listacanceladas;
        
         }else 
         {
@@ -65,6 +84,8 @@ class solCorreccionController{
         
         return json_encode($response);
     }
+    
+    
     
 }
 

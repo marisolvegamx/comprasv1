@@ -12,7 +12,7 @@ class SupInfmuestraController{
 	     $this->idcli=$_GET["cli"];
         $this->idsec=$_GET["sec"];
         $this->ideta=$_GET["eta"];
-
+        $this->idsup=$_GET["idsup"];
 
 
 	     // calcula la direccion de las imagenes
@@ -73,6 +73,7 @@ class SupInfmuestraController{
           foreach($respuesta as $row => $item){
 				$this->ticket= $item["inf_ticket_compra"];
 				//$this->prodex= $item["inf_productoexhibido"];
+        //var_dump($this->ticket);
 				$this->idplanta= $item["inf_plantasid"];
 				$this->idtienda= $item["vi_tiendaid"];
 				$this->coment=$item["inf_comentarios"];
@@ -80,8 +81,10 @@ class SupInfmuestraController{
 				$this->fecharep=$item["fecharep"];
 				$this->horarep=$item["horarep"];
 				$this->numtien=$item["inf_consecutivo"];
+        $this->numciu=$item["n5_idn4"];
+        //$this->idsup=$idsup;
 		   }
-
+       // var_dump($this->idsup);
 		   // busca cliente
 		   $resp1 =Datosnuno::vistaN1opcionModel($this->idcli, "ca_nivel1");
            foreach($resp1 as $row => $item1){
@@ -92,11 +95,24 @@ class SupInfmuestraController{
 		   $resp2=Datosncin::getNombre($this->idplanta,"ca_nivel5");
 		   $this->nomplanta=$resp2["n5_nombre"];
 
+       $resp8=Datosncua::vistaN4opcionModel($this->numciu, "ca_nivel4");
+        $this->nomciudad=$resp8["nomciudad"];
+        //var_dump($this->nomciudad);
+
+        //$logemail= $_SESSION['Usuario'];
+        
+          // busca el email y lee el numero de sugetsupervisorpervisor
+         // $resp1 =UsuarioModel::getsupervisor($logemail,"cnfg_usuarios");
+         // foreach($resp1 as $row => $item1){
+         //   $numsup1= $item1["cus_cliente"];
+
+         // }
+        //var_dump($this->numsup1);
 
 		   // busca nombre de la tienda
 		   $respuesta3 =DatosUnegocio::consultaUnegocioModel($this->idtienda, "ca_unegocios");
 	    // asigna datos a variables
-				//var_dump($respuesta3);
+				//var_dump($this->idtienda);
     	    foreach($respuesta3 as $row => $item3){
 			   $this->nomtienc= $item3["une_descripcion"];
 			}
@@ -107,6 +123,7 @@ class SupInfmuestraController{
                          "idrec"=>$this->rec_id,
                          "ideta"=>$this->ideta,
                      );
+            //var_dump($datosCont2)
             $respuesta4 =DatosImgInformes::vistaImgInfModel($datosCont2, "imagen_detalle");
               foreach($respuesta4 as $row => $item4){
                  $this->nombreimg= $item4["imd_ruta"];
@@ -117,7 +134,7 @@ class SupInfmuestraController{
         $datosCont2= array("idinf"=>$this->idinf,
                          "idmes"=>$this->mesas,
                          "idrec"=>$this->rec_id,
-                         "ideta"=>$this->eta,
+                         "ideta"=>$this->ideta,
                          "idsec"=>$this->idsec,
       ); 
         //var_dump($datosCont2);
@@ -140,10 +157,10 @@ class SupInfmuestraController{
         $datosCont3= array("idinf"=>$this->idinf,
                          "idmes"=>$this->mesas,
                          "idrec"=>$this->rec_id,
-                         "ideta"=>$this->eta,
+                         "ideta"=>$this->ideta,
                          "idfoto"=>$this->idimg,
       );
-
+      //var_dump($datosCont3);
       $respuesta5 =DatosValidacion::LeeEstatusFoto($datosCont3, "sup_validacion");
         //var_dump($respuesta4);
         foreach($respuesta5 as $row => $item5){
@@ -156,41 +173,89 @@ class SupInfmuestraController{
 
         //foreach($result as $row => $result5){
             $this->nomticket=$result["imd_ruta"];
-
+           // var_dump($this->nomticket);
             //busca el id de prod exhibido
-//var_dump($this->idinf);
-//var_dump($this->rec_id);
-//var_dump($this->mesas);
-//var_dump($this->idcli);
-
-      $datosCont3= array("idinf"=>$this->idinf,
+      $datosCon3= array("idinf"=>$this->idinf,
                          "idmes"=>$this->mesas,
                          "idrec"=>$this->rec_id,
                          "idcli"=>$this->idcli,
   
       );
+
+      //var_dump($datosCon3);
+
    
+   $result3=DatosInfoMues::fotoproexhib($datosCon3,"producto_exhibido");
+   //var_dump($result3);
 
-//    $result3=DatosInfoProdExhib::buscaprodexhib($datosCont3,"producto_exhibido");
+      foreach($result3 as $row => $item5){
+            $this->pexhib= $item5["pe_imagenid"];      
+        }
 
-  //  $this->idprodex=$result3["pe_imagenId"];
+    
+                 
 
-        //}        
-  //    $result2=DatosImagenDetalle::getnomImagen($this->mesas,$this->rec_id,$this->idprodex,"imagen_detalle");
-
-        //foreach($result as $row => $result5){
-  //          $this->nomprodex=$result2["imd_ruta"];      
-
+      $result2=DatosImagenDetalle::getnomImagen($this->mesas,$this->rec_id,$this->pexhib,"imagen_detalle");
+       // var_dump($result2);
         
+         //foreach($result2 as $row => $item0){
+           $this->nombrepex = $result2["imd_ruta"];   
+         // $this->nombrepex);
+        //}    
+       //var_dump($this->nompexhib);  
+
+        $datosCon6= array("idtien"=>$this->idtienda,
+                          "idmes"=>$this->mesas,
+                          "idrec"=>$this->rec_id,
+                          "idcli"=>$this->idcli,
+      ); //var_dump($datosCon6);
+  
+         $respuesta6 =DatosUnegocio::leefotoex($datosCon6);
+         //var_dump($respuesta6);
+         //foreach($result6 as $row => $item6){
+            $this->idprodexc=$respuesta6["ui_exhibidor"]; 
+
+         //}
+
+         //}
+              //var_dump($this->idprodexc);
+        $result7=DatosImagenDetalle::getnomImagen($this->mesas,$this->rec_id,$this->idprodexc,"imagen_detalle");
+
+        //foreach($result7 as $row => $item7){
+            $this->nomprodexc=$result7["imd_ruta"];      
+         //}     
+      
 
 	}
+
+
+public function getidsup() {
+      return $this->idsup;
+  }
+
+
+public function getnomciu() {
+      return $this->nomciudad;
+  }
+
+
+public function getnompexc() {
+      return $this->nomprodexc;
+  }
+
+  
+
+public function getidplanta() {
+      return $this->idplanta;
+  }
+
 
 public function getnomtick() {
       return $this->nomticket;
   }
 
 public function getnomprodex() {
-      return $this->nomprodex;
+      return $this->nombrepex;
   }
 
 
@@ -641,6 +706,38 @@ public function aceptarsec(){
   }
 }
 
+
+ public function actualizacom(){
+    
+  include "Utilerias/leevar.php";
+      
+  try{
+         // echo "entre a direccion";
+    $regresar="index.php?action=supinformecli01&idmes=".$indice."&cli=".$idcli."&idrec=".$idrec."&id=".$id."&sec=4&eta=2";
+
+    $datosController= array("id"=>$id,
+                            "idrec"=>$idrec,
+                            "idmes"=>$indice,
+                            "coment"=>$coment,
+                            "idplan"=>$idplan,
+                               );
+
+    //var_dump($datosController); 
+    DatosSupInformes::ActualizaComentinf($datosController, "informes");
+    // pregunta de direccion
+
+
+    echo "
+            <script type='text/javascript'>
+              window.location='$regresar'
+                </script>
+                  ";
+  }catch(Exception $ex){
+    echo Utilerias::mensajeError($ex->getMessage());
+  }
+    
+  
+  }
 
 }
 ?>	

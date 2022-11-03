@@ -7,10 +7,10 @@ class DatosValSeccion extends Conexion{
         //     echo "estoy en query";
         // busca el id de validacion
         $sql= 'INSERT INTO sup_validasecciones (vas_id, vas_idseccion,
- vas_descripcion, vas_aprobada, vas_noaplica, vas_observaciones, vas_estatus,vas_nummuestra)
+ vas_descripcion, vas_aprobada, vas_noaplica, vas_observaciones, vas_estatus,vas_nummuestra, vas_fecha)
  VALUES ('.$datosModel["idval"].','.$datosModel["idsec"].',"'.$datosModel["descrip"].'",
 '.$datosModel["idaprob"].','.$datosModel["noap"].',"'.$datosModel["observ"].'",
-'.$datosModel["estatus"].',"'.$datosModel["nummuestra"].'");';
+'.$datosModel["estatus"].',"'.$datosModel["nummuestra"].'", now());';
         
         
         //	var_dump($sql);
@@ -37,7 +37,7 @@ class DatosValSeccion extends Conexion{
         // busca el id de validacion
         $stmt = Conexion::conectar()-> prepare("UPDATE `sup_validasecciones`
 SET `vas_aprobada`=:idaprob, `vas_noaplica`=:noap, `vas_observaciones`=:observ,
-`vas_estatus`=:estatus WHERE `vas_id`=:idval and `vas_idseccion`=:idsec and vas_numuestra=:nummuestra;");
+`vas_estatus`=:estatus WHERE `vas_id`=:idval and `vas_idseccion`=:idsec and vas_nummuestra=:nummuestra;");
         
         $stmt->bindParam(":idval", $datosModel["idval"], PDO::PARAM_INT);
         $stmt->bindParam(":idsec", $datosModel["idsec"], PDO::PARAM_INT);

@@ -646,11 +646,12 @@ function comprimirImagen($nombrearchivo,$rtOriginal,$tipo,$ruta){
 			}
 			
 			public static function guardarError($mensaje){
-			
+		
 				date_default_timezone_set('America/Mexico_City');
 				$fecvis=date("Y-m-d H:i:s");
-		
-			error_log("\n".$fecvis.": ".$mensaje,3,getcwd()."/logs/errorescomprasv1.log");
+				
+				error_log("\n".$fecvis.": ".$mensaje,3,$_SERVER["DOCUMENT_ROOT"]."/comprasv1/logs/errcomprasv1.log");
+			
 			}
 		/****pasa del indice 5.2022 a MAYO - 2022****/	
 	public static function indiceConLetra($mes_asig){

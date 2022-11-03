@@ -29,6 +29,59 @@ public function actualizacatalogoimg($datosModel, $tabla){
     
     }
 
+
+public function leecattkt($datosModel, $tabla){
+        $stmt = Conexion::conectar()-> prepare("SELECT `ui_ticket` FROM `ca_uneimagenes` WHERE `ui_uneid`=:idtienda and `ui_clienteid` =:idcli and `ui_tikindice`=:indice and `ui_tikrecolector`=:idrec;");
+        
+        $stmt->bindParam(":idtienda", $datosModel["numtien"], PDO::PARAM_INT);
+        $stmt->bindParam(":idcli", $datosModel["idcli"], PDO::PARAM_INT);
+        $stmt->bindParam(":indice", $datosModel["indice"], PDO::PARAM_STR);
+        $stmt->bindParam(":idrec", $datosModel["idrec"], PDO::PARAM_INT);
+       
+        
+        $stmt->execute();
+        
+        return $stmt->fetchAll();
+    }
+
+
+
+    
+public function ingresacatalogotkt($datosModel, $tabla){
+
+    // busca el numero de validacion
+    $stmt = Conexion::conectar()-> prepare("INSERT INTO `ca_uneimagenes`( `ui_uneid`, `ui_clienteid`, `ui_tikindice`, `ui_tikrecolector`, `ui_ticket`) VALUES (:idtienda,:idcli,:indice,:idrec,:idtkt);");
+
+        $stmt->bindParam(":idtienda", $datosModel["numtien"], PDO::PARAM_INT);
+        $stmt->bindParam(":idcli", $datosModel["idcli"], PDO::PARAM_INT);
+        $stmt->bindParam(":indice", $datosModel["indice"], PDO::PARAM_STR);
+        $stmt->bindParam(":idrec", $datosModel["idrec"], PDO::PARAM_INT);
+        $stmt->bindParam(":idtkt", $datosModel["numtkt"], PDO::PARAM_INT);
+        
+
+        $stmt->execute();
+
+    
+    }
+
+public function actualizacatalogotkt($datosModel, $tabla){
+
+    // busca el numero de validacion
+    $stmt = Conexion::conectar()-> prepare("UPDATE `ca_uneimagenes` SET `ui_ticket`=:idtkt WHERE `ui_uneid`=:idtienda,`ui_clienteid`=:idcli,`ui_tikindice`=:indice,`ui_tikrecolector`=:idrec;");
+
+        $stmt->bindParam(":idtienda", $datosModel["numtien"], PDO::PARAM_INT);
+        $stmt->bindParam(":idcli", $datosModel["idcli"], PDO::PARAM_INT);
+        $stmt->bindParam(":indice", $datosModel["indice"], PDO::PARAM_STR);
+        $stmt->bindParam(":idrec", $datosModel["idrec"], PDO::PARAM_INT);
+        $stmt->bindParam(":idtkt", $datosModel["numtkt"], PDO::PARAM_INT);
+        
+
+        $stmt->execute();
+
+    
+    }
+
+
 	public function vistaUnegocioModel( $tabla){
 		$stmt = Conexion::conectar()-> prepare("SELECT une_id, n3_nombre, n4_nombre, une_descripcion FROM `ca_unegocios` left JOIN ca_nivel3 ON `une_cla_pais`= N3_ID LEFT JOIN ca_nivel4 ON une_cla_ciudad= N4_ID ORDER BY une_id DESC;");
 		
@@ -39,7 +92,7 @@ public function actualizacatalogoimg($datosModel, $tabla){
     }
     
     public function vistaUnegocioModelCiudad($condic, $tabla){
-        $stmt = Conexion::conectar()-> prepare("SELECT une_id, cad_descripcionesp, cad_descripcioning, ciu_descripcionesp, ciu_descripcioning, une_descripcion FROM `ca_unegocios` inner join ca_catalogosdetalle on cad_idopcion=une_cla_pais and cad_idcatalogo=10 inner join ca_ciudadesresidencia on ciu_id=une_cla_ciudad and ciu_paisid=une_cla_pais where une_estatus=1 ".$condic." ORDER BY une_id DESC;");
+        $stmt = Conexion::conectar()-> prepare("SELECT une_id, cad_descripcionesp, cad_descripcioning, ciu_descripcionesp, ciu_descripcioning, une_descripcion FROM `ca_unegocios` inner join ca_catalogosdetalle on cad_idopcion=une_cla_pais and cad_idcatalogo=10 inner join ca_ciudadesresidencia on ciu_id=une_cla_ciudad and ciu_paisid=une_cla_pais where (une_estatus=1 or une_estatus=2) ".$condic." ORDER BY une_id DESC;");
         
         $stmt->execute();
         
@@ -860,6 +913,52 @@ public function insertarhab($datosModel, $tabla) {
             
     }
 
+public function leefotoex($datosModel){
+        
+        
+        $ssqe="SELECT ui_exhibidor FROM `ca_uneimagenes` where ui_uneid =".$datosModel["idtien"]." and ui_clienteid =".$datosModel["idcli"]." and ui_exrecolector=".$datosModel["idrec"]." and ui_exindice='".$datosModel["idmes"]."';";
+       // echo $ssqe;
+        $stmt = Conexion::conectar()->prepare($ssqe);
+        
+        //$stmt->bindParam(":idtien", $datosModel["idtien"],PDO::PARAM_INT);
+        //$stmt->bindParam(":idcli", $datosModel["idcli"],PDO::PARAM_INT);
+        //$stmt->bindParam(":idrec", $datosModel["idrec"],PDO::PARAM_INT);
+        //$stmt->bindParam(":idmes", $datosModel["idmes"],PDO::PARAM_STR);
+        
+        
+        
+        $stmt->execute();
+        // $stmt->debugDumpParams();
+        return $stmt->fetch();
+        
+    }
+
+    public function actualizarDirUneg($iduneg,$direc, $tabla) {
+        
+        try {
+            
+            $sSQL = "UPDATE `ca_unegocios` 
+SET `une_direccion`=:dirtien
+  WHERE  `une_id`=:ntien";
+            // var_dump($datosModel);
+            //  echo $sSQL;
+            $stmt = Conexion::conectar()->prepare($sSQL);
+            
+       
+            $stmt->bindParam(":dirtien",  $direc);
+          
+            $stmt->bindParam(":ntien", $iduneg);
+            
+            $stmt->execute();
+            
+            return "success";
+        } catch (Exception $ex) {
+            
+            return "error";
+        }
+    }
+    
+    
     
 }
 

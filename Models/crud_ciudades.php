@@ -6,7 +6,7 @@ class DatosCiudadesResidencia{
 		$stmt = Conexion::conectar()-> prepare("SELECT ciu_id, ciu_descripcionesp, ciu_descripcioning, ciu_paisid
 FROM $tabla
 where ciu_paisid=:id
-order by ciu_descripcionesp");
+order by trim(ciu_descripcionesp)");
          
 		$stmt->bindParam(":id", $datosModel, PDO::PARAM_INT);
 		

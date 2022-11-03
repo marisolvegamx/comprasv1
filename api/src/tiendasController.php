@@ -20,19 +20,20 @@ class TiendasController{
     }
     
    
-    public function getTiendas($pais,$ciudad, $cadenacomercial,$unedescripcion,$planta,$fechaini,$fechafin,$cliente){
+    public function getTiendas($pais,$ciudad, $cadenacomercial,$tipo,$planta,$fechaini,$fechafin,$cliente){
         
        
        // $rs = $this->getUnegocioxFiltros($pais,$ciudad, $cadenacomercial,$unedescripcion);
       //calculo fecha 3 meses y el fin
       $auxfec=explode(".",$fechafin);
     
-      $rs=$this->getUnegocioxFiltros2($pais, $ciudad, $planta, $fechaini, $fechafin,$fechafin, $cliente) ;   
+      $rs=$this->getUnegocioxFiltros2($pais, $ciudad, $planta, $fechaini, $fechafin,$fechafin, $cliente,$cadenacomercial,$tipo) ;   
             
             //return $stmt->fetchAll(PDO::FETCH_ASSOC);
            // echo "watt";
       $estpe=$estpen=$estele=3;
             foreach ($rs as $row) {
+                $estpe=$estpen=$estele=3;
                 //busco para cada cliente si ya se visitó
                $resp= $this->getInformexcliente($row["une_id"], $fechafin, 4);
                if($resp!=null)
@@ -154,7 +155,7 @@ une_tipotienda, une_cadenacomercial FROM ca_unegocios WHERE 1=1 ";
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     
-    public function getUnegocioxFiltros2($pais,$ciudad, $planta,$fechaini,$fechafin,$tremini,$cliente){
+    public function getUnegocioxFiltros2($pais,$ciudad, $planta,$fechaini,$fechafin,$tremini,$cliente, $cadenacomercial,$tipo){
         //las fechas vienen aumentadas en 1 mes
         //busco el nombre de la ciudad
        // $sql1="select "
@@ -179,17 +180,32 @@ DATE_ADD(:fechafin, interval 1 month) ffin,
 	DATE_ADD(:fechafin, interval -3 month) 3m,
 une_tipotienda, une_cadenacomercial, une_estatus
  from ca_unegocios cu 
-inner join visitas on vi_tiendaid=cu.une_id ";
+	inner join ca_ciudadesresidencia cc on cc.ciu_id =cu.une_cla_ciudad 
+		inner join ca_nivel5 cn on :planta=cn.n5_id 
+	inner join ca_nivel4 cn2 on cn.n5_idn4 =cn2.n4_id 
+and trim(ciu_descripcionesp) =trim(cn2.n4_nombre) 
+left join visitas on vi_tiendaid=cu.une_id ";
         if(isset($fechaini)&&$fechaini!=""&&isset($fechafin)&&$fechafin!="") {
             $sql.=" and str_to_date(concat('01.',vi_indice ),'%d.%m.%Y') < DATE_ADD(:fechafin, interval 1 month)
  and str_to_date(concat('01.',vi_indice ),'%d.%m.%Y') >= DATE_ADD(:fechaini, interval 1 month) ";
             }
         
-        $sql.=" inner join informes i on i.inf_visitasIdlocal =vi_idlocal
+        $sql.=" left join informes i on i.inf_visitasIdlocal =vi_idlocal
 and vi_cverecolector=i.inf_usuario  and vi_indice=i.inf_indice ";
         // agregando filtros
         if(isset($planta)&&$planta!="") {
             $sql.=" and inf_plantasid=:planta";
+            
+        }
+        // agregando filtros
+        if(isset($tipo)&&$tipo!=0) {
+            $sql.=" and vi_tipotienda=:tipo";
+            
+        }
+        
+        // agregando filtros
+        if(isset($cadenacomercial)&&$cadenacomercial!=0) {
+            $sql.=" and vi_cadenacomercial=:cadena";
             
         }
       //   $sql.=" left join ca_unegocioshabilitada cuh on cuh.une_id=cu.une_id and  str_to_date(concat('01.',une_idindice ),'%d.%m.%Y')=:fechafin";
@@ -198,7 +214,8 @@ and vi_cverecolector=i.inf_usuario  and vi_indice=i.inf_indice ";
 //where  une_cla_ciudad=:ciudad ";
 //and une_cla_pais=:pais";
         // agregando filtros
-       $sql.="  group by cu.une_id";
+       $sql.=" and une_estatusgen=1 
+  group by cu.une_id";
    //              echo $sql;
         $stmt = Conexion::conectar()-> prepare($sql." order by une_descripcion" );
      //   $stmt-> bindParam(":ciudad", $ciudad, PDO::PARAM_STR);
@@ -224,13 +241,21 @@ and vi_cverecolector=i.inf_usuario  and vi_indice=i.inf_indice ";
                 $stmt-> bindParam(":planta", $planta, PDO::PARAM_STR);
             }
         }
-       /* if(isset($cadenacomercial)){
+        if(isset($tipo)){
             
-            if($cadenacomercial!="") {
+            if($tipo!="0") {
+                
+                $stmt-> bindParam(":tipo", $tipo, PDO::PARAM_STR);
+            }
+        }
+        if(isset($cadenacomercial)){
+            
+            if($cadenacomercial!="0") {
                 
                 $stmt-> bindParam(":cadena", $cadenacomercial, PDO::PARAM_STR);
             }
         }
+        /*
         if(isset($pais)){
             
             if($pais!="") {
@@ -241,7 +266,7 @@ and vi_cverecolector=i.inf_usuario  and vi_indice=i.inf_indice ";
         */
     //     $stmt-> bindParam(":indice", $indice, PDO::PARAM_STR);
         $stmt->execute();
-     //   $stmt->debugDumpParams();
+      //  $stmt->debugDumpParams();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     
@@ -271,6 +296,9 @@ inner join informes i on
 	and vi_cverecolector = i.inf_usuario
 	and vi_indice = i.inf_indice
 	left join ca_nivel5 on n5_id=inf_plantasid
+left join sup_validacion on val_rec_id=i.inf_usuario and i.inf_indice=val_indice and val_inf_id=inf_id
+ and val_estatus=3 and 
+val_etapa=2
 left join ca_unegocioshabilitada cuh on
 	cuh.une_id = cu.une_id ";
       
@@ -313,7 +341,7 @@ and n5_idn1=:cliente";
             */
             //     $stmt-> bindParam(":indice", $indice, PDO::PARAM_STR);
             $stmt->execute();
-         
+        // $stmt->debugDumpParams();
             return $stmt->fetch(PDO::FETCH_ASSOC);
     }
     
@@ -384,7 +412,25 @@ where  une_cla_ciudad=:ciudad and une_cla_pais=:pais";
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     
-   
+    public function cancelarTienda($uneid, $tabla){
+        try{
+        
+            $sql="UPDATE $tabla
+    SET  une_estatusgen=2
+    WHERE une_id=:uneid; ";
+                        //              echo $sql;
+             $stmt = (new Conexion())->conectar()-> prepare($sql );
+             $stmt-> bindParam(":uneid", $uneid, PDO::PARAM_INT);
+                            
+             $stmt->execute();
+       
+        }catch(PDOException $ex){
+            Utilerias::guardarError("cancelarTienda "+$ex->getMessage());
+            
+            throw new Exception("Hubo un error al insertar el informe");
+        }
+    }
+    
     
     public function getResult(){
         return $this->result;

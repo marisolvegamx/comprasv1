@@ -64,7 +64,7 @@ require_once "Models/crud_n6.php";
 require_once "Models/crud_ciudades.php";
 
 require_once "Models/crud_sustitucion.php";
-require_once "Models/crud_listacompradetalle.php";
+require_once "Models/crud_listacompradetalle_mio.php";
 require_once "Models/crud_ciudadresidencia.php";
 require_once "Models/crud_causas.php";
 require_once "Models/crud_Supvalidacion.php";

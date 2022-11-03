@@ -66,7 +66,7 @@ $informeCont=new SupInformesController();
            $nomticketf= $informeCont->getnomticketf();
            $nomciudad= $informeCont->getnomciudad();
            $numtkt= $informeCont->getnumtkt(); 
-         //  var_dump($nomticketc);
+           var_dump($nomticketc);
 
       include "Utilerias/leevar.php";
       if(isset($_GET["admin"])){

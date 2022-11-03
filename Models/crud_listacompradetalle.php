@@ -191,7 +191,7 @@ public function actualizabackup($datosModel,$tabla){
         try{
             
             $sSQL= "UPDATE $tabla SET
-            lid_saldoaceptado=lid_saldoaceptado+:cantidad
+            lid_saldoaceptado=IFNULL(lid_saldoaceptado,0)+:cantidad
              WHERE lid_idlistacompra=:idlis and lid_idprodcompra=:claop";
             
             $stmt=Conexion::conectar()->prepare($sSQL);
@@ -199,7 +199,7 @@ public function actualizabackup($datosModel,$tabla){
             $stmt->bindParam(":claop", $claop, PDO::PARAM_INT);
             $stmt->bindParam(":cantidad", $cantidad, PDO::PARAM_INT);
             $stmt-> execute();
-            //  $stmt->debugDumpParams();
+            //      $stmt->debugDumpParams();
             
         }catch(PDOException $ex){
             throw new Exception("Hubo un error al actualizar la cantidad");
@@ -211,7 +211,7 @@ public function actualizabackup($datosModel,$tabla){
         try{
             
             $sSQL= "UPDATE $tabla SET
-            lid_saldoaceptado=lid_saldoaceptado-:cantidad
+            lid_saldoaceptado=IFNULL(lid_saldoaceptado,0)-:cantidad
              WHERE lid_idlistacompra=:idlis and lid_idprodcompra=:claop";
             
             $stmt=Conexion::conectar()->prepare($sSQL);

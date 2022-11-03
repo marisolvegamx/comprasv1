@@ -225,7 +225,7 @@ public function vistaSupInformeComController(){
 				$this->recolector= $item["rec_nombre"];
 			    }  
 
-	    
+			    var_dump($datosCont);
 	    $respuesta2 =DatosSupvisita::vistaSupInfvisModel($datosCont, "visitas");
 	    // asigna datos a variables
     	foreach($respuesta2 as $row => $item2){
@@ -329,7 +329,7 @@ public function vistaSupInformeComController(){
       foreach($respuesta5 as $row => $item5){
          $this->nomfotofacc= $item5["imd_ruta"];
       }
-     // echo $this->visid;
+      echo "****".$this->visid;
       // busca imagen de ticket catalogo
      $datosCont6= array("numvis"=>$this->visid,
                          "idmes"=>$this->mesas,
@@ -338,7 +338,7 @@ public function vistaSupInformeComController(){
     // die($this->visid);
       //  var_dump($datosCont6);
       $respuesta6 =DatosSupInformes::leeticketinforme($datosCont6, "informes");  
-     // var_dump($respuesta6);
+    //  var_dump($respuesta6);
      $i=0;
         foreach($respuesta6 as $row => $item6){
           $nimg=$item6["inf_ticket_compra"];
@@ -360,7 +360,7 @@ public function vistaSupInformeComController(){
                          "idrec"=>$this->rec_id,
                          //"iddesc"=>$this->"ticket compra",
        ); 
-      //var_dump($datosCont7);
+    //  var_dump($datosCont7);
       $respuesta7=DatosImgInformes::vistaImgInfModel($datosCont7, "imagen_detalle");
 
       foreach($respuesta7 as $row => $item7){
@@ -373,9 +373,9 @@ public function vistaSupInformeComController(){
                          "idrec"=>$this->rec_id,
                          "idcli"=>$this->nclis,                    
        );
-      //var_dump($datosCont8);
+      var_dump($datosCont8);
       $respuesta8=DatosValidacion::LeeImgticket($this->idtienda,$this->rec_id,$this->mesas, "ca_uneimagenes"); 
-      //var_dump($respuesta8);
+      var_dump($respuesta8);
         foreach($respuesta8 as $row => $item8){
            $this->numimgtik= $item8["ui_ticket"];
          
@@ -954,7 +954,7 @@ public function SuplistaTiendasController(){
            if ($item["TPEPSI"]>0){
            echo '
            <td> 
-           <a href="index.php?action=supinformecli01&idmes='.$this->idmes.'&idrec='.$idrec.'&id='.$id.'&cli=4&sec=4&eta=2"><i class="fa fa-circle fa-2x" style="color:'.$nomestpepsi.';"></i></a></td>';
+           <a href="index.php?action=supinformecli01&idmes='.$this->idmes.'&idrec='.$idrec.'&id='.$id.'&cli=4&sec=4&eta=2&idsup='.$this->idsup.'"><i class="fa fa-circle fa-2x" style="color:'.$nomestpepsi.';"></i></a></td>';
            } else {
             echo '<td> </td>';
            }  
@@ -962,14 +962,14 @@ public function SuplistaTiendasController(){
             if ($item["TPENA"]>0){
               echo ' 
           <td>
-           <a href="index.php?action=supinformecli01&idmes='.$this->idmes.'&idrec='.$idrec.'&id='.$id.'&cli=5&sec=4&eta=2"><i class="fa fa-circle fa-2x" style="color:'.$nomestpena.';"></i></a></td>';
+           <a href="index.php?action=supinformecli01&idmes='.$this->idmes.'&idrec='.$idrec.'&id='.$id.'&cli=5&sec=4&eta=2&idsup='.$this->idsup.'"><i class="fa fa-circle fa-2x" style="color:'.$nomestpena.';"></i></a></td>';
          } else {
             echo '<td> </td>';
            }
             if ($item["TELEC"]>0){
               echo'
         <td>
-           <a href="index.php?action=supinformecli01&idmes='.$this->idmes.'&idrec='.$idrec.'&id='.$id.'&cli=6&sec=4&eta=2"><i class="fa fa-circle fa-2x" style="color:'.$nomestsele.';"></i></a></td>';
+           <a href="index.php?action=supinformecli01&idmes='.$this->idmes.'&idrec='.$idrec.'&id='.$id.'&cli=6&sec=4&eta=2&idsup='.$this->idsup.'"><i class="fa fa-circle fa-2x" style="color:'.$nomestsele.';"></i></a></td>';
            } else {
             echo '<td> </td>';
            }          

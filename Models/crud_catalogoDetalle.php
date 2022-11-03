@@ -40,7 +40,7 @@ ca_catalogosdetalle.cad_idopcion =  :opcion";
     $stmt-> bindParam(":clavecatalogo", $catalogo, PDO::PARAM_INT);
     $stmt-> bindParam(":opcion",$opcion , PDO::PARAM_INT);
      $stmt-> execute();
-
+//$stmt->debugDumpParams();
     $result_cat=$stmt->fetchall();
      foreach($result_cat as $row_cat) {
         if ($_SESSION["idiomaus"] == 2)

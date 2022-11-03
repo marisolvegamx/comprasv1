@@ -2,10 +2,16 @@
 
         $informeCont=new SupInfmuestraController();
         $informeCont->vistaSupInfMuesController();
-        $dirimg= $informeCont->getdirimg();  
+        $dirimg= $informeCont->getdirimg();
+        $idimg= $informeCont->getidimg();
         $idticket= $informeCont->getidticket();
         $idprodex= $informeCont->getidprodex();
-        $server="/compras/fotografias/";
+        $nomticket= $informeCont->getnomtick();
+        $nomprodex= $informeCont->getnomprodex();
+        $nomprodexc= $informeCont->getnompexc();
+        $idplanta= $informeCont->getidplanta();
+        //var_dump($nomprodexc);
+        $server="/comprasv1/fotografias/";
         $numinf= $informeCont->getidinf();
         $idmes= $informeCont->getidmes();
         $idrec= $informeCont->getidrec();
@@ -25,12 +31,19 @@
         $ant =$informeCont->getidant();
         $sig = $informeCont->getidsig();
         $last = $informeCont->getlast();
-
+        $opcsel = $informeCont->getopcsel();
+        $stimg = $informeCont->getestfot();
+        $nomciudad= $informeCont->getnomciu();
+        $idsup= $informeCont->getidsup();
+        //var_dump($idsup);
+       
         include "Utilerias/leevar.php";
         if ($admin=="cor"){
             $informeCont->noaceptarprodex(); 
           } else if ($admin=="aceptar"){
-            $informeCont->aceptarsec1();   
+            $informeCont->aceptarsec();   
+          } else if ($admin=="act"){
+            $informeCont->actualizacom();   
           } else if ($admin=="noap"){
             $informeCont->noaplicasec1();
           } else if ($admin=="solcor"){  
@@ -54,13 +67,18 @@
               <div class="row">
                 <?php
                 echo '
-                <div class="col-md-3 tituloSupBotones" ><a href="index.php?action=supinformecli01&idmes='.$idmes.'&idrec='.$idrec.'&id='.$idinf.'&cli='.$idcli.'"><img src="Views/dist/img/Retrocede-Final.jpg"></a>
+                <div class="col-md-3 tituloSupBotones" ><a 
+                href="index.php?action=suplistatiendas&admin=li&idmes='.$idmes.'&idsup='.$idsup.'&idciu='.$nomciudad.'&eta=2"><img src="Views/dist/img/retroceder-lista.jpg"></a>
+
                 </div>
-                <div class="col-md-3 tituloSupBotones" ><a href="index.php?action=supinformecli01&idmes='.$idmes.'&idrec='.$idrec.'&id='.$idinf.'&cli='.$idcli.'"><img src="Views/dist/img/Retrocede-1.jpg"></a>
+                <div class="col-md-3 tituloSupBotones" ><a href="index.php?action=supinformecli01&idmes='.$idmes.'&idrec='.$idrec.'&idsup='.$idsup.'&id='.$idinf.'&cli='.$idcli.'&sec='.$sec.'&eta=2"><img src="Views/dist/img/Retrocede-1.jpg"></a>
                 </div>
-                <div class="col-md-3 tituloSupBotones" ><a href="index.php?action=supinformecli02&idmes='.$idmes.'&idrec='.$idrec.'&id='.$idinf.'&cli='.$idcli.'"><img src="Views/dist/img/Avanza-1.jpg"></a>
+                <div class="col-md-3 tituloSupBotones" ><a href="index.php?action=supinformecli02&idmes='.$idmes.'&idrec='.$idrec.'&id='.$idinf.'&idsup='.$idsup.'&cli='.$idcli.'&nummues=1&pan=5&eta=2"><img src="Views/dist/img/Avanza-1.jpg"></a>
+                  
+
+
                 </div>
-                <div class="col-md-3 tituloSupBotones" ><a href="index.php?action=supinformecli02&idmes='.$idmes.'&idrec='.$idrec.'&id='.$idinf.'&cli='.$idcli.'"><img src="Views/dist/img/Avanza-Final.jpg"></a>
+                <div class="col-md-3 tituloSupBotones" ><a href="index.php?action=supinformecli02&idmes='.$idmes.'&idrec='.$idrec.'&id='.$idinf.'&idsup='.$idsup.'&cli='.$idcli.'&sec='.$sec.'&eta=2"><img src="Views/dist/img/Avanza-Final.jpg"></a>
                 </div>
                 ';
                 ?>
@@ -101,11 +119,11 @@
                <div class="col-md-3 tituloSupBotones" ><a 
                 <?php
 
-                if ($first){
+                if ($first){ 
                     echo '  
-                   href="index.php?action=supinformecli01&idmes='.$idmes.'&idrec='.$idrec.'&id='.$first.'&cli='.$idcli.'"';
+                   href="index.php?action=supinformecli01&idmes='.$idmes.'&idrec='.$idrec.'&id='.$first.'&cli='.$idcli.'&sec='.$sec.'&eta=2&idsup='.$idsup.'"';
                 } else {
-                  echo 'href="#"';
+                   echo 'href="#"';
                 }
                 
                 
@@ -115,8 +133,8 @@
                <div class="col-md-3 tituloSupBotones" ><a 
                  <?php
                  if ($ant){
-                echo '
-                href="index.php?action=supinformecli01&idmes='.$idmes.'&cli='.$idcli.'&idrec='.$idrec.'&id='.$ant.'"';
+                    echo '
+                    href="index.php?action=supinformecli01&idmes='.$idmes.'&cli='.$idcli.'&idrec='.$idrec.'&id='.$ant.'&sec='.$sec.'&eta=2&idsup='.$idsup.'"';
                 } else {
                   echo 'href="#"';
                 }
@@ -128,7 +146,7 @@
                  <?php
                  if ($sig){
                 echo '
-                href="index.php?action=supinformecli01&idmes='.$idmes.'&cli='.$idcli.'&idrec='.$idrec.'&id='.$sig.'"';
+                href="index.php?action=supinformecli01&idmes='.$idmes.'&cli='.$idcli.'&idrec='.$idrec.'&id='.$sig.'&sec='.$sec.'&eta=2&idsup='.$idsup.'"';
                 } else {
                   echo 'href="#"';
                 }
@@ -139,7 +157,7 @@
                  <?php
                  if ($last){    
                  echo ' 
-                href="index.php?action=supinformecli01&idmes='.$idmes.'&cli='.$idcli.'&idrec='.$idrec.'&id='.$last.'"';
+                href="index.php?action=supinformecli01&idmes='.$idmes.'&cli='.$idcli.'&idrec='.$idrec.'&id='.$last.'&sec='.$sec.'&eta=2&idsup='.$idsup.'"';
                 } else {
                   echo 'href="#"';
                 }
@@ -194,13 +212,59 @@
         echo $idinf;
         ?>
       </div>
-      <div class="col-md-1 labelAzul1">COMENTARIOS:
+
+      <div class="col-md-1 labelAzul1">    </div>
+      <div class="col-md-5 labelAzulDato">  
       </div>
-      <div class="col-md-5 labelAzulDato">
-        <?php
+    </div>
+        <?php 
+        //$admin="edI";
+          if ($admin=="edI"){
+             echo '<form role="form" method="post" action="index.php?action=supinformecli01&admin=act">';
+          }   
+         ?>
+
+    <div class="row">
+      
+      <div class="col-md-1 labelAzul1">COMENTARIOS:     </div>
+      <div class="col-md-11 labelAzulDato">
+          <?php
+        if ($admin=="edI"){
+
+           echo '<input class="form-control form-control-informes" type="text" placeholder="" id="coment" name="coment" value="'.$coment.'">';
+
+           echo '
+                 <input type="hidden" name="id" id="id" value="'.$id.'">
+                 <input type="hidden" name="indice" id="idmes" value="'.$idmes.'">
+                 <input type="hidden" name="idrec" id="idrec" value="'.$idrec.'">
+                 <input type="hidden" name="idcli" id="idrec" value="'.$idcli.'">
+                 <input type="hidden" name="idplan" id="idplan" value="'.$idplanta.'">';
+        }else{  
         echo $coment;
+        }
         ?>
       </div>
+    </div>
+     <div class="row">
+      <div class="col-md-12 areaBotonDer">
+       <?php 
+        if ($admin=="edI"){
+          echo '    
+          <button type="submit" class="btn btn-informes btn-sm btn-block">Guardar</button>';
+
+        } else {
+             echo '
+            <a href="index.php?action=supinformecli01&admin=edI&idmes='.$idmes.'&idrec='.$idrec.'&id='.$idinf.'&cli='.$idcli.'&numpant='.$numpant.'&nummues='.$nummues.'" class="btn btn-informes btn-sm btn-block ">EDITAR</a>';
+        } 
+        ?>
+      </div>
+           <?php 
+        //$admin="edI";
+          if ($admin=="edI"){
+             echo '</form>';
+          }   
+         ?>     
+   
     </div>
     <div class="row">
       <div class="col-md-12 espacioHor">
@@ -208,43 +272,62 @@
     </div>
 
     <div class="row">
-      <div class="col-md-6 areaImagen areaScrollP2">
-      <div class="carousel slide" id="carousel-920444" data-interval="0">
-
-<div class="carousel-inner">
-  <div class="carousel-item active">
-        <img class="d-block w-100"  src=
-        <?php
-            $img=$server.$dirimg.'/'.$idprodex;
-            echo $img; 
-        ?>
-        />
+      <div class="col-md-6 areaImagen areaScrollP4">
+      <div>
+         <div> 
+          <div class="img-magnifier-container ">
+          
+            <?php
+            if($nomticket=="")
+            {    $img1="Views/dist/img/sin-foto.jpg";
+            echo ' <img  class="d-block w-100"  src="'.$img1.'"/>';
+            }
+            else
+        //      $idprodex="IMG_4_20220221_132038.jpg";
+            {     $img1=$server.$dirimg.'/'.$nomprodex;
+                  echo ' <img id="myimage" class="d-block w-100"  src="'.$img1.'"/>';
+            
+            }
+               
+            ?>
+           
+          </div>
+          <div style="height: 100px"></div>
+            <div class="img-magnifier-container ">
+                <?php
+        //      $idprodex="IMG_4_20220221_132038.jpg";
+                if($nomticket=="")
+                {    $img="Views/dist/img/sin-foto.jpg";
+                echo ' <img class="d-block w-100"  src="'.$img.'"/>';
+                }
+                else
+                {   $img=$server.$dirimg.'/'.$nomticket;
+                echo ' <img id="myimage2" class="d-block w-100"  src="'.$img.'"/>';
+                
+                }
+             
+            ?>
+               
+            </div>
+          </div>  
       </div>
+    </div>
 
-      <div class="carousel-item">
-        <img class="d-block w-100"  src=
-<?php
-            $img2=$server.$dirimg.'/'.$idticket;
-          echo $img2;
-        ?>
-         />
-      </div>
-  </div> 	
-  <a class="carousel-control-prev" href="#carousel-920444" data-slide="prev">
-    <span class="carousel-control-prev-icon"></span>
-    <span class="sr-only">Anterior</span></a>
-  <a class="carousel-control-next" href="#carousel-920444" data-slide="next">
-    <span class="carousel-control-next-icon"></span>
-    <span class="sr-only">Siguiente</span></a>
-</div>
-</div>
-      <div class="col-md-6 areaImagenDer areaScrollP2">
-      <img class="img-fluid"   src=
+      <div class="col-md-6 areaImagenDer areaScrollP4  img-magnifier-container">
+     
  <?php 
-        $img2=$server.$dirimg.'/'.$idticket;
-          echo $img2;
+ if($nomprodexc=="")
+ { $img2="Views/dist/img/sin-foto.jpg";
+ echo  '<img  class="w-100"   src="'.$img2.'"/>';
+ }
+        else
+        { // $idticket2="IMG_4_20220221_132144.jpg";
+        $img2=$server.$dirimg.'/'.$nomprodexc;
+        echo  '<img id="myimage3" class="w-100"  src="'.$img2.'"/>';
+        }
+       
       ?> 
-      />
+   
       </div>
     </div>
     <div class="row">
@@ -255,7 +338,7 @@
 
       <div class="col-md-2 areaBoton" > 
     <?php
-      if ($opcsel==3){
+      if ($stimg==1){
           $clase= "btn-informesActivado";
           
       } else {
@@ -270,9 +353,30 @@
       </div>
 
       
-      <div class="col-md-2 areaBoton"><a href="#" class="btn btn-informes btn-sm btn-block ">CANCELAR</a>
+      <div class="col-md-2 areaBoton"><a href=
+          <?php
+           if ($stimg==2){
+              $clase= "btn-informesActivado";
+           } else {
+              $clase= "btn-informes";
+           }
+        echo '
+              "index.php?action=supinformecli01&pan=1&admin=cor&est=2&eta=2&indice='.$idmes.'&cli='.$idcli.'&idrec='.$idrec.'&id='.$idinf.'&img='.$idimg.'" class="btn '.$clase. ' btn-sm btn-block "';
+        ?>        
+               >CANCELAR</a>
       </div>
-      <div class="col-md-2 areaBoton"><a href="#" class="btn btn-informes btn-sm btn-block ">ACEPTAR</a>
+      <div class="col-md-2 areaBoton"><a href=
+<?php
+           if ($stimg==3){
+              $clase= "btn-informesActivado";
+           } else {
+              $clase= "btn-informes";
+           }
+        echo '
+              "index.php?action=supinformecli01&pan=1&admin=cor&est=3&eta=2&indice='.$idmes.'&cli='.$idcli.'&idrec='.$idrec.'&id='.$idinf.'&img='.$idimg.'" class="btn '.$clase. ' btn-sm btn-block " class="btn '.$clase.' btn-sm btn-block "';
+        ?>
+
+        >ACEPTAR</a>
       </div>
       <div class="col-md-6 areaBoton"><a href="#" class="btn btn-informes btn-sm btn-block ">ACTUALIZAR</a>
       </div>
@@ -284,11 +388,57 @@
     <div class="row">
       <div class="col-md-6 labelAzul1Comentario">¿VENDEN PRODUCTOS DE LA MARCA EN LA TIENDA VISITADA?
       </div>
-      <div class="col-md-1 areaBoton" ><a href="#" class="btn btn-informes btn-sm btn-block ">SI</a>
+      <div class="col-md-1 areaBoton" >
+      <?php 
+       if ($opcsel==1){
+          $clase= "btn-informesActivado";
+          
+      } else {
+        $clase= "btn-informes";
+       
+      }
+
+      $href= '
+        <a href="index.php?action=supinformecli01&admin=aceptar&pan=1&indice='.$idmes.'&idrec='.$idrec.'&cli='.$idcli.'&id='.$idinf.'&sec=4&eta=2&acep=1&noa=0"';
+
+       echo $href.' class="btn '.$clase.' btn-sm btn-block ">SI</a>';
+       
+      ?>
+
       </div>
-      <div class="col-md-1 areaBoton"><a href="#" class="btn btn-informes btn-sm btn-block ">NO</a>
+      <div class="col-md-1 areaBoton">
+      <?php 
+
+       if ($opcsel==3){
+          $clasen= "btn-informesActivado";
+          
+      } else {
+        $clasen= "btn-informes";
+          }
+       $hrefn= '
+        <a href="index.php?action=supinformecli01&admin=aceptar&pan=1&indice='.$idmes.'&idrec='.$idrec.'&cli='.$idcli.'&id='.$idinf.'&sec=4&eta=2&acep=0&noa=0"';
+
+       echo $hrefn.' class="btn '.$clasen.' btn-sm btn-block ">NO</a>';
+      
+      ?>
+       
       </div>
-      <div class="col-md-4 areaBoton"><a href="#" class="btn btn-informes btn-sm btn-block ">NO HAY SUFICIENTE EVIDENCIA</a>
+      <div class="col-md-4 areaBoton">
+          <?php 
+
+       if ($opcsel==2){
+          $clasen= "btn-informesActivado";
+          
+      } else {
+        $clasen= "btn-informes";
+          }
+       $hrefn= '
+        <a href="index.php?action=supinformecli01&admin=aceptar&pan=1&indice='.$idmes.'&idrec='.$idrec.'&cli='.$idcli.'&id='.$idinf.'&sec=4&eta=2&acep=0&noa=1"';
+
+       echo $hrefn.' class="btn '.$clasen.' btn-sm btn-block ">NO HAY SUFICIENTE EVIDENCIA</a>';
+      
+      ?>
+        
       </div>
     </div>
 
@@ -299,7 +449,7 @@
           <div class="modal-content">
 
             <div class="modal-header">
-              <h4 class="modal-title">CORREGIR POR</h4>
+              <h4 class="modal-title">CORREGIR</h4>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
@@ -312,8 +462,7 @@
 
         <?php
               echo '
-    
-              "index.php?action=supinformecli01&pan=1&admin=cor&est=1&eta=2&indice='.$idmes.'&cli='.$idcli.'&idrec='.$idrec.'&id='.$idinf.'"';
+              "index.php?action=supinformecli01&pan=1&admin=cor&est=1&eta=2&indice='.$idmes.'&cli='.$idcli.'&idrec='.$idrec.'&id='.$idinf.'&img='.$idimg.'"';
             ?>
               >
               
@@ -321,7 +470,7 @@
               <input type="text"  name="observ" id="observ" style="width: 450px;">
               <p>  </p>
 
-              <button type="submit" class="btn btn-primary">Actualizar</button>
+              <button type="submit" class="btn btn-primary">Enviar</button>
             </form>
 
 
@@ -333,4 +482,18 @@
       <!-- /.modal -->
  </div>
 
-
+<script>
+/* Initiate Magnify Function
+with the id of the image, and the strength of the magnifier glass:*/
+magnify("myimage", 2);
+</script>
+<script>
+/* Initiate Magnify Function
+with the id of the image, and the strength of the magnifier glass:*/
+magnify("myimage2", 2);
+</script>
+<script>
+/* Initiate Magnify Function
+with the id of the image, and the strength of the magnifier glass:*/
+magnify("myimage3", 2);
+</script>

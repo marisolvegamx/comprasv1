@@ -745,21 +745,31 @@ public function ordenalista(){
   include "Utilerias/leevar.php";
   // leo el numero de lista
   $id=$_POST["idlis"];
+
   //echo $id;
   $respuesta =DatosListaCompraDet::vistalistacomModel($id,"pr_listacompradetalle");
   foreach($respuesta as $row => $item){
      $nomchk = "chk".$item["lid_idprodcompra"]; 
      $ordenori=$item["lid_idprodcompra"];
-  if (isset($_POST[$nomchk])){
+     if (isset($_POST[$nomchk])){
           $indchk=-1;
       }else{
           $indchk=0;
       }
 
+      $notchk = "ntchk".$item["lid_idprodcompra"];
+      $notienchk=$_POST[$notchk];
+      //if (isset($_POST[$notchk])){
+          //$indchk=-1;
+      //}else{
+      //    $indchk=0;
+     // }
+
       //echo $indchk;
       $datosController1= array("idlis"=>$id,
                             "orden"=>$ordenori,
                             "chkbac"=>$indchk,
+                            "notienchk"=>$notienchk,            
                              ); 
         
         $rs= DatosListaCompraDet::actualizabackup($datosController1,"pr_listacompradetalle");

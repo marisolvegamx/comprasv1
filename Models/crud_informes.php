@@ -754,7 +754,7 @@ inner join ca_nivel5 on n5_id=inf_plantasid
  inner join ca_nivel1 on n1_id=n5_idn1
 inner join visitas v on v.vi_idlocal =inf_visitasIdlocal and v.vi_indice =inf_indice
  and v.vi_cverecolector =inf_usuario 
-where inf_visitasIdlocal=:idinf and n5_idn1=:cli and
+where inf_id=:idinf and n5_idn1=:cli and
  inf_indice=:idmes and inf_usuario=:idrec;");
         
         $stmt->bindParam(":idinf", $datosModel["idinf"], PDO::PARAM_INT);

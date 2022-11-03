@@ -1,27 +1,26 @@
 <?php
 //error_reporting(E_ERROR|E_NOTICE|E_WARNING);
 //ini_set("display_errors", 1); 
-include "Models/crud_pantalla.php";
+include "Models/crud_informesetapa.php";
+include 'Models/crud_infetapadet.php';
 include 'Models/crud_informesDetalle.php';
-//include 'Models/crud_imagenesDetalle.php';
+
 include 'Models/crud_supvalmuestras.php';
 include 'Models/crud_supvalseccion.php';
-include 'Models/crud_productoExhibido.php';
-include 'Models/crud_informes.php';
 
-class SupMuestraController
+class SupPreparaController
 {
     public $informe;
-    public $visita;
-    public $muestra;
+  
+    public $infdetalle;
     public $idinf;
     public $mesas;
     public $rec_id;
     public $idcli;
     public $pantalla;
     public $indiceletra;
-    public $numuestra;
-    public $muestras;
+  
+    public $infdetalles;
     public $listaimagenes;
     public $dirimagen;
     public $liga;
@@ -29,91 +28,49 @@ class SupMuestraController
     public $listaCompra;
     public $correccionFoto;
     public $valSeccion;
-    public $etapa=2;
+    public $etapa=1;
     public $seccion;
     public $idval;
     public $numpan;
-    public $liga2;
-    public $admin;
+    public $numdet;
+   
      
-    public function vistaMuestra(){
+    public function vistaPreparacion(){
         //$vis=$_GET["id"]; //si es el del informe
         $this->mesas=$_GET["idmes"];
         $this->rec_id=$_GET["idrec"];
         $this->idcli=$_GET["cli"];
         $this->idinf=$_GET["id"];
-      //  $this->idinf=$_GET["inf"];
-        $numpantalla=$_GET["pan"];
-        $this->numuestra=$_GET["nummues"];
-        $admin=$_GET["admin"];
-        $this->admin=$admin;
-        $this->numpan=$numpantalla;
-          
-        if($admin=="act"){
-            $this->actualizarMuestra();
-        }
-       
-        
-      
     
-        $datosCont= array("idinf"=>$this->idinf,
-            "idmes"=>$this->mesas,
-            "idrec"=>$this->rec_id,
-            "cli"=>$this->idcli
-        );
+        $this->numdet=$_GET["numdet"];
+        $admin=$_GET["admin"];
+      
         $this->indiceletra=Utilerias::indiceConLetra($this->mesas);
-        
-        $resp =DatosInforme::vistaSupInformeDetalleModel($datosCont, "informes");
-     //  var_dump($resp);
+        $resp =DatosInformeEtapa::getInformesEtapaxId($this->mesas,$this->rec_id,$this->idinf, "informes_etapa");
+         // var_dump($resp);
         if($resp!=null)
-        $this->informe=$resp[0];
-        $this->idinf=$this->informe["inf_id"];
-        $this->liga="index.php?action=supinformecli02&idmes=".$this->mesas."&idrec=".$this->rec_id."&id=".$this->idinf.'&cli='.$this->idcli.'&pan='.$numpantalla.'&nummues='. $this->numuestra.'&eta='.$this->etapa;
-        $this->liga2="index.php?action=supinformecli03&idmes=".$this->mesas."&idrec=".$this->rec_id."&id=".$this->idinf.'&cli='.$this->idcli.'&pan='.$numpantalla.'&nummues='. $this->numuestra.'&eta='.$this->etapa;
-        
-       // $logemail= $_SESSION['Usuario'];
-        // busca el email y lee el numero de sugetsupervisorpervisor
-      //  $resp1 =UsuarioModel::getsupervisor($logemail,"cnfg_usuarios");
-     /*   foreach($resp1 as $row => $item1){
-            $numsup1= $item1["cus_cliente"];
-        }*/
+            $this->informe=$resp;
+       
+        $this->liga="index.php?action=suppreparacion&idmes=".$this->mesas."&idrec=".$this->rec_id."&id=".$this->idinf.'&cli='.$this->idcli.'&numdet='. $this->numdet.'&eta='.$this->etapa;
+    
         $aux = explode(".", $this->mesas);
         
         $solomes = $aux[0];
         $soloanio = $aux[1];
         $this->dirimagen = "fotografias\\".$solomes."_".$soloanio;
+
         
-        $datosCont= array("idinf"=>$this->idinf,
-            "idmes"=>$this->mesas,
-            "idrec"=>$this->rec_id,
-            "cli"=>$this->idcli
-        );
-         $resp2=DatosSupvisita::vistaSupInfvisModel($datosCont, "visitas");
-         $this->buscarMuestras();
-        //   var_dump($this->muestras);
+      
          $this->destruirSesion();
-        if($resp2!=null)
-            $this->visita=$resp2[0];
-        $this->pantalla=DatosPantalla::getPantalla($numpantalla,"sup_pantallas");
-       // var_dump($this->pantalla);
-        $this->muestra=$this->muestras[$this->numuestra-1];
-        if($numpantalla==5){
-            //echo "wwwww";
-            $this->getListaCompra($this->muestra["ind_comprasid"]);
-        }
-       // var_dump( $this->muestra);
-        if($numpantalla==6)
-            $this->buscarImagenesPan6();
-       if($numpantalla==7)
-           $this->buscarImagenesPan7();
-       else
-           if($numpantalla==8)
-               $this->buscarImagenesPan8();
-               if($numpantalla==9)
-                   $this->buscarImagenesPan9();
-                   if($numpantalla==5)
-             $this->buscarImagenes();
-       // var_dump($this->listaimagenes);
+         $this->buscarDetalles();
+       
+        $this->pantalla=array("pa_seccion"=>22,"pa_preguntaseccion"=>"¿ETIQUETAS COMPLETAS Y DEL MES CORRESPONDIENTE?");
+        
+        //var_dump($this->infdetalles);
+        $this->infdetalle=$this->infdetalles[$this->numdet-1];
+        $this->getListaCompra($this->informe["ine_plantasid"]);
+    
+   
         $datosController= array("id"=>$this->idinf,
             "idrec"=>$this->rec_id,
             "indice"=>$this->mesas,
@@ -127,192 +84,46 @@ class SupMuestraController
         $this->buscarCorreccionFoto($datoscorr);
     //  echo $admin;
         if($admin=="aceptarsec"){
-            $this->aceptarsec(1,1);
+            $this->aceptarsec(1);
         }
         if($admin=="noaceptarsec"){
-            $this->aceptarsec(0,1);
+            $this->aceptarsec(0);
         }
-        if($admin=="noaceptarseccan"){
-            $this->aceptarsec(0,2);
-            
-            $this->cancelarMuestra(2);
-        }
-        if($admin=="noap"){
-            $this->aceptarsec(3,1);
-        }
+       
         if($admin=="solcor"){
-         //   echo $admin;
+       
             $this->solcorreccion();
         }
         
         
     }
     
-    public function buscarMuestras(){
-        if(!isset($_SESSION["supmu_muestrascli"]))//reviso si ya tengo la consulta si no no la hago
-        {   $this->muestras=DatosInformeDetalle::getMuestrasxcliente($this->idinf,  $this->mesas,    $this->rec_id,$this->idcli, "informe_detalle");
-          //var_dump($this->muestras);
-            //guardo en session las muestras
-        $_SESSION["supmu_muestrascli"]=$this->muestras;
+    public function buscarDetalles(){
+       // var_dump($_SESSION["supdetalleta"]);
+       
+        if(!isset($_SESSION["supdetalleta"]))//reviso si ya tengo la consulta si no no la hago
+        { 
+            
+            $this->infdetalles=DatosInfEtapaDet::getInfEtapaDetxInf(  $this->mesas,    $this->rec_id,$this->idinf,$this->etapa, "informes_etapadet");
+         
+            //guardo en session
+        $_SESSION["supdetalleta"]=$this->infdetalles;
           
         }else
-        $this->muestras= $_SESSION["supmu_muestrascli"];
+        $this->infdetalles= $_SESSION["supdetalleta"];
         
             
     }
     
-    public function actualizarMuestra(){
-        include "Utilerias/leevar.php";
-            try{
-                //$fcaducidad=Utilerias::$caducidad
-                DatosInformeDetalle::actualizar($ind_id,$origen,$qr,$siglas,$codigo,$costo,$caducidad,$atributoa,$atributob,$atributoc, $idrec, $idmes, "informe_detalle");
-            }catch(Exception $ex){
-                echo "hubo un error ".$ex->getMessage();
-            }
-    }
+   
     
     public function destruirSesion(){
-        $_SESSION["supmu_muestrascli"]=null;
+        $_SESSION["supdetalleta"]=null;
         
     }
-    public function buscarImagenes(){
-        $idfoto1=$this->muestra["ind_foto_atributoa"];
-        // die($idfoto1);
-        //busco la ruta
-        
-        $result=DatosImagenDetalle::getImagen($this->mesas,$this->rec_id,$idfoto1,"imagen_detalle");
-        
-        $this->listaimagenes[]=$result;
-        
-        
-        $idfoto2=$this->muestra["ind_foto_atributob"];
-        $result=DatosImagenDetalle::getImagen($this->mesas,$this->rec_id,$idfoto2,"imagen_detalle");
-        
-        $this->listaimagenes[]=$result;
-        
-        
-        
-        $idfoto3=$this->muestra["ind_foto_atributoc"];
-            $result=DatosImagenDetalle::getImagen($this->mesas,$this->rec_id,$idfoto3,"imagen_detalle");
-           
-            $this->listaimagenes[]=$result;
-           
-            
-        
-        $idfoto4=$this->informe["inf_ticket_compra"];
-        $result=DatosImagenDetalle::getImagen($this->mesas,$this->rec_id,$idfoto4,"imagen_detalle");
-        
-        $this->listaimagenes[]=$result;
-       // var_dump($this->listaimagenes);
-        
-    }
-    public function buscarImagenesPan6(){
-        //de lo que tengo en la tabla pantalla busco en los campos de la muestra con ind_
-        //por el id en la tabla de imagenes
-        // var_dump($this->informe);
-        //  echo "+++".$this->pantalla["pa_foto1"];
-        
-        $idfoto1=$this->muestra["ind_foto_codigo_produccion"];
-        
-        //busco la ruta
-        $result=DatosImagenDetalle::getImagen($this->mesas,$this->rec_id,$idfoto1,"imagen_detalle");
-        
-        $this->listaimagenes[]=$result;
-        
-        //busco en productos exhibidos
-        //  echo $this->mesas."--".$this->rec_id."--".$this->informe["inf_visitasIdlocal"]."--".$this->idcli;
-        $idfoto1=$this->muestra["ind_etiqueta_evaluacion"];
-        
-        //busco la ruta
-        $result=DatosImagenDetalle::getImagen($this->mesas,$this->rec_id,$idfoto1,"imagen_detalle");
-        
-        $this->listaimagenes[]=$result;
-        
-        
-        
-        // var_dump($this->listaimagenes);
-        
-    }
-    public function buscarImagenesPan7(){
-        //de lo que tengo en la tabla pantalla busco en los campos de la muestra con ind_
-        //por el id en la tabla de imagenes
-       // var_dump($this->informe);
-        //  echo "+++".$this->pantalla["pa_foto1"];
-        $this->listaimagenes=null;
-        $idfoto1=$this->informe["inf_ticket_compra"];
-       
-        //busco la ruta
-        $result=DatosImagenDetalle::getImagen($this->mesas,$this->rec_id,$idfoto1,"imagen_detalle");
-
-        $this->listaimagenes[]=$result;
-        
-             //busco en productos exhibidos
-          //  echo $this->mesas."--".$this->rec_id."--".$this->informe["inf_visitasIdlocal"]."--".$this->idcli;
-          $result=DatosProductoExhibido::getProdExxCliente($this->mesas,$this->rec_id,$this->informe["inf_visitasIdlocal"],$this->idcli,"producto_exhibido");
-          /*  if($result!=null)//paso a imagen
-            {
-                $imagenex=array("imd_idlocal"=>$result["imagenId"],
-                    "imd_descripcion"=>$result["foto producto exhibido"], 
-                    "imd_ruta"=>$result["id"], 
-                    "imd_estatus"=>$result["id"], 
-                    "imd_indice"=>$result["id"],
-                    "imd_usuario"=>$result["id"]);
-
-
-                    
-            }*/
-           // var_dump($result);
-         $this->listaimagenes[]=$result;
-            
-        
-       
-        // var_dump($this->listaimagenes);
-        
-    }
-    //para la pantalla 8 3 fotot de posiciones 
-    public function buscarImagenesPan8(){
-        
-        $idfoto1=$this->muestra["ind_foto_atributoa"];
-        // die($idfoto1);
-        //busco la ruta
-        $result=DatosImagenDetalle::getImagen($this->mesas,$this->rec_id,$idfoto1,"imagen_detalle");
-        
-        $this->listaimagenes[]=$result;
-        
-       
-            $idfoto2=$this->muestra["ind_foto_atributob"];
-            $result=DatosImagenDetalle::getImagen($this->mesas,$this->rec_id,$idfoto2,"imagen_detalle");
-            
-            $this->listaimagenes[]=$result;
-            
-        
-       
-            $idfoto3=$this->muestra["ind_foto_atributoc"];
-            $result=DatosImagenDetalle::getImagen($this->mesas,$this->rec_id,$idfoto3,"imagen_detalle");
-            
-            $this->listaimagenes[]=$result;
-            
-            
-        
-        
-    }
-    //para la pantalla 8 3 fotot de posiciones
-    public function buscarImagenesPan9(){
-        
-        $idfoto1=$this->muestra["ind_etiqueta_evaluacion"];
-        // die($idfoto1);
-        //busco la ruta
-        $result=DatosImagenDetalle::getImagen($this->mesas,$this->rec_id,$idfoto1,"imagen_detalle");
-        
-        $this->listaimagenes[]=$result;
-        
-        
-      
-        
-        
-        
-    }
-    public function aceptarsec($aprob, $estatus=1){
+   
+  
+    public function aceptarsec($aprob){
         
         include "Utilerias/leevar.php";
       //  var_dump($_GET);
@@ -328,16 +139,11 @@ class SupMuestraController
                 //ya tenía respuesta
               //var_dump($this->valSeccion);
               if($aprob==0){
-                 
+                  $estatus=2;//cancelada
               }else if($aprob==1){
-                 
-              }else
-              {    $na=1; 
-             
-              $aprob=0;
+                  $estatus=1;//aceptada
               }
              
-             //estatus 1 aceptada, 2 cancelada
             if ($this->valSeccion!=null) {
                    
                     $datosController= array("idval"=>$this->idval,
@@ -348,7 +154,7 @@ class SupMuestraController
                         "estatus"=>$estatus,
                         "nummuestra"=>$iddet
                     );
-                 //   var_dump($datosController);
+                  //  var_dump($datosController);
                    // die();
                     DatosValSeccion::actualizaValidacionsecmues($datosController,"sup_validasecciones");
                   //  die();
@@ -358,7 +164,7 @@ class SupMuestraController
                 {
                 
                
-                    //echo "no hay nada";
+                    echo "no hay nada";
                     // inserta validacion
                     $datosController= array("id"=>$id,
                         "idrec"=>$idrec,
@@ -407,51 +213,30 @@ class SupMuestraController
                 $datosController= array("idval"=>$this->idval,
                     "idsec"=>$sec,
                 );
-               
+               // var_dump($datosController);
+              //  die();
               //  $respuestaS =DatosValidacion::LeeIdImgValidacion($datosController, "sup_validasecciones");
              //   if (sizeof($respuestaS)>0) {
                //     $this->valSeccion=$respuestaS[0];   
               //  }
                 
             }  // if existe en validacion
-            
-           
             //inserto la muestra en la tabla de supervision para poner el resultado
             
-          //  $respmue=DatosValMuestra::getValidacionMuestra($idval,$this->numuestra,"sup_validamuestras");
+          //  $respmue=DatosValMuestra::getValidacionMuestra($idval,$this->numuestra,"sup_validainfdetalles");
                  
          //  var_dump($respmue);
           
            /* if($respmue!=null&&sizeof($respmue)>0){
                 //actualizo
                 $respmue["vam_estatus"]=$estatus;
-                DatosValMuestra::UpdateValidacion($respmue,"sup_validamuestras");
+                DatosValMuestra::UpdateValidacion($respmue,"sup_validainfdetalles");
             }else //inserto
             { */
-          
-           // die($this->muestra["ind_comprasid"]."--".$this->muestra["ind_compraddetid"]);
-           // die();
-            if($pan==5||$pan==6)
-            {   // die($pan);
-                if($aprob==1){
-                    //actualizo los aceptados en la lista de compra
-                    
-                    DatosListaCompraDet::sumaAceptadosLista($this->muestra["ind_comprasid"],$this->muestra["ind_compraddetid"],1,"pr_listacompradetalle");
-                    //  die();
-                    DatosInformeDetalle::actualizarEstatus($this->muestra["ind_id"], $this->rec_id, $this->mesas, 3, "informe_detalle");
-                    
-                }
-            }
-           // var_dump($datosController);
-          //  die();
-        if($this->admin!="noaceptarseccan")
-            if($this->numpan==6)
-            echo "
-            <script type='text/javascript'>
-              window.location='$this->liga2'
-                </script>
-                  ";
-            else 
+            //todo ver primero si la muestra ya se acepto o se rechazo para antes de sumar o restar
+         
+         
+        
                 echo "
             <script type='text/javascript'>
               window.location='$this->liga'
@@ -461,63 +246,13 @@ class SupMuestraController
             echo Utilerias::mensajeError($ex->getMessage());
         }
     }
-    public function cancelarMuestra($estatus){
-        //todo ver primero si la muestra ya se acepto o se rechazo para antes de sumar o restar
-         //quito una comprada
-                //DatosListaCompraDet::restaAceptadosLista($this->muestra["ind_comprasid"],$this->muestra["ind_compraddetid"],1,"pr_listacompradetalle");
-                
-                //reviso si es la unica muestra para cancelar el informe
-                if(sizeof($this->muestras)==1){
-                    $datosController2= array("idval"=> $this->idval,
-                        
-                        "estatus"=>2,
-                        
-                    );
-                    DatosValidacion::actualizaValidacionpr($datosController2,"sup_validacion");
-                }
-            
-               
-        /*  $datosControllermu= array("vam_id"=>$idval,
-         "vam_idprod"=>$this->muestra["ind_comprasid"],
-         "vam_cantidad"=>1,
-         "vam_idmuestra"=>$this->numuestra,
-         "vam_prodcompra"=>$this->muestra["ind_compraddetid"],
-         "vam_estatus"=>$estatus
-         );*/
-        //   echo "****".$this->muestra["ind_id"];
-        //     DatosValMuestra::InsertaValidacion($datosControllermu,"sup_validamuestras");
-               // die($this->muestra["ind_id"]);
-        DatosInformeDetalle::actualizarEstatus($this->muestra["ind_id"], $this->rec_id, $this->mesas, $estatus, "informe_detalle");
-       
-       
-        if($this->numpan==6)
-            echo "
-            <script type='text/javascript'>
-              window.location='$this->liga2'
-                </script>
-                  ";
-            else
-                echo "
-            <script type='text/javascript'>
-              window.location='$this->liga'
-                </script>
-                  ";
-    }
+    
     public function solcorreccion(){
         
         include "Utilerias/leevar.php";
         
         
-        if ($pan) {
-            switch ($pan) {
-                case 2:
-                    $desima = "FotoFachada";
-                    break;
-            }
-            
-            $pan ="0".$pan;
-            
-        }
+     
         
         try{
           
@@ -619,6 +354,7 @@ class SupMuestraController
     public function buscarSeccion($datosController,$sec){
        // var_dump( $datosController);
         $respuesta =DatosValidacion::LeeIdValidacion($datosController, "sup_validacion");
+    //  var_dump($respuesta);
         // valido si se encuentra
         if (sizeof($respuesta)>0) {
             foreach($respuesta as $row => $item){
@@ -629,13 +365,13 @@ class SupMuestraController
             // revisa si ya existe
             $datosController= array("idval"=>$this->idval,
                 "idsec"=>$sec,
-                "nummuestra"=>$this->muestra["ind_id"]
+                "nummuestra"=>$this->infdetalle["ied_id"]
             );
            // var_dump($this->muestra);
           //  var_dump($datosController);
             $respuestaS =DatosValSeccion::getValSeccionMues($datosController, "sup_validasecciones");
-      //   echo "**********";
-        //    var_dump($respuestaS);
+           //echo "**********";
+          //  var_dump($respuestaS);
             if (sizeof($respuestaS)>0) {
                 $this->valSeccion=$respuestaS[0];   
                 $resnoap= $this->valSeccion["vas_noaplica"];
@@ -661,10 +397,10 @@ class SupMuestraController
         return $this->opcsel;
     }
     
-    public function getListaCompra($idcompra){
+    public function getListaCompra($planta){
        // echo $idcompra;
-        $respuesta =DatosInformeDetalle::getListaComDet($idcompra,"pr_listacompradetalle");
-        $i=0;
+        $respuesta =DatosListaCompra::getListaComDetxPlanRec($planta,$this->rec_id,$this->mesas,"pr_listacompradetalle");
+       
      
         if($respuesta!=null){
             $listanueva=array();
@@ -673,6 +409,7 @@ class SupMuestraController
                 $nuevaitem= $item;
                
                 $mes_asig=$item["lis_idindice"];
+                $idcompra=$item["lis_idlistacompra"];
                 
                 $aux = explode(".", $mes_asig);
                 
@@ -734,28 +471,10 @@ class SupMuestraController
     
         
           $this->listaCompra=$detalles;
+       //   var_dump( $this->listaCompra);
                     
     }
-   /* public void calcularTotales($detalles)
-    {
-        $totalPedidos=0;
-        $totalcomprados=0;
-        foreach($detalles as $detalle){
-            int $bus=$detalle.getInfcd()!=null?detalle.getInfcd().size():0;
-            totalcomprados=totalcomprados+detalle.getComprados()+bus;
-            totalPedidos=totalPedidos+detalle.getCantidad();
-        }
-        //  Log.d(TAG,"WWWWWWWWWW estoy en los totales"+detalles.);
-        //sumo los bu
-        /* if(detalles.!=null) {
-         totalcomprados = totalcomprados + listacomprasbu.size();
-         // totalPedidos=totalPedidos+ listacomprasbu.size();
-         }*/
-        //pongo en el textview
-     /*   mBinding.setTotal(totalcomprados+"/"+totalPedidos);
-        Constantes.NM_TOTALISTA=totalPedidos;
-        
-    }*/
+  
     
     public function buscarTotMuestras($idlistacompra,$listalcd){
         
@@ -803,15 +522,7 @@ class SupMuestraController
             return $listanueva;
     }
     
-    public function calcularVigencia($fechacompra,$fechacad){
-        
-        $fechacompf=new DateTime($fechacompra);
-        $fechacadf=new DateTime($fechacad);
-      //  echo $fechacompra."--".$fechacad;
-        $vig=$fechacadf->diff($fechacompf);
-        return $vig->days;
-        
-    }
+   
     
     public function getBackup($idcompra,$iddetalle) {
         //busco si tiene un backup
@@ -846,7 +557,7 @@ class SupMuestraController
     public function getLigapanp(){
         //devuelve a la 1er pantalla
         if($this->numpan>4)
-            return "index.php?action=supinformecli01&idmes=".$this->mesas."&idrec=".$this->rec_id."&id=".$this->idinf.'&cli='.$this->idcli."&eta=".$this->etapa;
+            return "index.php?action=suppreparacion&idmes=".$this->mesas."&idrec=".$this->rec_id."&id=".$this->idinf.'&cli='.$this->idcli."&eta=".$this->etapa;
         return "";
         
     }
@@ -854,7 +565,7 @@ class SupMuestraController
         //devuelve a la ultima pantalla
        
         if($this->numpan<9)
-            return "index.php?action=supinformecli02&idmes=".$this->mesas."&idrec=".$this->rec_id."&id=".$this->idinf.'&cli='.$this->idcli."&eta=".$this->etapa.'&pan=9&nummues='. $this->numuestra;
+            return "index.php?action=suppreparacion&idmes=".$this->mesas."&idrec=".$this->rec_id."&id=".$this->idinf.'&cli='.$this->idcli."&eta=".$this->etapa.'&numdet='. $this->numdet;
         return "";
     }
     

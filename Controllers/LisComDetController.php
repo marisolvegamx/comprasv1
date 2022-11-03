@@ -51,11 +51,11 @@ public function NvolisComDetController(){
      <table class="table table-bordered" id="listacompra">
                   <thead>
                     <th align="center" style="width: 15%">PRODUCTO</th>
-                    <th align="center" style="width: 10%">TAMAÑO</th>
-                    <th align="center" style="width: 10%">EMPAQUE</th>
+                    <th align="center" style="width: 5%">TAMAÑO</th>
+                    <th align="center" style="width: 5%">EMPAQUE</th>
                     <th align="center" style="width: 5%">ANALISIS</th>
-                    <th align="center" style="width: 8%">CANTIDAD</th>
-                    <th align="center" style="width: 8%">TIPO MUESTRA</th>
+                    <th align="center" style="width: 5%">CANT</th>
+                    <th align="center" style="width: 5%">TIPO MUESTRA</th>
                     <th align="center" style="width: 8%">CODIGOS NO PERMITIDOS</th>
                     <th align="center" style="width: 8%">RESTRINGIR CODIGO</th>
                     <th align="center" style="width: 8%">PERMITIR CODIGO</th>
@@ -63,7 +63,8 @@ public function NvolisComDetController(){
                         <input type="hidden" class="form-control" name="idlis" id="idlis" value='.$id.'
                        
                     </th>
-                    <th align="center" style="width: 5%">ELIMINAR</th>
+                    <th align="center" style="width: 5%">NO. TIENDA</th>
+                    <th align="center" style="width: 5%">BORRAR</th>
                   </tr>
                   </thead>
                   <tbody>
@@ -74,6 +75,8 @@ public function NvolisComDetController(){
       $i=0;
 
       foreach($respuesta as $row => $item){
+
+          $numtienbk =$item["lid_numtienbak"];
           $numprod =$item["lid_orden"];
           $numprodlis= $item["lid_idprodcompra"];
           $idprod = $item["lid_idproducto"];
@@ -171,6 +174,8 @@ public function NvolisComDetController(){
       } else {
         $opb='<div class="form-group clearfix"><input type="checkbox"  class="icheck-primary d-inline" name="chk'.$numprodlis.'" value="no" ></div>';
       }
+      $txtnumtienbk='<input type="text" class="form-control" name="ntchk'.$numprodlis.'" value='.$numtienbk.'>';
+      
       echo '      
                   <tr >   
                     
@@ -184,6 +189,7 @@ public function NvolisComDetController(){
                     <td align="center">'.$fecrest.'</td>                   
                     <td align="center">'.$fecperm.'</td>
                     <td align="center">'.$opb.'</td>
+                    <td align="center">'.$txtnumtienbk.'</td>
 
                    
                     <td align="center"><a type="button" href="index.php?action=listacompradet&admin=eli&id='.$id.'&idp='.$numprodlis.'" onclick="return dialogoEliminar();"><i class="fa fa-trash-alt fa-lg"></i></a></td>

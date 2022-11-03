@@ -174,8 +174,8 @@ public function actualizaValidacionimg($datosModel, $tabla){
     public function ingresaValidacionimg($datosModel, $tabla){
 
 	// busca el id de validacion
-    $sql='INSERT INTO `sup_validafotos`(`vai_id`, `vai_numfoto`, `vai_descripcionfoto`, `vai_estatus`, `vai_observaciones`)
- VALUES ('.$datosModel["idval"].','.$datosModel["idimg"].','.$datosModel["desimg"].','.$datosModel["est"].',"'.$datosModel["observ"].'");';
+    $sql='INSERT INTO `sup_validafotos`(`vai_id`, `vai_numfoto`, `vai_descripcionfoto`, `vai_estatus`, `vai_observaciones`,vai_fecha)
+ VALUES ('.$datosModel["idval"].','.$datosModel["idimg"].','.$datosModel["desimg"].','.$datosModel["est"].',"'.$datosModel["observ"].'", now());';
    	//	echo $sql;
 	$stmt = Conexion::conectar()-> prepare($sql);
 

@@ -18,6 +18,8 @@ include "../src/solCorreccionController.php";
 include "../src/plantaPenController.php";
 include "../src/descargaRespController.php";
 include '../src/correccionPostController.php';
+include '../src/informeEtaPostController.php';
+
 use api\Subefotos;
 use api\src\DescargaRespController;
 // Create and configure Slim app
@@ -134,7 +136,7 @@ $app->post('/login', function (Request $request, Response $response) {
             'data' => $e->getMessage()
         );
         $this->get('logger')
-            ->addInfo('InforemesPend: hubo un error ' . $e->getMessage());
+            ->addInfo('login: hubo un error ' . $e->getMessage());
 
         return $response->withJson($datos, 500);
     }
@@ -156,20 +158,19 @@ $app->get('/tiendas', function ($request, $response, $args) {
 
     $pais = filter_input(INPUT_GET, "pais", FILTER_SANITIZE_STRING);
     $ciudad = filter_input(INPUT_GET, "ciudad", FILTER_SANITIZE_STRING);
-   // $nombre = filter_input(INPUT_GET, "nombre", FILTER_SANITIZE_STRING);
-    //$cadena = filter_input(INPUT_GET, "cadena", FILTER_SANITIZE_STRING);
-    $cadena="";
-    $nombre="";
+    $nombre = filter_input(INPUT_GET, "nombre", FILTER_SANITIZE_STRING);
+    $tipo = filter_input(INPUT_GET, "tipo", FILTER_SANITIZE_STRING);
+  
     $planta = filter_input(INPUT_GET, "plan", FILTER_SANITIZE_NUMBER_INT);
     $cliente = filter_input(INPUT_GET, "cli", FILTER_SANITIZE_NUMBER_INT);
     $fechaini = filter_input(INPUT_GET, "fini", FILTER_SANITIZE_STRING);
     $fechafin = filter_input(INPUT_GET, "ffin", FILTER_SANITIZE_STRING);
     $this->get('logger')
-    ->addInfo('tiendas: Llegó una peticion ' . $pais."--".$ciudad."--".$planta."--".$cliente."--".$fechaini."--".$fechafin);
+    ->addInfo('tiendas: Llegó una peticion ' . $pais."--".$ciudad."--".$planta."--".$cliente."--".$fechaini."--".$fechafin."--".$nombre."-".$tipo);
     
     return $response->withHeader('Content-type', 'application/json')
         ->getBody()
-        ->write($cc->response($pais, $ciudad, $cadena, $nombre, $planta,$fechaini,$fechafin,$cliente));
+        ->write($cc->response($pais, $ciudad, $nombre, $tipo, $planta,$fechaini,$fechafin,$cliente));
 });
 
     $app->get('/geocercas', function ($request, $response, $args) {
@@ -251,6 +252,7 @@ $app->post('/informes/create', function (Request $request, Response $response) {
         return $response->withJson($datos, 500);
     }
 });
+
 $app->post('/imagenes', function (Request $request, Response $response) {
     // Si necesitamos acceder a alguna variable global en el framework
     // Tenemos que pasarla con use($variable) en la cabecera de la función.
@@ -258,7 +260,7 @@ $app->post('/imagenes', function (Request $request, Response $response) {
 
     $campos = $request->getParsedBody();
     $this->get('logger')
-        ->addInfo('InforemesPend: Llegaron varios informes' . $request->getBody());
+        ->addInfo('imagenes: Llegaron varias imagenes' . $request->getBody());
 
     try {
         $informeContrl = new InformePostController();
@@ -266,10 +268,10 @@ $app->post('/imagenes', function (Request $request, Response $response) {
 
         $datos = array(
             'status' => 'ok',
-            'data' => 'Informes guardados correctamente.'
+            'data' => 'Imagenes guardados correctamente.'
         );
         $this->get('logger')
-            ->addInfo('InforemesPend: Respuesta Informes guardados correctamente');
+            ->addInfo('Imagenes: Respuesta Informes guardados correctamente');
         return $response->withJson($datos, 200);
     } catch (Exception $e) {
         $datos = array(
@@ -277,7 +279,7 @@ $app->post('/imagenes', function (Request $request, Response $response) {
             'data' => $e->getMessage()
         );
         $this->get('logger')
-            ->addInfo('InforemesPend: hubo un error ' . $e->getMessage());
+            ->addInfo('Imagenes: hubo un error ' . $e->getMessage());
 
         return $response->withJson($datos, 500);
     }
@@ -332,6 +334,7 @@ $app->get('/descresp', function ($request, $response, $args) {
             ->getBody()
             ->write( $cc->response($indice,$recolector));
         });
+   
 
     $app->get('/solcorreccion', function ($request, $response, $args) {
         $solc = new solCorreccionController();
@@ -347,105 +350,132 @@ $app->get('/descresp', function ($request, $response, $args) {
         ->write($solc->response(  $indice,$recolector,$etapa));
     });
     
-        $app->post('/infetapa/create', function (Request $request, Response $response) {
-            // Si necesitamos acceder a alguna variable global en el framework
-            // Tenemos que pasarla con use($variable) en la cabecera de la función.
-            // Va a devolver un objeto JSON con los datos de usuarios.
+$app->post('/infetapa/create', function (Request $request, Response $response) {
+  
+    
+    $campos = $request->getParsedBody();
+    $this->get('logger')
+    ->addInfo('InformesEtapa: Llego informe' . $request->getBody());
+    
+    try {
+        $informeContrl = new InformeEtaPostController();
+        $informeContrl->insertarTodo($campos);
+        
+        $datos = array(
+            'status' => 'ok',
+            'data' => 'Informes guardados correctamente.'
+        );
+        $this->get('logger')
+        ->addInfo('InforemesPend: Respuesta Informes guardados correctamente');
+        return $response->withJson($datos, 200);
+    } catch (Exception $e) {
+        $datos = array(
+            'status' => 'error',
+            'data' => $e->getMessage()
+        );
+        $this->get('logger')
+        ->addInfo('InformesEtapa: hubo un error ' . $e->getMessage());
+        
+        return $response->withJson($datos, 500);
+    }
+});
+
+    $app->post('/correccion/create', function (Request $request, Response $response) {
+        
+        // Si necesitamos acceder a alguna variable global en el framework
+        // Tenemos que pasarla con use($variable) en la cabecera de la función.
+        // Va a devolver un objeto JSON con los datos de usuarios.
+        
+        $campos = $request->getParsedBody();
+        $this->get('logger')
+        ->addInfo('CrearCorreccion: Llegó una ' . $request->getBody());
+        
+        try {
             
-            $campos = $request->getParsedBody();
+            $correcContrl = new CorreccionPostController();
+            // var_dump($campos);
+            //  die();
+            $correcContrl->insertarTodo($campos);
+            
+            $datos = array(
+                'status' => 'ok',
+                'data' => 'Correccion dada de alta correctamente.'
+            );
             $this->get('logger')
-            ->addInfo('InforemesEtapa: Llegaron varios informes' . $request->getBody());
+            ->addInfo('CrearCorreccion: Correccion dada de alta correctamente');
+            return $response->withJson($datos, 200);
+        } catch (Exception $e) {
+            echo "hubo un error";
+            $datos = array(
+                'status' => 'error',
+                'data' => $e->getMessage()
+            );
+            $this->get('logger')
+            ->addInfo('CrearCorreccion: hubo un error ' . $e->getMessage());
             
-            try {
-              /*  $informeContrl = new InformePostController();
-                $informeContrl->insertarPend($campos);
+            return $response->withJson($datos, 500);
+        }
+    });
+    $app->post('/correcciones/create', function (Request $request, Response $response) {
+        // Si necesitamos acceder a alguna variable global en el framework
+        // Tenemos que pasarla con use($variable) en la cabecera de la función.
+        // Va a devolver un objeto JSON con los datos de usuarios.
+        
+        $campos = $request->getParsedBody();
+        $this->get('logger')
+        ->addInfo('CorrecPend: Llegaron varias' . $request->getBody());
+        
+        try {
+            $correcContrl = new CorreccionPostController();
+            $correcContrl->insertarPend($campos);
+            
+            $datos = array(
+                'status' => 'ok',
+                'data' => 'Correcciones guardados correctamente.'
+            );
+            $this->get('logger')
+            ->addInfo('CorrecPend: Respuesta correcciones guardados correctamente');
+            return $response->withJson($datos, 200);
+        } catch (Exception $e) {
+            $datos = array(
+                'status' => 'error',
+                'data' => $e->getMessage()
+            );
+            $this->get('logger')
+            ->addInfo('CorrecPend: hubo un error ' . $e->getMessage());
+            
+            return $response->withJson($datos, 500);
+        }
+    });
+    
+        $app->get('/tienda/cancel', function ($request, $response, $args) {
+            try{
+                $cc = new TiendasController();
                 
+                $id = filter_input(INPUT_GET, "id", FILTER_SANITIZE_STRING);
+             
+                $usuario = filter_input(INPUT_GET, "usuario", FILTER_SANITIZE_STRING);
+                $this->get('logger')
+                ->addInfo('tienda/cancel: Llegó una peticion ' . $id);
+                $cc->cancelarTienda($id, "ca_unegocios");
                 $datos = array(
                     'status' => 'ok',
-                    'data' => 'Informes guardados correctamente.'
+                    'data' => 'Tienda cancelada correctamente.'
                 );
-                $this->get('logger')
-                ->addInfo('InforemesPend: Respuesta Informes guardados correctamente');
-                return $response->withJson($datos, 200);*/
+                
+                return $response->withJson($datos, 200);
             } catch (Exception $e) {
+                echo "hubo un error";
                 $datos = array(
                     'status' => 'error',
                     'data' => $e->getMessage()
                 );
                 $this->get('logger')
-                ->addInfo('InforemesPend: hubo un error ' . $e->getMessage());
+                ->addInfo('tienda/cancel: hubo un error ' . $e->getMessage());
                 
                 return $response->withJson($datos, 500);
             }
         });
-      
-            $app->post('/correccion/create', function (Request $request, Response $response) {
-                
-                // Si necesitamos acceder a alguna variable global en el framework
-                // Tenemos que pasarla con use($variable) en la cabecera de la función.
-                // Va a devolver un objeto JSON con los datos de usuarios.
-                
-                $campos = $request->getParsedBody();
-                $this->get('logger')
-                ->addInfo('CrearCorreccion: Llegó una ' . $request->getBody());
-                
-                try {
-                    
-                    $correcContrl = new CorreccionPostController();
-                    // var_dump($campos);
-                    //  die();
-                    $correcContrl->insertarTodo($campos);
-                    
-                    $datos = array(
-                        'status' => 'ok',
-                        'data' => 'Correccion dada de alta correctamente.'
-                    );
-                    $this->get('logger')
-                    ->addInfo('CrearCorreccion: Correccion dada de alta correctamente');
-                    return $response->withJson($datos, 200);
-                } catch (Exception $e) {
-                    echo "hubo un error";
-                    $datos = array(
-                        'status' => 'error',
-                        'data' => $e->getMessage()
-                    );
-                    $this->get('logger')
-                    ->addInfo('CrearCorreccion: hubo un error ' . $e->getMessage());
-                    
-                    return $response->withJson($datos, 500);
-                }
-            });
-                $app->post('/correcciones/create', function (Request $request, Response $response) {
-                    // Si necesitamos acceder a alguna variable global en el framework
-                    // Tenemos que pasarla con use($variable) en la cabecera de la función.
-                    // Va a devolver un objeto JSON con los datos de usuarios.
-                    
-                    $campos = $request->getParsedBody();
-                    $this->get('logger')
-                    ->addInfo('CorrecPend: Llegaron varias' . $request->getBody());
-                    
-                    try {
-                        $correcContrl = new CorreccionPostController();
-                        $correcContrl->insertarPend($campos);
-                        
-                        $datos = array(
-                            'status' => 'ok',
-                            'data' => 'Correcciones guardados correctamente.'
-                        );
-                        $this->get('logger')
-                        ->addInfo('CorrecPend: Respuesta correcciones guardados correctamente');
-                        return $response->withJson($datos, 200);
-                    } catch (Exception $e) {
-                        $datos = array(
-                            'status' => 'error',
-                            'data' => $e->getMessage()
-                        );
-                        $this->get('logger')
-                        ->addInfo('CorrecPend: hubo un error ' . $e->getMessage());
-                        
-                        return $response->withJson($datos, 500);
-                    }
-                });
     //$this->logger->addInfo('Something interesting happened');
 //para grupos
  /*   $app->group('/user/', function () {
