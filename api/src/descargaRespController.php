@@ -4,6 +4,9 @@ namespace api\src;
 //error_reporting(E_ERROR);
 //ini_set("display_errors", 1);
 include "informeEnvio.php";
+include "informeEtapaenv.php";
+require '../../Models/crud_informesetapa.php';
+require '../../Models/crud_infetapadet.php';
 
 require_once '../../Models/crud_visitas.php';
 require_once '../../Utilerias/constantes.php';
@@ -22,11 +25,11 @@ class DescargaRespController
         $productosExenv=array();
         $dvisit=new \DatosVisita();
         $visitas=$dvisit->getVisitas($indice, $recolector, "visitas");
-        foreach($visitas as $visitapend) {
-            $visitapend["estatus"]=2; //cambio estatus a finalizado y enviado
-                $visitaenv[]=$visitapend;
-              //  echo "<br>".TAG."->buscando prodexh".$visitapend["id"];
-                $productoExhibidos=\DatosProductoExhibido::getProductosExxVisita($indice,$recolector,$visitapend["id"],\ConsTablas::PRODUCTOEX);
+        foreach($visitas as $informe) {
+            $informe["estatus"]=2; //cambio estatus a finalizado y enviado
+                $visitaenv[]=$informe;
+              //  echo "<br>".TAG."->buscando prodexh".$informe["id"];
+                $productoExhibidos=\DatosProductoExhibido::getProductosExxVisita($indice,$recolector,$informe["id"],\ConsTablas::PRODUCTOEX);
                
                 foreach($productoExhibidos as $produc){
                    
@@ -34,7 +37,7 @@ class DescargaRespController
                 }
                 //var_dump($productosExenv);
                 //voy a buscar los informes de cada visita
-                $vis_informes=\DatosInforme::getInformesxVisita($indice,$recolector,$visitapend["id"],"informes");
+                $vis_informes=\DatosInforme::getInformesxVisita($indice,$recolector,$informe["id"],"informes");
                // echo "<br>".TAG."->informes".sizeof($vis_informes);
                 foreach ($vis_informes as $informe){
                         $informe["estatus"]=2;//cambio estatus a finalizado
@@ -73,5 +76,54 @@ class DescargaRespController
        return json_encode($this->prepararInformes($indice, $recolector));
     }
     
+    
+    public function prepararInformesEta($indice,$recolector){
+        
+        $envio=new InformeEtapaEnv();
+        $informeenv=array();
+       
+        $informeDetsenv=array();
+        $detallecajaenv=array();
+      
+        $dinfe=new \DatosInformeEtapa();
+       $resp=$dinfe->getAll($indice,$recolector,"informes_etapa");
+        foreach($resp as $informe) {
+         
+            $informeenv[]=$informe;
+            //  echo "<br>".TAG."->buscando prodexh".$informe["id"];
+            $informeDetsenv=\DatosInfEtapaDet::getAll($indice,$recolector,$informe["id"],\ConsTablas::INFORMEETAPADET);
+            
+           
+           
+        }
+        
+        if(sizeof($informeenv)>0)
+                $envio->setInformeEtapa($informeenv);
+                if(sizeof($informeDetsenv)>0)
+                    $envio->setInformeEtapaDet($informeDetsenv);
+                    
+             return $envio;
+    }
+    
+    public function responseEtapas($indice,$recolector){
+        return json_encode($this->prepararInformesEta($indice, $recolector));
+    }
+    
+    public function prepararCorrecciones($indice,$recolector){
+        
+        
+        $correccenv=array();
+        
+      
+        $dcorre=new \DatosCorreccion();
+        $correccenv=$dcorre->getCorrecciones($indice,$recolector,\ConsTablas::CORRECCIONES);
+        
+                
+        return $correccenv;
+    }
+    
+    public function responseCorrec($indice,$recolector){
+        return json_encode($this->prepararCorrecciones($indice, $recolector));
+    }
 }
 

@@ -14,11 +14,13 @@ require 'contratoapp.php';
 class InformePostController{
     private $datosInf;
     private $TAG="InformePostController";
+  
     public function __construct(){
         $this->datosInf= new DatosInforme();
     }
     //se inserta por primera vez
     public function insertarTodo($campos){
+        $tengovis;
         $pdo=Conexion::conectar();
         try{
         $visita=$campos["visita"];
@@ -39,7 +41,10 @@ class InformePostController{
             $dv=new DatosVisita();
             $result=$dv->getVisita( $visita[ContratoVisitas::ID],  $visita[ContratoVisitas::INDICE], $cverecolector, "visitas");
             if($result==null||sizeof($result)==0)
-              DatosVisita::insertar($visita,"visitas",$pdo);
+            {   DatosVisita::insertar($visita,"visitas",$pdo);
+            $tengovis=0;
+            }
+            else $tengovis=1;
         }
        
         if(isset($fotos_ex))
@@ -93,7 +98,7 @@ class InformePostController{
             $datostienda=$this->tiendaNueva($visita,$causanocompra,$indice,$cverecolector);
             //busco la zona
             
-            
+            if($tengovis==0)
             $idtienda=$this->datosInf->insertarUnegocio($datostienda, "ca_unegocios",$pdo);
             //inserto las fotos
            // die();
@@ -128,7 +133,12 @@ class InformePostController{
             $tiendaid=$visita[ContratoVisitas::TIENDAID];
             
             if(isset($informe[ContratoInformes::CAUSANOCOMPRA])&&$informe[ContratoInformes::CAUSANOCOMPRA]==4){
-               $this->datosInf->actualizarUnegocioEstatus($tiendaid,2,"ca_unegocios");
+               if($informe[ContratoInformes::CLIENTESID]==4)
+                $this->datosInf->actualizarUnegocioEstatus($tiendaid,2,"ca_unegocios");
+               if($informe[ContratoInformes::CLIENTESID]==5)
+                   $this->datosInf->actUnegEstatusPen($tiendaid,2,"ca_unegocios");
+               if($informe[ContratoInformes::CLIENTESID]==6)
+                    $this->datosInf->actUnegEstatusEle($tiendaid,2,"ca_unegocios");
             }
             if(isset($informe_det)&&sizeof($informe_det)>0){
                 //si hubo
@@ -137,7 +147,14 @@ class InformePostController{
                     "indice"=>$indice);
                 
                 $datosController =  DatosInforme::eliminauneghab($datosController, "ca_unegocioshabilitada");
-                
+              //y activo otra vez el estatus
+                if($informe[ContratoInformes::CLIENTESID]==4)
+                    $this->datosInf->actualizarUnegocioEstatus($tiendaid,1,"ca_unegocios");
+                if($informe[ContratoInformes::CLIENTESID]==5)
+                    $this->datosInf->actUnegEstatusPen($tiendaid,1,"ca_unegocios");
+                if($informe[ContratoInformes::CLIENTESID]==6)
+                    $this->datosInf->actUnegEstatusEle($tiendaid,1,"ca_unegocios");
+                            
             }
             
             

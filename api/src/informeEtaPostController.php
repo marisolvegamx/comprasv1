@@ -1,8 +1,7 @@
 <?php
 //error_reporting(E_ERROR);
 //ini_set("display_errors", 1);
-require '../../Models/crud_informesetapa.php';
-require '../../Models/crud_infetapadet.php';
+
 
 
 //clase para manejar el json e insertarlo
@@ -22,6 +21,7 @@ class InformeEtaPostController{
        
         $informe_det=$campos["informeEtapaDet"]; //este es un array
         $detallecaja=$campos["detalleCaja"]; //es array
+        $imagenes=$campos["imagenDetalles"];
        
         $cverecolector=$campos[ContratoVisitas::CVEUSUARIO];
         $indice=$campos[ContratoVisitas::INDICE];
@@ -58,6 +58,11 @@ class InformeEtaPostController{
            
                $datosInfdet->insertar($detalle,$cverecolector,$indice,$this->tablainfdet,$pdo);
            
+        }
+        if(isset($imagenes))
+            foreach ($imagenes as $imagen)
+            {  DatosImagenDetalle::insertaru($imagen,$cverecolector,$indice,"imagen_detalle",$pdo);
+            
         }
        
        

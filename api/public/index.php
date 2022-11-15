@@ -1,7 +1,9 @@
 <?php
-//error_reporting(E_ERROR);
-//ini_set("display_errors", 1);
-
+error_reporting(E_ERROR);
+ini_set("display_errors", 1);
+/***********
+ * Maneja la peticiones de la app y el envio de info
+ */
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 
@@ -19,9 +21,11 @@ include "../src/plantaPenController.php";
 include "../src/descargaRespController.php";
 include '../src/correccionPostController.php';
 include '../src/informeEtaPostController.php';
+include '../src/Subirlog.php';
 
 use api\Subefotos;
 use api\src\DescargaRespController;
+use api\Subelog;
 // Create and configure Slim app
 $config = ['settings' => [
     'addContentLengthHeader' => false,
@@ -300,18 +304,18 @@ $app->post('/subirfoto', function (Request $request, Response $response) {
         if ($res) {
             $datos = array(
                 'status' => 'ok',
-                'data' => 'Imagen guardada.'
+                'data' => $va1->getRespuesta()
             );
             $this->get('logger')
-                ->addInfo('SubirFoto: Respuesta imagen guardada');
+            ->addInfo('SubirFoto:'.$va1->getRespuesta());
             return $response->withJson($datos, 200);
         } else {
             $datos = array(
                 'status' => 'error',
-                'data' => $e->getMessage()
+                'data' => $va1->getRespuesta()
             );
             $this->get('logger')
-                ->addInfo('SubirFoto: hubo un error ' . $e->getMessage());
+            ->addInfo('SubirFoto: hubo un error ' . $va1->getRespuesta());
             return $response->withJson($datos, 500);
         }
     } catch (Exception $e) {
@@ -335,7 +339,28 @@ $app->get('/descresp', function ($request, $response, $args) {
             ->write( $cc->response($indice,$recolector));
         });
    
-
+    $app->get('/descresp2', function ($request, $response, $args) {
+        $cc = new DescargaRespController();
+        $recolector = filter_input(INPUT_GET, "usuario", FILTER_SANITIZE_STRING);
+        $indice= filter_input(INPUT_GET, "indice",FILTER_SANITIZE_STRING);
+        $this->get('logger')->addInfo('descresp2: Llegó una peticion  ' . $recolector."--".$indice);
+        
+        return $response->withHeader('Content-type', 'application/json')
+        ->getBody()
+        ->write( $cc->responseEtapas($indice,$recolector));
+    });
+        $app->get('/descresp/cor', function ($request, $response, $args) {
+            $cc = new DescargaRespController();
+            $recolector = filter_input(INPUT_GET, "usuario", FILTER_SANITIZE_STRING);
+            $indice= filter_input(INPUT_GET, "indice",FILTER_SANITIZE_STRING);
+              $this->get('logger')->addInfo('descrespcor: Llegó una peticion  ' . $recolector."--".$indice);
+      
+            return $response->withHeader('Content-type', 'application/json')
+            ->getBody()
+            ->write( $cc->responseCorrec($indice,$recolector));
+        });
+            
+        
     $app->get('/solcorreccion', function ($request, $response, $args) {
         $solc = new solCorreccionController();
         $recolector = filter_input(INPUT_GET, "usuario", FILTER_SANITIZE_NUMBER_INT);
@@ -476,6 +501,47 @@ $app->post('/infetapa/create', function (Request $request, Response $response) {
                 return $response->withJson($datos, 500);
             }
         });
+        
+            $app->post('/subirlog', function (Request $request, Response $response) {
+                
+               
+                
+                $this->get('logger')
+                ->addInfo('SubirFoto: Llegó una foto ' . $request->getBody());
+                
+                try {
+                  //  $file = $request->getQueryParam("file");
+                    $va1 = new Subelog();
+                    $res = $va1->subirLog();
+                   
+                    if ($res) {
+                        $datos = array(
+                            'status' => 'ok',
+                            'data' => $va1->getRespuesta()
+                        );
+                        $this->get('logger')
+                        ->addInfo('SubirLog:'.$va1->getRespuesta());
+                        return $response->withJson($datos, 200);
+                    } else {
+                        $datos = array(
+                            'status' => 'error',
+                            'data' => $va1->getRespuesta()
+                        );
+                        $this->get('logger')
+                        ->addInfo('SubirFoto: hubo un error ' . $va1->getRespuesta());
+                        return $response->withJson($datos, 500);
+                    }
+                } catch (Exception $e) {
+                    $datos = array(
+                        'status' => 'error',
+                        'data' => $e->getMessage()
+                    );
+                    $this->get('logger')
+                    ->addInfo('SubirFoto: hubo un error ' . $e->getMessage());
+                    
+                    return $response->withJson($datos, 500);
+                }
+            });
     //$this->logger->addInfo('Something interesting happened');
 //para grupos
  /*   $app->group('/user/', function () {

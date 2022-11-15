@@ -20,6 +20,14 @@ class Subefotos{
     private $respuesta;
     private $archivo_grande="El archivo  excede el tamaño máximo";
     private $directorio_no_existe="No se encontró el directorio especificado";
+    /**
+     * @return mixed
+     */
+    public function getRespuesta()
+    {
+        return $this->respuesta;
+    }
+
     public function subirImagen() {
   
         foreach($_POST as $nombre_campo=>$valor){
@@ -74,13 +82,13 @@ class Subefotos{
                                   //  $this->insertarInfo();
                                     
                                     // me regreso
-                                    $this->respuesta[]=$name."-".$this->mensaje_exito;
+                                    $this->respuesta=$name."-".$this->mensaje_exito;
                                     return true;
                                          // guardar en la bd
                                 } else {
                                     Utilerias::guardarError($name."-Error al cargar el archivo, intenta de nuevo");
                                     
-                                $this->respuesta[]=$name."-Error al cargar el archivo, intenta de nuevo";
+                                $this->respuesta=$name."-Error al cargar el archivo, intenta de nuevo";
                                                     $ban = 1;
                                                     return false;
                                                 }
@@ -102,13 +110,13 @@ class Subefotos{
                                  //  $this->insertarInfo();
                                  
                                  // me regreso
-                                 $this->respuesta[]=$name."-".$this->mensaje_exito;
+                                 $this->respuesta=$name."-".$this->mensaje_exito;
                                  return true;
                                  // guardar en la bd
                              } else {
                                  Utilerias::guardarError($name."-Error al cargar el archivo, intenta de nuevo");
                                  
-                                 $this->respuesta[]=$name."-Error al cargar el archivo, intenta de nuevo";
+                                 $this->respuesta=$name."-Error al cargar el archivo, intenta de nuevo";
                                  $ban = 1;
                                  return false;
                              }
@@ -116,19 +124,19 @@ class Subefotos{
                              Utilerias::guardarError(" error al subir imagen".$ex->getMessage());
                              throw new \Exception("Error al guardar archivo");
                          }
-                              $this->respuesta[]=$name."-".$this->mensaje_exito;
+                              $this->respuesta=$name."-".$this->mensaje_exito;
                                             // guardar en la bd
                                      return true;       
                                             
                               }
                      } else {
                          
-                                        $this->respuesta[]=$name."-".$this->mesaje_error;
+                                        $this->respuesta=$name."-".$this->mesaje_error;
                                         $ban = 1;
                                     return false;
                                     }
                } else {
-                      $this->respuesta[]=$name."-".$this->mensaje_ya_existe;
+                      $this->respuesta=$name."-".$this->mensaje_ya_existe;
                       $ban = 1;
                       Utilerias::guardarError($name."-".$this->mensaje_ya_existe);
                       
@@ -136,13 +144,13 @@ class Subefotos{
                }
                             } else if ($imagen ["error"] == UPLOAD_ERR_FORM_SIZE) {
                                 Utilerias::guardarError($name."-".$this->archivo_grande);
-                                $this->respuesta[]=$name."-".$this->archivo_grande;
+                                $this->respuesta=$name."-".$this->archivo_grande;
                                 $ban = 1;
                                 return false;
                             } else if ($imagen ["error"] == UPLOAD_ERR_CANT_WRITE) {
                                 Utilerias::guardarError($name."-".$this->directorio_no_existe);
                                 
-                                $this->respuesta[]=$name."-".$this->directorio_no_existe;
+                                $this->respuesta=$name."-".$this->directorio_no_existe;
                                 $ban = 1;
                                 return false;
                             }

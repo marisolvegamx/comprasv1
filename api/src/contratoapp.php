@@ -175,7 +175,7 @@ class ContratoCorreccion{
     const RUTAFOTO1="ruta_foto1";
     const RUTAFOTO2="ruta_foto2";
     const RUTAFOTO3="ruta_foto3";
-  
+   const NUMFOTO="numfoto";
     
     
 }

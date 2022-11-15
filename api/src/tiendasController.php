@@ -214,7 +214,7 @@ and vi_cverecolector=i.inf_usuario  and vi_indice=i.inf_indice ";
 //where  une_cla_ciudad=:ciudad ";
 //and une_cla_pais=:pais";
         // agregando filtros
-       $sql.=" and une_estatusgen=1 
+       $sql.=" where une_estatusgen=1 
   group by cu.une_id";
    //              echo $sql;
         $stmt = Conexion::conectar()-> prepare($sql." order by une_descripcion" );
@@ -266,7 +266,7 @@ and vi_cverecolector=i.inf_usuario  and vi_indice=i.inf_indice ";
         */
     //     $stmt-> bindParam(":indice", $indice, PDO::PARAM_STR);
         $stmt->execute();
-      //  $stmt->debugDumpParams();
+     //   $stmt->debugDumpParams();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     
