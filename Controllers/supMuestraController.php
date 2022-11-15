@@ -42,7 +42,7 @@ class SupMuestraController
         $this->rec_id=$_GET["idrec"];
         $this->idcli=$_GET["cli"];
         $this->idinf=$_GET["id"];
-      //  $this->idinf=$_GET["inf"];
+        $this->idsup=$_GET["idsup"];
         $numpantalla=$_GET["pan"];
         $this->numuestra=$_GET["nummues"];
         $admin=$_GET["admin"];
@@ -113,6 +113,7 @@ class SupMuestraController
                    $this->buscarImagenesPan9();
                    if($numpantalla==5)
              $this->buscarImagenes();
+                  // var_dump($this->muestra);
        // var_dump($this->listaimagenes);
         $datosController= array("id"=>$this->idinf,
             "idrec"=>$this->rec_id,
@@ -164,6 +165,7 @@ class SupMuestraController
     public function actualizarMuestra(){
         include "Utilerias/leevar.php";
             try{
+             //   echo $atributoa."--".$atributob."--".$atributoc;
                 //$fcaducidad=Utilerias::$caducidad
                 DatosInformeDetalle::actualizar($ind_id,$origen,$qr,$siglas,$codigo,$costo,$caducidad,$atributoa,$atributob,$atributoc, $idrec, $idmes, "informe_detalle");
             }catch(Exception $ex){
@@ -402,7 +404,8 @@ class SupMuestraController
                     "estatus"=>$estatus,
                     "nummuestra"=>$iddet
                 );
-               // var_dump($datosController2);
+              //  var_dump($datosController2);
+             //   die();
                 DatosValSeccion::ingresaregvalsecmues($datosController2, "sup_validasecciones");
                 $datosController= array("idval"=>$this->idval,
                     "idsec"=>$sec,
@@ -435,11 +438,13 @@ class SupMuestraController
             {   // die($pan);
                 if($aprob==1){
                     //actualizo los aceptados en la lista de compra
+                    if($this->muestra["ind_estatus"]!=3)//no había sido aceptada
+                    {
                     
                     DatosListaCompraDet::sumaAceptadosLista($this->muestra["ind_comprasid"],$this->muestra["ind_compraddetid"],1,"pr_listacompradetalle");
                     //  die();
                     DatosInformeDetalle::actualizarEstatus($this->muestra["ind_id"], $this->rec_id, $this->mesas, 3, "informe_detalle");
-                    
+                    }
                 }
             }
            // var_dump($datosController);
@@ -462,10 +467,15 @@ class SupMuestraController
         }
     }
     public function cancelarMuestra($estatus){
-        //todo ver primero si la muestra ya se acepto o se rechazo para antes de sumar o restar
+       
+        // ver primero si la muestra ya se acepto o se rechazo para antes de sumar o restar
          //quito una comprada
-                //DatosListaCompraDet::restaAceptadosLista($this->muestra["ind_comprasid"],$this->muestra["ind_compraddetid"],1,"pr_listacompradetalle");
-                
+        if($this->muestra["ind_estatus"]==3)//ya había sido aceptada
+        {
+           // echo "resto";
+                DatosListaCompraDet::restaAceptadosLista($this->muestra["ind_comprasid"],$this->muestra["ind_compraddetid"],1,"pr_listacompradetalle");
+       // die();
+        }
                 //reviso si es la unica muestra para cancelar el informe
                 if(sizeof($this->muestras)==1){
                     $datosController2= array("idval"=> $this->idval,
@@ -476,7 +486,7 @@ class SupMuestraController
                     DatosValidacion::actualizaValidacionpr($datosController2,"sup_validacion");
                 }
             
-               
+        //   echo "dd ".$estatus;    
         /*  $datosControllermu= array("vam_id"=>$idval,
          "vam_idprod"=>$this->muestra["ind_comprasid"],
          "vam_cantidad"=>1,
@@ -635,7 +645,7 @@ class SupMuestraController
           //  var_dump($datosController);
             $respuestaS =DatosValSeccion::getValSeccionMues($datosController, "sup_validasecciones");
       //   echo "**********";
-        //    var_dump($respuestaS);
+        //   var_dump($respuestaS);
             if (sizeof($respuestaS)>0) {
                 $this->valSeccion=$respuestaS[0];   
                 $resnoap= $this->valSeccion["vas_noaplica"];
@@ -653,7 +663,7 @@ class SupMuestraController
             }
             
         }
-        //var_dump($this->opcsel);
+     //   var_dump($this->opcsel);
     }
     
  
@@ -846,7 +856,7 @@ class SupMuestraController
     public function getLigapanp(){
         //devuelve a la 1er pantalla
         if($this->numpan>4)
-            return "index.php?action=supinformecli01&idmes=".$this->mesas."&idrec=".$this->rec_id."&id=".$this->idinf.'&cli='.$this->idcli."&eta=".$this->etapa;
+            return "index.php?action=supinformecli01&idmes=".$this->mesas."&idrec=".$this->rec_id."&id=".$this->idinf.'&eta='.$this->etapa.'&idsup='.$this->idsup."&cli=".$this->idcli."&eta=".$this->etapa;
         return "";
         
     }
@@ -854,7 +864,7 @@ class SupMuestraController
         //devuelve a la ultima pantalla
        
         if($this->numpan<9)
-            return "index.php?action=supinformecli02&idmes=".$this->mesas."&idrec=".$this->rec_id."&id=".$this->idinf.'&cli='.$this->idcli."&eta=".$this->etapa.'&pan=9&nummues='. $this->numuestra;
+            return "index.php?action=supinformecli02&idmes=".$this->mesas."&idrec=".$this->rec_id."&id=".$this->idinf.'&cli='.$this->idcli."&eta=".$this->etapa.'&pan=9&idsup='.$this->idsup.'&nummues='. $this->numuestra;
         return "";
     }
     

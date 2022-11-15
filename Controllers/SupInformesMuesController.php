@@ -7,9 +7,9 @@ class SupInfmuestraController{
 
 	public function vistaSupInfMuesController(){
          $this->idinf=$_GET["id"];
-	     $this->mesas=$_GET["idmes"];
-	     $this->rec_id=$_GET["idrec"];
-	     $this->idcli=$_GET["cli"];
+ 	       $this->mesas=$_GET["idmes"];
+	       $this->rec_id=$_GET["idrec"];
+	       $this->idcli=$_GET["cli"];
         $this->idsec=$_GET["sec"];
         $this->ideta=$_GET["eta"];
         $this->idsup=$_GET["idsup"];
@@ -76,21 +76,30 @@ class SupInfmuestraController{
         //var_dump($this->ticket);
 				$this->idplanta= $item["inf_plantasid"];
 				$this->idtienda= $item["vi_tiendaid"];
+         $this->nomtienc=$item["VI_UNEDESC"];
+         
 				$this->coment=$item["inf_comentarios"];
 				$this->nomrec=$item["rec_nombre"];
 				$this->fecharep=$item["fecharep"];
 				$this->horarep=$item["horarep"];
 				$this->numtien=$item["inf_consecutivo"];
         $this->numciu=$item["n5_idn4"];
-        //$this->idsup=$idsup;
-		   }
-       // var_dump($this->idsup);
+        $this->causaNOC=$item["inf_causa_nocompra"];
+        
+      }
+
+      $resp22=DatosCausa::nombrecausaModel($this->causaNOC, "ca_causas");
+      foreach($resp22 as $row => $item22){
+          $this->nomcausaNOC=$item22["cau_descripcion"];
+           }
+
 		   // busca cliente
 		   $resp1 =Datosnuno::vistaN1opcionModel($this->idcli, "ca_nivel1");
            foreach($resp1 as $row => $item1){
 		      $this->nomclien=$item1["n1_nombre"];
            }
-		   // busca planta
+
+        // busca planta
 		   
 		   $resp2=Datosncin::getNombre($this->idplanta,"ca_nivel5");
 		   $this->nomplanta=$resp2["n5_nombre"];
@@ -110,12 +119,12 @@ class SupInfmuestraController{
         //var_dump($this->numsup1);
 
 		   // busca nombre de la tienda
-		   $respuesta3 =DatosUnegocio::consultaUnegocioModel($this->idtienda, "ca_unegocios");
+		  // $respuesta3 =DatosUnegocio::consultaUnegocioModel($this->idtienda, "ca_unegocios");
 	    // asigna datos a variables
 				//var_dump($this->idtienda);
-    	    foreach($respuesta3 as $row => $item3){
-			   $this->nomtienc= $item3["une_descripcion"];
-			}
+    	  //  foreach($respuesta3 as $row => $item3){
+			  // $this->nomtienc= $item3["une_descripcion"];
+		//	}
 		    
 		    //$this->eta="2";
             $datosCont2= array("idinf"=>$this->idinf,
@@ -228,6 +237,13 @@ class SupInfmuestraController{
 
 	}
 
+public function getcausaNOC() {
+      return $this->causaNOC;
+  }
+
+public function getNomcausaNOC() {
+      return $this->nomcausaNOC;
+  }
 
 public function getidsup() {
       return $this->idsup;

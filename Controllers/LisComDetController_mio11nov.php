@@ -450,7 +450,6 @@ public function editaliscompradet(){
       }  
 
 }
-//chechie
 public function ordenarFechas($cadenafechas){
     $listarestrin=array();
     $codigos="";
@@ -467,13 +466,9 @@ public function ordenarFechas($cadenafechas){
     foreach($listarestrin as $fecha){
         $fecha=trim($fecha);
        //  echo "<br>".$fecha."--".strpos($fecha,"=");
-        if(strpos($fecha,"=")!==false)
-        {  
-            $row =substr($fecha,1); //lequito el igual
-            $row=trim($row);
-            //echo "**".$row;
+        if(strpos($fecha,"=")==0)
+        {   $row =substr($fecha,1); //lequito el igual
               $fecha = DateTime::createFromFormat('d-m-y', $row);
-              if($fecha!==false)
               $nuevoarreglo[]=$fecha->format("y-m-d");
               
         

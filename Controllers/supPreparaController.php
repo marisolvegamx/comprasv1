@@ -21,7 +21,7 @@ class SupPreparaController
     public $indiceletra;
   
     public $infdetalles;
-    public $listaimagenes;
+    public $imagenes;
     public $dirimagen;
     public $liga;
      
@@ -33,25 +33,28 @@ class SupPreparaController
     public $idval;
     public $numpan;
     public $numdet;
+    public $idplan;
    
      
     public function vistaPreparacion(){
         //$vis=$_GET["id"]; //si es el del informe
         $this->mesas=$_GET["idmes"];
         $this->rec_id=$_GET["idrec"];
-        $this->idcli=$_GET["cli"];
-        $this->idinf=$_GET["id"];
+      //  $this->idcli=$_GET["cli"];
+        $this->idplan=$_GET["idplan"];
     
         $this->numdet=$_GET["numdet"];
         $admin=$_GET["admin"];
       
         $this->indiceletra=Utilerias::indiceConLetra($this->mesas);
-        $resp =DatosInformeEtapa::getInformesEtapaxId($this->mesas,$this->rec_id,$this->idinf, "informes_etapa");
+        $resp =DatosInformeEtapa::getInformesEtapaxPlan($this->mesas,$this->rec_id,$this->idplan, "informes_etapa");
          // var_dump($resp);
         if($resp!=null)
-            $this->informe=$resp;
+        {   $this->informe=$resp;
+            $this->idinf=$this->informe["ine_id"];
+        }
        
-        $this->liga="index.php?action=suppreparacion&idmes=".$this->mesas."&idrec=".$this->rec_id."&id=".$this->idinf.'&cli='.$this->idcli.'&numdet='. $this->numdet.'&eta='.$this->etapa;
+        $this->liga="index.php?action=suppreparacion&idmes=".$this->mesas."&idrec=".$this->rec_id."&idplan=".$this->idplan.'&cli='.$this->idcli.'&numdet='. $this->numdet.'&eta='.$this->etapa;
     
         $aux = explode(".", $this->mesas);
         
@@ -60,9 +63,10 @@ class SupPreparaController
         $this->dirimagen = "fotografias\\".$solomes."_".$soloanio;
 
         
-      
+        
          $this->destruirSesion();
          $this->buscarDetalles();
+         $this->buscarImagenes();
        
         $this->pantalla=array("pa_seccion"=>22,"pa_preguntaseccion"=>"¿ETIQUETAS COMPLETAS Y DEL MES CORRESPONDIENTE?");
         
@@ -78,7 +82,7 @@ class SupPreparaController
         );
         $this->buscarSeccion($datosController,$this->pantalla["pa_seccion"]);
         $datoscorr=array("idval"=>$this->idval,
-            "idfoto"=>$this->listaimagenes[0]["id"]
+            "idfoto"=>$this->imagenes["id"]
         );
         
         $this->buscarCorreccionFoto($datoscorr);
@@ -113,6 +117,21 @@ class SupPreparaController
         $this->infdetalles= $_SESSION["supdetalleta"];
         
             
+    }
+    public function buscarImagenes(){
+        foreach ($this->infdetalles as $detalle){
+       // var_dump($detalle);
+        //busco la ruta
+        
+        $result=DatosImagenDetalle::getImagen($this->mesas,$this->rec_id,$detalle["ied_rutafoto"],"imagen_detalle");
+        
+        $this->imagenes=$result;
+        }
+        
+        
+       
+      //  var_dump($this->imagenes);
+        
     }
     
    
@@ -557,7 +576,7 @@ class SupPreparaController
     public function getLigapanp(){
         //devuelve a la 1er pantalla
         if($this->numpan>4)
-            return "index.php?action=suppreparacion&idmes=".$this->mesas."&idrec=".$this->rec_id."&id=".$this->idinf.'&cli='.$this->idcli."&eta=".$this->etapa;
+            return "index.php?action=suppreparacion&idmes=".$this->mesas."&idrec=".$this->rec_id."&idplan=".$this->idplan.'&cli='.$this->idcli."&eta=".$this->etapa;
         return "";
         
     }
@@ -565,7 +584,7 @@ class SupPreparaController
         //devuelve a la ultima pantalla
        
         if($this->numpan<9)
-            return "index.php?action=suppreparacion&idmes=".$this->mesas."&idrec=".$this->rec_id."&id=".$this->idinf.'&cli='.$this->idcli."&eta=".$this->etapa.'&numdet='. $this->numdet;
+            return "index.php?action=suppreparacion&idmes=".$this->mesas."&idrec=".$this->rec_id."&idplan=".$this->idplan.'&cli='.$this->idcli."&eta=".$this->etapa.'&numdet='. $this->numdet;
         return "";
     }
     
