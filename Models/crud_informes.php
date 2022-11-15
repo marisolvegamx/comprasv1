@@ -465,6 +465,49 @@ VALUES (:nomuneg, :dirtien, :refer, :paisuneg, :ciudaduneg, :estatusuneg, :cxy,
         }
     }
     
+    public function actUnegEstatusEle($idtienda,$estatus, $tabla) {
+        
+        try {
+            
+            //procedimiento de insercion de  la cuenta
+            
+            $sSQL = "UPDATE ca_unegocios
+ SET  une_estatuselec=:estatus WHERE une_id=:idt";
+            
+            $stmt = Conexion::conectar()->prepare($sSQL);
+            
+            $stmt->bindParam(":estatus", $estatus);
+            $stmt->bindParam(":idt", $idtienda);
+            $stmt->execute();
+            
+            return "success";
+        } catch (Exception $ex) {
+            
+            return "error";
+        }
+    }
+    public function actUnegEstatusPen($idtienda,$estatus, $tabla) {
+        
+        try {
+            
+            //procedimiento de insercion de  la cuenta
+            
+            $sSQL = "UPDATE ca_unegocios
+ SET  une_estatuspen=:estatus WHERE une_id=:idt";
+            
+            $stmt = Conexion::conectar()->prepare($sSQL);
+            
+            $stmt->bindParam(":estatus", $estatus);
+            $stmt->bindParam(":idt", $idtienda);
+            $stmt->execute();
+            
+            return "success";
+        } catch (Exception $ex) {
+            
+            return "error";
+        }
+    }
+    
     
     
     public function getUltVisita($recolector, $indice,$tabla){

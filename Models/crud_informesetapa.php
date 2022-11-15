@@ -42,7 +42,61 @@ inner join ca_nivel5 on n5_id=ine_plantasid
         
     }
     
+    public  function getInformesEtapaxPlan($INDICE,$CVEUSUARIO,$idplan, $tabla){
+        
+        
+        $sSQL= "SELECT ine_id, ine_indice, ine_cverecolector, ine_plantasid,
+ ine_clientesid, ine_etapa, ine_comentarios, ine_totalcajas, ine_totalmuestras,
+ine_estatus, ine_createdat,date_format(ine_createdat, '%d-%m-%Y')
+ as fecharep, date_format(ine_createdat, '%H:%i') as horarep ,ca_recolectores.rec_nombre,
+n1_nombre,n5_nombre
+FROM $tabla
+inner join ca_recolectores on	ine_cverecolector = rec_id
+inner join ca_nivel5 on n5_id=ine_plantasid
+ inner join ca_nivel1 on n1_id=n5_idn1
+ where ine_plantasid=:idplan and ine_cverecolector=:ine_cverecolector
+ and ine_indice=:ine_indice ";
+        
+        $stmt=DatosInformeEtapa::getInstance()->prepare($sSQL);
+        $stmt->bindParam(":ine_indice", $INDICE, PDO::PARAM_STR);
+        $stmt->bindParam(":ine_cverecolector",  $CVEUSUARIO, PDO::PARAM_INT);
+        $stmt->bindParam(":idplan", $idplan, PDO::PARAM_STR);
+        $stmt-> execute();
+        //  $stmt->debugDumpParams();
+        return $stmt->fetch(PDO::FETCH_ASSOC); //para que solo devuelva los nombres de columnas
+        
+        
+    }
     
+    public  function getAll($INDICE,$CVEUSUARIO, $tabla){
+        
+        
+        $sSQL= "SELECT ine_id id, ine_indice indice,
+ ine_plantasid plantasId, 
+ine_clientesid clientesId,ca_nivel1.n1_nombre clienteNombre,
+ine_etapa etapa, 
+ine_comentarios comentarios, 
+ine_totalcajas total_cajas,
+ine_totalmuestras total_muestras,
+ine_estatus estatus, 
+ine_createdat createdAt, 2 estatusSync ,
+n5_nombre plantaNombre
+FROM $tabla
+inner join ca_nivel5 on n5_id=ine_plantasid
+ inner join ca_nivel1 on n1_id=n5_idn1
+ where   ine_cverecolector=:ine_cverecolector
+ and ine_indice=:ine_indice ";
+        
+        $stmt=DatosInformeEtapa::getInstance()->prepare($sSQL);
+        $stmt->bindParam(":ine_indice", $INDICE, PDO::PARAM_STR);
+        $stmt->bindParam(":ine_cverecolector",  $CVEUSUARIO, PDO::PARAM_INT);
+      
+        $stmt-> execute();
+        //  $stmt->debugDumpParams();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC); //para que solo devuelva los nombres de columnas
+        
+        
+    }
     public  function insertar($datosModel,$cveusuario,$indice,$tabla,$pdo){
         try{    
          

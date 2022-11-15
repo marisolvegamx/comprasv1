@@ -287,7 +287,7 @@ and pro_cliente=:cliente
 ind_origen=:origen,ind_qr=:qr,ind_siglasprod=:siglasprod,
                     ind_codigo=:ind_codigo, ind_caducidad=:ind_caducidad,
                     ind_costo=:ind_costo, 
-                     ind_atributoa=:ind_atributoa,  ind_atributob=:ind_atributoa,  ind_atributoc=:ind_atributoc
+                     ind_atributoa=:ind_atributoa,  ind_atributob=:ind_atributob,  ind_atributoc=:ind_atributoc
                      WHERE ind_id=:ind_id AND ind_indice=:ind_indice AND ind_recolector=:ind_recolector; ";
             
             $stmt=DatosInformeDetalle::getInstance()->prepare($sSQL);
@@ -312,7 +312,7 @@ ind_origen=:origen,ind_qr=:qr,ind_siglasprod=:siglasprod,
                 throw new Exception($stmt->errorCode()."-".$stmt->errorInfo()[2]);
             }
             
-             //   $stmt->debugDumpParams();
+         //     $stmt->debugDumpParams();
         }catch(PDOException $ex){
             Utilerias::guardarError("DatosInformeDetalle.actualizar "+$ex->getMessage());
             throw new Exception("Hubo un error al actualizar el informe detalle");
@@ -342,7 +342,8 @@ ind_origen=:origen,ind_qr=:qr,ind_siglasprod=:siglasprod,
                 throw new Exception($stmt->errorCode()."-".$stmt->errorInfo()[2]);
             }
             
-            //    $stmt->debugDumpParams();
+            //   $stmt->debugDumpParams();
+             //  die();
         }catch(PDOException $ex){
             Utilerias::guardarError("DatosInformeDetalle.actualizar "+$ex->getMessage());
             throw new Exception("Hubo un error al actualizar el informe detalle");

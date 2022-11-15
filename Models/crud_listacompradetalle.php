@@ -1,11 +1,12 @@
 <?php
 
 require_once "Models/conexion.php";
+
 class DatosListaCompraDet extends Conexion{
 
 	# CLASE NIVEL 1n1
 	public function vistalistacomModel($idliscomp, $tabla){
-    
+   
 		$stmt = Conexion::conectar()-> prepare("SELECT lis_idplanta, pro_id, pro_orden, lis_idindice, lid_idproducto, `lid_fechapermitida`,`lid_fecharestringida`,`lid_backup`, lid_idprodcompra, lid_cantidad,   lid_numtienbak, pro_producto, lid_idtamano, lid_idempaque, lid_idtipoanalisis, desctam, ordtam, lid_tipo, idemp, descemp, ordemp, idtipa, desctipa, ordtipa, idtipm, desctipm, ordtipm FROM (
     SELECT lis_idplanta, lid_idprodcompra, lis_idindice, `lid_fechapermitida`, `lid_fecharestringida`, `lid_backup`, lid_idproducto,  lid_numtienbak, lid_cantidad, pro_id, pro_orden, pro_producto, lid_idtamano, lid_idempaque, lid_idtipoanalisis, lid_tipo FROM pr_listacompradetalle inner join pr_listacompra ON lis_idlistacompra=lid_idlistacompra inner join ca_productos ON lid_idproducto=pro_id where lid_idlistacompra=:idliscomp) as A inner JOIN (SELECT cad_idopcion as idtam, cad_descripcionesp as desctam, cad_otro as ordtam FROM `ca_catalogosdetalle` WHERE cad_idcatalogo=13) as B ON A.lid_idtamano=B.idtam INNER JOIN (SELECT cad_idopcion as idemp, cad_descripcionesp as descemp, cad_otro as ordemp FROM `ca_catalogosdetalle` WHERE cad_idcatalogo=12) as C ON A.lid_idempaque=C.idemp INNER JOIN (SELECT cad_idopcion as idtipa, cad_descripcionesp as desctipa, cad_otro as ordtipa FROM `ca_catalogosdetalle` WHERE cad_idcatalogo=7) as D ON A.lid_idtipoanalisis=D.idtipa INNER JOIN (SELECT cad_idopcion as idtipm, cad_descripcionesp as desctipm, cad_otro as ordtipm FROM `ca_catalogosdetalle` WHERE cad_idcatalogo=15) as E ON A.lid_tipo=E.idtipm ORDER BY pro_orden ASC, ordtam DESC, ordemp ASC, ordtipa ASC, ordtipm;");
 
@@ -15,6 +16,7 @@ class DatosListaCompraDet extends Conexion{
     $stmt->bindParam(":idliscomp", $idliscomp,PDO::PARAM_INT);
               
 		$stmt-> execute();
+		//$stmt->debugDumpParams();
 		return $stmt->fetchAll();
 
 	}

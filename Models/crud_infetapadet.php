@@ -34,6 +34,8 @@ FROM $tabla where ied_id=:id and ied_indice=:indice and ied_cverecolector=:cvere
         
     }
     
+    
+    
     public  function getInfEtapaDetxInf($INDICE,$CVEUSUARIO,$id,$etapa, $tabla){
         
         
@@ -59,7 +61,33 @@ inner join informes_etapa ie on
         
     }
     
-    
+    public  function getAll($INDICE,$CVEUSUARIO,$idinf, $tabla){
+        
+        
+        $sSQL= "SELECT ied_id id,
+ ied_cverecolector, ied_infetapaid informeEtapaId ,
+ ied_rutafoto ruta_foto, ine_etapa etapa, 2 estatusSync,
+ ied_qr qr, ied_nummuestra num_muestra, 
+ ied_descripcionid descripcionId, 
+ ied_numcaja num_caja, cc.cad_descripcionesp descripcion 
+FROM $tabla
+inner join informes_etapa ie on
+	ied_infetapaid = ine_id
+	and ine_cverecolector = ied_cverecolector
+	and ine_indice = ied_indice
+inner join ca_catalogosdetalle cc  on ied_descripcionid =cc.cad_idopcion and cc.cad_idcatalogo=21
+ where ied_infetapaid=:id and ied_indice=:indice and ied_cverecolector=:cverecolector ";
+        
+        $stmt=DatosInfEtapaDet::getInstance()->prepare($sSQL);
+        $stmt->bindParam(":indice", $INDICE, PDO::PARAM_STR);
+        $stmt->bindParam(":cverecolector",  $CVEUSUARIO, PDO::PARAM_INT);
+        $stmt->bindParam(":id", $idinf, PDO::PARAM_STR);
+        $stmt-> execute();
+       // $stmt->debugDumpParams();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC); //para que solo devuelva los nombres de columnas
+        
+        
+    }
     public  function insertar($datosModel,$cveusuario,$indice,$tabla,$pdo){
         try{      
             $sSQL= "INSERT INTO $tabla

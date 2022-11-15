@@ -2,7 +2,7 @@
 require_once "Models/conexion.php";
 class DatosAtrib extends Conexion{
 
-	# CLASE NIVEL 1n1
+	
 	public function vistaatribModel($tabla){
 
 		$stmt = Conexion::conectar()-> prepare("SELECT * FROM $tabla");
@@ -47,7 +47,8 @@ class DatosAtrib extends Conexion{
 	public function actualizarAtr($datosModel,$tabla){
           	try{
           		
-              $sSQL= "UPDATE `ca_atributo` SET `id_tipoempaque` =:tipoemp,`at_nombre`=:nomatr, `at_idcliente`=:idclien, `at_idclasificaciondano`=:cladano, `at_idponderaciondano`=:pondano  WHERE `id_atributo`=:idatr";
+              $sSQL= "UPDATE `ca_atributo` SET `id_tipoempaque` =:tipoemp,
+`at_nombre`=:nomatr, `at_idcliente`=:idclien, `at_idclasificaciondano`=:cladano, `at_idponderaciondano`=:pondano  WHERE `id_atributo`=:idatr";
 	
           	  $stmt=Conexion::conectar()->prepare($sSQL);
           	  $stmt->bindParam(":tipoemp", $datosModel["tipoemp"],PDO::PARAM_INT);
@@ -83,4 +84,14 @@ class DatosAtrib extends Conexion{
             }
             
     }
+    
+    public function getArtributosxcli($cliente,$tabla){
+        
+        $stmt = Conexion::conectar()-> prepare("SELECT * FROM $tabla where at_idcliente=:cli");
+           $stmt->bindParam(":cli", $cliente,PDO::PARAM_INT);
+        $stmt-> execute();
+        return $stmt->fetchAll();
+        
+    }
+    
 }	

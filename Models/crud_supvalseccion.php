@@ -14,7 +14,7 @@ class DatosValSeccion extends Conexion{
         
         
         //	var_dump($sql);
-       // 	die();
+        //	die();
         $stmt = Conexion::conectar()-> prepare($sql);
         
         //$stmt = Conexion::conectar()-> prepare("INSERT INTO sup_validasecciones (vas_id, vas_idseccion, vas_descripcion, vas_apro$datosModel["idaprob"].'b'.ada, vas_noaplica, vas_observaciones, vas_estatus) VALUES (:idval,:idsec,:descrip,:aprob,:noap,:observ,:est);");

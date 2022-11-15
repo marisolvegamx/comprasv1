@@ -12,6 +12,16 @@ class DatosCausa extends Conexion{
 
 	}
 
+  public function nombrecausaModel($idcausa, $tabla){
+
+    $stmt = Conexion::conectar()-> prepare("SELECT cau_descripcion FROM $tabla where ID_causa=:idcausa");
+
+    $stmt->bindParam(":idcausa", $idcausa,PDO::PARAM_INT);
+              
+    $stmt-> execute();
+    return $stmt->fetchAll();
+
+  }
 
 	public function insertarCausa($datosModel,$tabla){
       // var_dump($datosModel);
