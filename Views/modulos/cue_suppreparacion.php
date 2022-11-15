@@ -132,7 +132,7 @@
 $idimagen=1;
 
     echo '<div class="img-magnifier-container">
-				    <img id="myimage'.$idimagen.'" src="'.$supPrepCon->dirimagen.'\\'.$supPrepCon->infdetalle["ied_rutafoto"].'"class="d-block w-100" height="1134" >
+				    <img id="myimage'.$idimagen.'" src="'.$supPrepCon->dirimagen.'\\'.$supPrepCon->imagenes["ruta"].'"class="d-block w-100"  >
 				    </div>';
  
 ?>
@@ -184,7 +184,7 @@ $idimagen=1;
        
       }
       ?>
-      <div class="<?= $claseboton?> areaBoton"><a href="<?= $supPrepCon->liga.'&admin=solcor&est=2&numimg='.$supPrepCon->listaimagenes[0]["id"]?>" class="btn <?= $clase?> btn-sm btn-block ">CANCELAR</a>
+      <div class="<?= $claseboton?> areaBoton"><a href="<?= $supPrepCon->liga.'&admin=solcor&est=2&numimg='.$supPrepCon->imagenes["id"]?>" class="btn <?= $clase?> btn-sm btn-block ">CANCELAR</a>
       </div>
       <?php if ($supPrepCon->correccionFoto["vai_estatus"]==3){
           $clase= "btn-informesActivado";
@@ -194,7 +194,7 @@ $idimagen=1;
        
       }
       ?>
-      <div class="<?= $claseboton?> areaBoton"><a href="<?= $supPrepCon->liga.'&admin=solcor&est=3&numimg='.$supPrepCon->listaimagenes[0]["id"] ?>" class="btn <?= $clase?> btn-sm btn-block ">ACEPTAR</a>
+      <div class="<?= $claseboton?> areaBoton"><a href="<?= $supPrepCon->liga.'&admin=solcor&est=3&numimg='.$supPrepCon->imagenes["id"] ?>" class="btn <?= $clase?> btn-sm btn-block ">ACEPTAR</a>
       </div>
     <?php  if($pan!=9){ ?>
         <div class="col-md-6 vacio">
@@ -264,13 +264,13 @@ $idimagen=1;
             <form role="form" method="post" action=
 
         <?php
-              echo $supPrepCon->liga.'&admin=solcor&est=1&numimg='.$supPrepCon->listaimagenes[0]["id"];
+              echo $supPrepCon->liga.'&admin=solcor&est=1&numimg='.$supPrepCon->imagenes["id"];
             ?>
               >
               
               <p> Escribe el motivo de corrección</p>
               <?php echo '
-                  <input type="hidden" name="img" id="img" value='.$supPrepCon->listaimagenes[0]["id"].'>';
+                  <input type="hidden" name="img" id="img" value='.$supPrepCon->imagenes["id"].'>';
               ?>
               <input type="text"  name="observ" id="observ" style="width: 450px;">
               <p>  </p>

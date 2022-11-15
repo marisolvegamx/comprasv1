@@ -8,6 +8,7 @@
         $idprodex= $informeCont->getidprodex();
         $nomticket= $informeCont->getnomtick();
         $nomprodex= $informeCont->getnomprodex();
+        //var_dump($nomprodex);
         $nomprodexc= $informeCont->getnompexc();
         $idplanta= $informeCont->getidplanta();
         //var_dump($nomprodexc);
@@ -35,6 +36,8 @@
         $stimg = $informeCont->getestfot();
         $nomciudad= $informeCont->getnomciu();
         $idsup= $informeCont->getidsup();
+        $causaNOC= $informeCont->getcausaNOC();
+        $NomcausaNOC= $informeCont->getNomcausaNOC();
         //var_dump($idsup);
        
         include "Utilerias/leevar.php";
@@ -78,7 +81,7 @@
 
 
                 </div>
-                <div class="col-md-3 tituloSupBotones" ><a href="index.php?action=supinformecli02&idmes='.$idmes.'&idrec='.$idrec.'&id='.$idinf.'&idsup='.$idsup.'&cli='.$idcli.'&sec='.$sec.'&eta=2"><img src="Views/dist/img/Avanza-Final.jpg"></a>
+                <div class="col-md-3 tituloSupBotones" ><a href="index.php?action=supinformecli02&idmes='.$idmes.'&idrec='.$idrec.'&id='.$idinf.'&idsup='.$idsup.'&cli='.$idcli.'&sec='.$sec.'&nummues=1&pan=9&eta=2"><img src="Views/dist/img/Avanza-Final.jpg"></a>
                 </div>
                 ';
                 ?>
@@ -213,21 +216,43 @@
         ?>
       </div>
 
-      <div class="col-md-1 labelAzul1">    </div>
-      <div class="col-md-5 labelAzulDato">  
+      <div class="col-md-1 labelAzul1">¿SE COMPRO?    </div>
+      <div class="col-md-5 labelAzulDato">
+      <?php
+         if ($causaNOC) {
+            echo "NO";
+         } else {
+            echo "SI";
+         }
+        ?>  
+        
       </div>
     </div>
-        <?php 
+     <?php 
         //$admin="edI";
           if ($admin=="edI"){
              echo '<form role="form" method="post" action="index.php?action=supinformecli01&admin=act">';
           }   
          ?>
-
+     
     <div class="row">
+      <div class="col-md-1 labelAzul1">CAUSA:     </div>
+      <div class="col-md-2 labelAzulDato">
+      <?php
+         if ($causaNOC) {
+            echo $NomcausaNOC;
+         } else {
+            echo "";
+         }
+        ?>
+
+            </div>
+    
+        
+
       
       <div class="col-md-1 labelAzul1">COMENTARIOS:     </div>
-      <div class="col-md-11 labelAzulDato">
+      <div class="col-md-8 labelAzulDato">
           <?php
         if ($admin=="edI"){
 
@@ -276,58 +301,46 @@
       <div>
          <div> 
           <div class="img-magnifier-container ">
-          
+           <img id="myimage" class="d-block w-100"  src=
             <?php
-            if($nomticket=="")
-            {    $img1="Views/dist/img/sin-foto.jpg";
-            echo ' <img  class="d-block w-100"  src="'.$img1.'"/>';
-            }
-            else
-        //      $idprodex="IMG_4_20220221_132038.jpg";
-            {     $img1=$server.$dirimg.'/'.$nomprodex;
-                  echo ' <img id="myimage" class="d-block w-100"  src="'.$img1.'"/>';
-            
-            }
-               
+                if ($nomprodex) {
+                   $img1=$server.$dirimg.'/'.$nomprodex;
+                   echo $img1; 
+              } else {
+                echo '"Views/dist/img/sin-foto.jpg"';
+              }
             ?>
-           
+            />
           </div>
           <div style="height: 100px"></div>
             <div class="img-magnifier-container ">
-                <?php
+                <img id="myimage2" class="d-block w-100"  src= <?php
         //      $idprodex="IMG_4_20220221_132038.jpg";
-                if($nomticket=="")
-                {    $img="Views/dist/img/sin-foto.jpg";
-                echo ' <img class="d-block w-100"  src="'.$img.'"/>';
-                }
-                else
-                {   $img=$server.$dirimg.'/'.$nomticket;
-                echo ' <img id="myimage2" class="d-block w-100"  src="'.$img.'"/>';
-                
-                }
-             
+                if ($nomticket) {
+                   $img=$server.$dirimg.'/'.$nomticket;
+                   echo $img; 
+                 } else {
+                   echo '"Views/dist/img/sin-foto.jpg"';
+                 }
             ?>
-               
+                 />
             </div>
           </div>  
       </div>
     </div>
 
       <div class="col-md-6 areaImagenDer areaScrollP4  img-magnifier-container">
-     
+      <img id="myimage3" class="w-100" src=
  <?php 
- if($nomprodexc=="")
- { $img2="Views/dist/img/sin-foto.jpg";
- echo  '<img  class="w-100"   src="'.$img2.'"/>';
- }
-        else
-        { // $idticket2="IMG_4_20220221_132144.jpg";
+      // $idticket2="IMG_4_20220221_132144.jpg";
+        if ($nomprodexc) {
         $img2=$server.$dirimg.'/'.$nomprodexc;
-        echo  '<img id="myimage3" class="w-100"  src="'.$img2.'"/>';
-        }
-       
+          echo $img2;
+        } else {
+          echo '"Views/dist/img/sin-foto.jpg"';
+        }  
       ?> 
-   
+      />
       </div>
     </div>
     <div class="row">
@@ -386,9 +399,9 @@
       </div>
 </div>
     <div class="row">
-      <div class="col-md-6 labelAzul1Comentario">¿VENDEN PRODUCTOS DE LA MARCA EN LA TIENDA VISITADA?
+      <div class="col-md-6 labelAzul1Comentario">¿HAY EVIDENCIA DE QUE VENDEN PRODUCTOS DE LA MARCA EN LA TIENDA VISITADA?
       </div>
-      <div class="col-md-1 areaBoton" >
+      <div class="col-md-2 areaBoton" >
       <?php 
        if ($opcsel==1){
           $clase= "btn-informesActivado";
@@ -406,7 +419,7 @@
       ?>
 
       </div>
-      <div class="col-md-1 areaBoton">
+      <div class="col-md-2 areaBoton">
       <?php 
 
        if ($opcsel==3){
@@ -423,7 +436,7 @@
       ?>
        
       </div>
-      <div class="col-md-4 areaBoton">
+      <div class="col-md-2 areaBoton">
           <?php 
 
        if ($opcsel==2){
@@ -435,7 +448,7 @@
        $hrefn= '
         <a href="index.php?action=supinformecli01&admin=aceptar&pan=1&indice='.$idmes.'&idrec='.$idrec.'&cli='.$idcli.'&id='.$idinf.'&sec=4&eta=2&acep=0&noa=1"';
 
-       echo $hrefn.' class="btn '.$clasen.' btn-sm btn-block ">NO HAY SUFICIENTE EVIDENCIA</a>';
+       echo $hrefn.' class="btn '.$clasen.' btn-sm btn-block "> NO APLICA </a>';
       
       ?>
         

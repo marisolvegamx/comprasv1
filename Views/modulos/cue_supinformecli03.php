@@ -32,13 +32,13 @@ function prepararMotivo(){
               <div class="row">
                <?php
                 echo '
-                <div class="col-md-3 tituloSupBotones" ><a href="index.php?action=supinformecli01&idmes='.$idmes.'&idrec='.$idrec.'&id='.$id.'&cli='.$cli.'&sec='.$sec.'&eta=2"><img src="Views/dist/img/Retrocede-Final.jpg"></a>
+                <div class="col-md-3 tituloSupBotones" ><a href="index.php?action=supinformecli01&idmes='.$idmes.'&idrec='.$idrec.'&id='.$id.'&cli='.$cli.'&idsup='.$supMuesCon->idsup.'&sec='.$sec.'&eta=2"><img src="Views/dist/img/Retrocede-Final.jpg"></a>
                 </div>
-                <div class="col-md-3 tituloSupBotones" ><a href="index.php?action=supinformecli02&idmes='.$idmes.'&idrec='.$idrec.'&id='.$id.'&cli='.$cli.'&nummues='.$supMuesCon->numuestra.'&pan=5&eta=2"><img src="Views/dist/img/Retrocede-1.jpg"></a>
+                <div class="col-md-3 tituloSupBotones" ><a href="index.php?action=supinformecli02&idmes='.$idmes.'&idrec='.$idrec.'&id='.$id.'&cli='.$cli.'&idsup='.$supMuesCon->idsup.'&nummues='.$supMuesCon->numuestra.'&pan=5&eta=2"><img src="Views/dist/img/Retrocede-1.jpg"></a>
                 </div>
-                <div class="col-md-3 tituloSupBotones" ><a href="index.php?action=supinformecli02&idmes='.$idmes.'&idrec='.$idrec.'&id='.$id.'&cli='.$cli.'&eta=2&pan=7&nummues='.$supMuesCon->numuestra.'"><img src="Views/dist/img/Avanza-1.jpg"></a>
+                <div class="col-md-3 tituloSupBotones" ><a href="index.php?action=supinformecli02&idmes='.$idmes.'&idrec='.$idrec.'&id='.$id.'&idsup='.$supMuesCon->idsup.'&cli='.$cli.'&eta=2&pan=7&nummues='.$supMuesCon->numuestra.'"><img src="Views/dist/img/Avanza-1.jpg"></a>
                 </div>
-                <div class="col-md-3 tituloSupBotones" ><a href="index.php?action=supinformecli02&idmes='.$idmes.'&idrec='.$idrec.'&id='.$id.'&cli='.$cli.'&sec='.$sec.'&eta=2&pan=9&nummues='.$supMuesCon->numuestra.'"><img src="Views/dist/img/Avanza-Final.jpg"></a>
+                <div class="col-md-3 tituloSupBotones" ><a href="index.php?action=supinformecli02&idmes='.$idmes.'&idrec='.$idrec.'&id='.$id.'&idsup='.$supMuesCon->idsup.'&cli='.$cli.'&sec='.$sec.'&eta=2&pan=9&nummues='.$supMuesCon->numuestra.'"><img src="Views/dist/img/Avanza-Final.jpg"></a>
                 </div>
                 ';
                 ?>
@@ -66,17 +66,17 @@ function prepararMotivo(){
                 <a href="<?php
                 
                 if($supMuesCon->numuestra>1)
-                    echo "index.php?action=supinformecli03&idmes=".$supMuesCon->mesas."&idrec=".$supMuesCon->rec_id."&id=".$supMuesCon->idinf."&cli=".$supMuesCon->idcli."&pan=6&nummues=1&idsup=&eta=2"?>"> <?php if ($supMuesCon->numuestra==1) echo '<img src="Views/dist/img/Retrocede-Final-off.jpg">'; 
+                    echo "index.php?action=supinformecli03&idmes=".$supMuesCon->mesas."&idrec=".$supMuesCon->rec_id."&id=".$supMuesCon->idinf."&idsup=".$supMuesCon->idsup."&cli=".$supMuesCon->idcli."&pan=6&nummues=1&idsup=&eta=2"?>"> <?php if ($supMuesCon->numuestra==1) echo '<img src="Views/dist/img/Retrocede-Final-off.jpg">'; 
            else echo '  <img src="Views/dist/img/Retrocede-Final.jpg">';  ?></a>
                 </div>
-                <div class="col-md-3 tituloSupBotones" ><a href="<?php  if($supMuesCon->numuestra>1) echo "index.php?action=supinformecli03&idmes=".$supMuesCon->mesas."&idrec=".$supMuesCon->rec_id."&id=".$supMuesCon->idinf."&cli=".$supMuesCon->idcli."&pan=6&idsup=&eta=2&nummues=".($supMuesCon->numuestra-1)?>"><img src="Views/dist/img/Retrocede-1.jpg"></a>
+                <div class="col-md-3 tituloSupBotones" ><a href="<?php  if($supMuesCon->numuestra>1) echo "index.php?action=supinformecli03&idmes=".$supMuesCon->mesas."&idrec=".$supMuesCon->rec_id."&idsup=".$supMuesCon->idsup."&id=".$supMuesCon->idinf."&cli=".$supMuesCon->idcli."&pan=6&idsup=&eta=2&nummues=".($supMuesCon->numuestra-1)?>"><img src="Views/dist/img/Retrocede-1.jpg"></a>
                 </div>
                 <div class="col-md-3 tituloSupBotones" ><a href="<?php
                 $classof="-off"; 
-                if($supMuesCon->numuestra<sizeof($supMuesCon->muestras)){  $classof=""; echo "index.php?action=supinformecli03&idmes=".$supMuesCon->mesas."&idrec=".$supMuesCon->rec_id."&id=".$supMuesCon->idinf."&cli=".$supMuesCon->idcli."&pan=6&idsup=&eta=2&nummues=".($supMuesCon->numuestra+1);
+                if($supMuesCon->numuestra<sizeof($supMuesCon->muestras)){  $classof=""; echo "index.php?action=supinformecli03&idmes=".$supMuesCon->mesas."&idrec=".$supMuesCon->rec_id."&id=".$supMuesCon->idinf."&idsup=".$supMuesCon->idsup."&cli=".$supMuesCon->idcli."&pan=6&idsup=&eta=2&nummues=".($supMuesCon->numuestra+1);
                 }?>"><img src="Views/dist/img/Avanza-1<?= $classof ?>.jpg"></a>
                 </div>
-                <div class="col-md-3 tituloSupBotones" ><a href="<?php  if(sizeof($supMuesCon->muestras)>1) echo "index.php?action=supinformecli03&idmes=".$supMuesCon->mesas."&idrec=".$supMuesCon->rec_id."&id=".$supMuesCon->idinf."&cli=".$supMuesCon->idcli."&pan=6&idsup=&eta=2&nummues=".(sizeof($supMuesCon->muestras))?>"> <?php if(sizeof($supMuesCon->muestras)==$supMuesCon->numuestra) echo '<img src="Views/dist/img/Avanza-Final-off.jpg">';
+                <div class="col-md-3 tituloSupBotones" ><a href="<?php  if(sizeof($supMuesCon->muestras)>1) echo "index.php?action=supinformecli03&idmes=".$supMuesCon->mesas."&idrec=".$supMuesCon->rec_id."&id=".$supMuesCon->idinf."&cli=".$supMuesCon->idcli."&pan=6&idsup=".$supMuesCon->idsup."&eta=2&nummues=".(sizeof($supMuesCon->muestras))?>"> <?php if(sizeof($supMuesCon->muestras)==$supMuesCon->numuestra) echo '<img src="Views/dist/img/Avanza-Final-off.jpg">';
                 else echo ' <img src="Views/dist/img/Avanza-Final.jpg">';?></a>
                 </div>
               </div>
@@ -93,7 +93,7 @@ function prepararMotivo(){
       </div>
       <div class="col-md-1 labelAzul1">FECHA:
       </div>
-      <div class="col-md-3 labelAzulDato"><?php echo $supMuesCon->visita["fecharep"]?>
+      <div class="col-md-3 labelAzulDato"><?php echo Utilerias::verFecha($supMuesCon->visita["fecharep"])?>
       </div>
       <div class="col-md-1 labelAzul1">HORA:
       </div>
@@ -208,8 +208,8 @@ function prepararMotivo(){
  <input type="hidden"  name="nummues" id="nummues" value="'.$nummues.'">
           <input type="hidden"  name="idmes" id="idmes" value="'.$idmes.'">
           <input type="hidden" name="idrec" id="idrec" value="'.$idrec.'">';
-          echo '<input class="form-control form-control-informes" type="text" placeholder="" id="'.ContratoInformesDet::CADUCIDAD.'" name="'.ContratoInformesDet::CADUCIDAD.'" value="'.$supMuesCon->muestra["ind_caducidad"].'">';
-          }else{echo $supMuesCon->muestra["ind_caducidad"];
+          echo '<input class="form-control form-control-informes" type="text" placeholder="" id="'.ContratoInformesDet::CADUCIDAD.'" name="'.ContratoInformesDet::CADUCIDAD.'" value="'.$supMuesCon->muestra["caducidad"].'">';
+          }else{echo $supMuesCon->muestra["caducidad"];
           }
          
                 
@@ -245,7 +245,7 @@ function prepararMotivo(){
     <div class="col-md-1 labelAzul1">DAÑO A:
       </div>
       <div class="col-md-2 labelAzulDato"><?php  if ($admin=="edI"){
-          $rs = DatosAtrib::vistaatribModel( "ca_atributo");
+          $rs = DatosAtrib::getArtributosxcli($cli, "ca_atributo");
           echo '<select class="form-control form-control-select-informes" id="'.ContratoInformesDet::ATRIBUTOA.'" name="'.ContratoInformesDet::ATRIBUTOA.'">
              <option value="">Seleccione una opción</option>';
         
@@ -416,6 +416,7 @@ function prepararMotivo(){
       </div>
       <?php 
       $opcsel=$supMuesCon->getopcsel();
+      $numsec=$supMuesCon->pantalla["pa_seccion"];
         if ($opcsel==1){
           $clase= "btn-informesActivado";
           
@@ -435,7 +436,7 @@ function prepararMotivo(){
       }
     ?>
       <div class="col-md-3 areaBoton">
-      <a href="" onclick="javascript:prepararMotivo();" class="btn btn-informes btn-sm btn-block " data-toggle="modal" data-target="#modal-correccion">NO</a>
+      <a href="" onclick="javascript:prepararMotivo();" class="btn <?= $clase ?> btn-sm btn-block " data-toggle="modal" data-target="#modal-correccion">NO</a>
       </div>
       
     </div>
@@ -508,8 +509,8 @@ function prepararMotivo(){
                <div id="divcanc" style="display: none">
               <p>¿Desea cancelar la muestra?</p>
               <?php 
-              echo '<button type="button" class="btn btn-secondary" onclick="javascript:noaceptarsec(\''.$supMuesCon->liga2.'\',\''.$numsec.'\',\''.$supMuesCon->idval.'\',\''.$supMuesCon->numuestra.'\',\'si\')">Sí</button>
-               <button type="button" class="btn btn-primary" onclick="javascript:noaceptarsec(\''.$supMuesCon->liga2.'\',\''.$numsec.'\',\''.$supMuesCon->idval.'\',\''.$supMuesCon->numuestra.'\',\'no\')">No</button>';
+              echo '<button type="button" class="btn btn-secondary" onclick="javascript:noaceptarsec(\''.$supMuesCon->liga2.'\',\''.$numsec.'\',\''.$supMuesCon->idval.'\',\''.$supMuesCon->muestra["ind_id"].'\',\'si\')">Sí</button>
+               <button type="button" class="btn btn-primary" onclick="javascript:noaceptarsec(\''.$supMuesCon->liga2.'\',\''.$numsec.'\',\''.$supMuesCon->idval.'\',\''.$supMuesCon->muestra["ind_id"].'\',\'no\')">No</button>';
              ?> </div>
             </form>
 

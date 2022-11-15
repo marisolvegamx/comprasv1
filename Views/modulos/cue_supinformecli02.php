@@ -51,9 +51,9 @@
                 <div class="col-md-3 tituloSupBotones" ><a href="<?php echo $supMuesCon->getLigapanp()?>"><img src="Views/dist/img/Retrocede-Final.jpg"></a>
                 </div>
                 <div class="col-md-3 tituloSupBotones" ><a href="<?php if($pan==7){
-                    echo "index.php?action=supinformecli03&idmes=".$supMuesCon->mesas."&idrec=".$supMuesCon->rec_id."&id=".$id."&cli=".$supMuesCon->idcli."&eta=".$supMuesCon->etapa."&pan=".($pan-1)."&nummues=".$supMuesCon->numuestra;}
+                    echo "index.php?action=supinformecli03&idmes=".$supMuesCon->mesas."&idrec=".$supMuesCon->rec_id."&id=".$id."&cli=".$supMuesCon->idcli."&idsup=".$supMuesCon->idsup."&eta=".$supMuesCon->etapa."&pan=".($pan-1)."&nummues=".$supMuesCon->numuestra;}
                     if($pan==5){echo "index.php?action=supinformecli01&idmes=".$supMuesCon->mesas."&idrec=".$supMuesCon->rec_id."&id=".$id."&cli=".$supMuesCon->idcli."&eta=".$supMuesCon->etapa."&pan=".($pan-1)."&idsup=".$idsup."&nummues=".$supMuesCon->numuestra;}else{
-                        echo "index.php?action=supinformecli02&idmes=".$supMuesCon->mesas."&idrec=".$supMuesCon->rec_id."&idsup=".$idsup."&id=".$id."&cli=".$supMuesCon->idcli."&eta=".$supMuesCon->etapa."&pan=".($pan-1)."&nummues=".$supMuesCon->numuestra;}?>"><img src="Views/dist/img/Retrocede-1.jpg"></a>
+                        echo "index.php?action=supinformecli02&idmes=".$supMuesCon->mesas."&idrec=".$supMuesCon->rec_id."&idsup=".$supMuesCon->idsup."&id=".$id."&cli=".$supMuesCon->idcli."&eta=".$supMuesCon->etapa."&pan=".($pan-1)."&nummues=".$supMuesCon->numuestra;}?>"><img src="Views/dist/img/Retrocede-1.jpg"></a>
                 </div>
                 <div class="col-md-3 tituloSupBotones" ><a href="<?php 
                 $classof="";
@@ -61,9 +61,9 @@
                  $classof="-off";
                 }else
                 if($pan==5){
-                    echo "index.php?action=supinformecli03&idmes=".$supMuesCon->mesas."&idrec=".$supMuesCon->rec_id."&id=".$id."&cli=".$supMuesCon->idcli."&idsup=".$idsup."&eta=".$supMuesCon->etapa."&pan=".($pan+1)."&nummues=".$supMuesCon->numuestra;}
+                    echo "index.php?action=supinformecli03&idmes=".$supMuesCon->mesas."&idrec=".$supMuesCon->rec_id."&id=".$id."&cli=".$supMuesCon->idcli."&idsup=".$supMuesCon->idsup."&eta=".$supMuesCon->etapa."&pan=".($pan+1)."&nummues=".$supMuesCon->numuestra;}
                     else{
-                        echo "index.php?action=supinformecli02&idmes=".$supMuesCon->mesas."&idsup=".$idsup."&idrec=".$supMuesCon->rec_id."&id=".$id."&cli=".$supMuesCon->idcli."&eta=".$supMuesCon->etapa."&pan=".($pan+1)."&nummues=".$supMuesCon->numuestra;}
+                        echo "index.php?action=supinformecli02&idmes=".$supMuesCon->mesas."&idsup=".$supMuesCon->idsup."&idrec=".$supMuesCon->rec_id."&id=".$id."&cli=".$supMuesCon->idcli."&eta=".$supMuesCon->etapa."&pan=".($pan+1)."&nummues=".$supMuesCon->numuestra;}
                         
                     
                     ?>"><img src="Views/dist/img/Avanza-1<?= $classof?>.jpg"></a>
@@ -94,7 +94,7 @@
                
                 <a href="<?php 
                 if($supMuesCon->numuestra>1)
-                echo "index.php?action=supinformecli02&idmes=".$supMuesCon->mesas."&idrec=".$supMuesCon->rec_id."&id=".$id."&eta=".$supMuesCon->etapa."&cli=".$supMuesCon->idcli."&pan=".$pan."&nummues=1"?>">
+                echo "index.php?action=supinformecli02&idmes=".$supMuesCon->mesas."&idrec=".$supMuesCon->rec_id."&id=".$id."&eta=".$supMuesCon->etapa."&idsup=".$supMuesCon->idsup."&cli=".$supMuesCon->idcli."&pan=".$pan."&nummues=1"?>">
            <?php if ($supMuesCon->numuestra==1) echo '<img src="Views/dist/img/Retrocede-Final-off.jpg">'; 
            else echo '  <img src="Views/dist/img/Retrocede-Final.jpg">';  ?>
               
@@ -109,12 +109,12 @@
                
                     $classof="-off";
                     if($supMuesCon->numuestra<sizeof($supMuesCon->muestras)){
-                    echo "index.php?action=supinformecli02&idmes=".$supMuesCon->mesas."&idrec=".$supMuesCon->rec_id."&id=".$id."&eta=".$supMuesCon->etapa."&cli=".$supMuesCon->idcli."&pan=".$pan."&nummues=".($supMuesCon->numuestra+1);
+                    echo "index.php?action=supinformecli02&idmes=".$supMuesCon->mesas."&idrec=".$supMuesCon->rec_id."&id=".$id."&eta=".$supMuesCon->etapa."&idsup=".$supMuesCon->idsup."&cli=".$supMuesCon->idcli."&pan=".$pan."&nummues=".($supMuesCon->numuestra+1);
                     $classof="";
                     }?>"><img src="Views/dist/img/Avanza-1<?= $classof ?>.jpg"></a>
                 </div>
                 <div class="col-md-3 tituloSupBotones" ><a  href="<?php 
-                if(sizeof($supMuesCon->muestras)>1) echo "index.php?action=supinformecli02&idmes=".$supMuesCon->mesas."&idrec=".$supMuesCon->rec_id."&id=".$id."&eta=".$supMuesCon->etapa."&cli=".$supMuesCon->idcli."&pan=".$pan."&nummues=".sizeof($supMuesCon->muestras)?>">
+                if(sizeof($supMuesCon->muestras)>1) echo "index.php?action=supinformecli02&idmes=".$supMuesCon->mesas."&idrec=".$supMuesCon->rec_id."&id=".$id."&eta=".$supMuesCon->etapa."&cli=".$supMuesCon->idcli."&idsup=".$supMuesCon->idsup."&pan=".$pan."&nummues=".sizeof($supMuesCon->muestras)?>">
                 <?php if(sizeof($supMuesCon->muestras)==$supMuesCon->numuestra) echo '<img src="Views/dist/img/Avanza-Final-off.jpg">';
                 else echo ' <img src="Views/dist/img/Avanza-Final.jpg">';?>
                </a>
@@ -282,7 +282,7 @@
     <div class="col-md-1 labelAzul1">DAÑO A:
       </div>
       <div class="col-md-2 labelAzulDato"><?php  if ($admin=="edI"){
-          $rs = DatosAtrib::vistaatribModel( "ca_atributo");
+          $rs = DatosAtrib::getArtributosxcli($cli, "ca_atributo");
           echo '<select class="form-control form-control-select-informes" id="'.ContratoInformesDet::ATRIBUTOA.'" name="'.ContratoInformesDet::ATRIBUTOA.'">
              <option value="">Seleccione una opción</option>';
         
@@ -455,10 +455,10 @@
        
         }
         $numsec=$supMuesCon->pantalla["pa_seccion"];
-        if($supMuesCon->idcli==5)
-            $numsec=$numsec+1;
-            if($supMuesCon->idcli==6)
-                $numsec=$numsec+2;
+       // if($supMuesCon->idcli==5)
+       //     $numsec=$numsec+1;
+       //     if($supMuesCon->idcli==6)
+       //         $numsec=$numsec+2;
         echo '
         <a href="'.$supMuesCon->liga.'&admin=aceptarsec&sec='.$numsec.'&vasid='.$supMuesCon->idval.'&iddet='.$supMuesCon->muestra["ind_id"].'" class="btn '.$clase .' btn-sm btn-block ">SI</a>';
         ?>
