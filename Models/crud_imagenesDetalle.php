@@ -151,7 +151,7 @@ where imd_indice=:indice and imd_usuario=:cverecolector and imd_idlocal=:id";
 
     public  function getnomImagen($INDICE,$CVEUSUARIO,$idlocal,$tabla){
         
-        
+      //  echo $INDICE."----".$CVEUSUARIO."..".$idlocal;
         $sSQL= "SELECT imd_idlocal, imd_descripcion, imd_ruta,
  imd_estatus, imd_indice 
 FROM $tabla
@@ -163,9 +163,39 @@ where imd_indice=:indice and imd_usuario=:cverecolector and imd_idlocal=:id";
         $stmt->bindParam(":cverecolector",  $CVEUSUARIO, PDO::PARAM_INT);
         
         $stmt-> execute();
-        //$stmt->debugDumpParams();
+      //  $stmt->debugDumpParams();
         return $stmt->fetch(); 
         
         
     }
+    public static function actualizarArchivo($idimg,$archivo,$cveusuario,$indice,$tabla ){
+        try{
+            
+            $sSQL= "UPDATE $tabla
+SET 
+ imd_ruta=:imd_ruta
+where  imd_idlocal=:imd_idlocal and
+imd_indice=:imd_indice and imd_usuario=:imd_recolector;";
+            
+            $stmt=Conexion::conectar()->prepare($sSQL);
+            $stmt->bindParam(":imd_idlocal", $idimg,PDO::PARAM_INT);
+            $stmt->bindParam(":imd_ruta", $archivo, PDO::PARAM_STR);
+            $stmt->bindParam(":imd_indice", $indice, PDO::PARAM_STR);
+            $stmt->bindParam(":imd_recolector",$cveusuario, PDO::PARAM_INT);
+            //   $stmt->bindParam(":imd_created_at", $datosModel[ContratoImagenes::], PDO::PARAM_STR);
+            // $stmt->bindParam(":imd_updated_at", $datosModel[ContratoImagenes::imd_updated_at"], PDO::PARAM_STR);
+            
+            if(!$stmt-> execute())
+            {
+                
+                throw new Exception($stmt->errorCode()."-".$stmt->errorInfo()[2]);
+            }
+            
+        }catch(PDOException $ex){
+            Utilerias::guardarError("DatosInformeDetalle.actualizarArchivo "+$ex->getMessage());
+            throw new Exception("Hubo un error al actualizarArchivo la imagen");
+        }
+        
+    }
+    
 }

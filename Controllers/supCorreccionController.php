@@ -3,22 +3,26 @@
 //ini_set("display_errors", 1); 
 include "Models/crud_supcorrecciones.php";
 include 'Models/crud_supvalfotos.php';
+include 'Models/crud_informesDetalle.php';
 
 class SupCorreccionController
 {
     public $valfoto;
-    public $correccion;
-
-    public $idcor;
+    public $correccionFoto;
     public $mesas;
     public $rec_id;
     public $indiceletra;
     public $dirimagen;
     public $liga;
     public $imagenOrig; //laoriginal 
+    public $imagenOrig2;
+    public $imagenOrig3; 
     public $etapa;
-   public $numf;
+    public $numf;
     public $idval; 
+    public $recolector;
+    public $idfoto2;
+    public $idfoto3;
      
     public function vistaCorrec(){
       
@@ -27,27 +31,34 @@ class SupCorreccionController
       //  $this->idcli=$_GET["cli"];
      
         $this->numfoto=$_GET["numf"];
-        $this->idcor=$_GET["id"];
+        $this->idval=$_GET["id"];
         $admin=$_GET["admin"];
-      
+       // var_dump($_GET);
         $this->indiceletra=Utilerias::indiceConLetra($this->mesas);
         
-        $respval=DatosValFotos::getValidacionxId($this->mesas,$this->rec_id,$this->idcor,$this->numf);
+        $respval=DatosValFotos::getValidacionxId($this->mesas,$this->rec_id,$this->idval,$this->numfoto);
         if($respval!=null)
-        {   $this->valfoto=$respval;
+        {   $this->valfoto=$respval[0];
         
         }
-        //todo depende del estatus busco si hay correccion
-        
-        $resp =DatosCorreccion::getCorreccionxValFoto($this->mesas,$this->rec_id,$this->idcor, $this->numfoto,"sup_validacion");
+        //var_dump($this->valfoto);
+        $resp=DatosRecolector::vistarecolectorDetalle($this->rec_id,"ca_recolectores");
+        if($resp!=null)
+        $this->recolector=$resp[0];
+        if($this->valfoto["vai_estatus"]>3)
+        {//todo depende del estatus busco si hay correccion
+          
+                $resp =DatosCorreccion::getUltCorxValFoto($this->mesas,$this->rec_id,$this->idval, $this->numfoto,"sup_validacion");
          // var_dump($resp);
         if($resp!=null)
-        {   $this->correccion=$resp;
+        {   $this->correccionFoto=$resp;
            
         }
+        }
+       // var_dump($this->correccionFoto);
        
-        $this->liga="index.php?action=supnvacorreccion&idmes=".$this->mesas."&idrec=".$this->rec_id."&id=".$this->idcor;
-    
+        $this->liga="index.php?action=supnvacorreccion&idmes=".$this->mesas."&idrec=".$this->rec_id."&id=".$this->idval."&numf=".$this->numfoto;
+      
         $aux = explode(".", $this->mesas);
         
         $solomes = $aux[0];
@@ -55,16 +66,16 @@ class SupCorreccionController
         $this->dirimagen = "fotografias\\".$solomes."_".$soloanio;
 
        //busco la imagen original 
-        $this->buscarCorreccionFoto($this->valfoto["vai_numfoto"]);
+        $this->buscarFotoOriginal($this->valfoto["vai_numfoto"]);
     //  echo $admin;
-        if($admin=="aceptarsec"){
-            $this->aceptarFoto(1);
+        if($admin=="aceptar"){
+            $this->aceptarFoto();
         }
-        if($admin=="noaceptarsec"){
-            $this->aceptarsec(0);
+        if($admin=="noaceptar"){ //no reemplazar
+            $this->noaceptar();
         }
        
-        if($admin=="solcor"){
+        if($admin=="solcor"){  //nueva correccion
        
             $this->solcorreccion();
         }
@@ -75,220 +86,122 @@ class SupCorreccionController
     public function solcorreccion(){
         
         include "Utilerias/leevar.php";
-        
-        
-        if ($pan) {
-            switch ($pan) {
-                case 2:
-                    $desima = "FotoFachada";
-                    break;
-            }
-            
-            $pan ="0".$pan;
-            
-        }
-        
+
         try{
             
-            //revisa si existe validacion en imagenes
+            
             if ($this->correccionFoto!=null) {
-                // actualiza g
-                // echo "encontre la foto";
+              
                 $datosController= array("idval"=>$this->idval,
-                    "numimg"=>$numimg,
-                    "estatus"=>$est
+                    "idimg"=>$this->numfoto,
+                    "est"=>1,
+                    "motivo"=>$observ
                     
                 );
                 //   var_dump($idval);
-                //   var_dump($datosController);
-                $ex= DatosValidacion::actualizaValidacionimg($datosController, "sup_validafotos");
-                $datoscorr=array("idval"=>$this->idval,
-                    "idfoto"=>$numimg
-                );
-                $this->buscarCorreccionFoto($datoscorr);
+                  // var_dump($datosController);
+                   $ex= DatosValFotos::actualizaContValFotos($datosController, "sup_validafotos");
                 
-            } else {
-                if ($this->idval==0) {
-                    
-                    
-                    //   echo "no hay nada";
-                    // inserta validacion
-                    $datosController= array("id"=>$id,
-                        "idrec"=>$idrec,
-                        "indice"=>$idmes,
-                        "ideta"=>$eta,
-                        "estatus"=>1,
-                        ""
-                    );
-                    
-                    // inserta validacion detalle
-                    DatosValidacion::InsertaValidacion($datosController, "sup_validacion")
-                    ;
-                    // busca numero de validacion
-                    $datosController= array("id"=>$id,
-                        "idrec"=>$idrec,
-                        "indice"=>$idmes,
-                        "ideta"=>$eta,
-                    );
-                    
-                    $respuesta =DatosValidacion::LeeIdValidacion($datosController, "sup_validacion");
-                    
-                    if (sizeof($respuesta)>0) {
-                        foreach($respuesta as $row => $item){
-                            $this->idval= $item["val_id"];
-                        }
-                    }
-                }
-                // inserta validacion de imagen
-                //busco el id descripcion foto
-                //   $resfoto= DatosCatalogoDetalle::getDetallexDesc($this->pantalla["pa_foto1"],20,"ca_catalogosdetalle");
-                //  $resfoto=DatosCatalogoDetalle::getCatalogoDetalle("ca_catalogosdetalle",20,$this->pantalla["pa_foto1"]);
-                // var_dump($resfoto);
-                //  if($resfoto!=null)
-                //  $numfoto=$resfoto["cad_idopcion"];
-                    $numfoto= $this->pantalla["pa_foto1"];
-                    $datosController= array("idval"=>$this->idval,
-                        "idimg"=>$numimg,
-                        "desimg"=>$numfoto,
-                        "est"=>$est,
-                        "observ"=>$observ,
-                        "cli"=>$cli
-                    );
-                    //    var_dump($datosController);
-                    DatosValidacion::ingresaValidacionimg($datosController, "sup_validafotos");
-                    $datoscorr=array("idval"=>$this->idval,
-                        "idfoto"=>$numimg
-                    );
-                    $this->buscarCorreccionFoto($datoscorr);
-                    
-            }
+                
+            } 
+              
             
-            /*  echo "
-             <script type='text/javascript'>
-             window.location='$regresar'
-             </script>  ";*/
+            echo "
+            <script type='text/javascript'>
+              window.location='$this->liga'
+                </script>
+                  ";
         }catch(Exception $ex){
             echo Utilerias::mensajeError($ex->getMessage());
         }
         
     }
     
+    public function noaceptar(){
+        
+        include "Utilerias/leevar.php";
+        
+      
+        
+        try{
+          //  var_dump($this->correccionFoto);
+            //revisa si existe validacion en imagenes
+            if ($this->correccionFoto!=null) {
+                // actualiza g
+                // echo "encontre la foto";
+                $datosController= array("idval"=>$this->idval,
+                    "idimg"=>$this->numfoto,
+                    "est"=>3
+                    
+                );
+                 // var_dump($idval);
+                 //  var_dump($datosController);
+                $ex= DatosValidacion::actualizaValidacionimg($datosController, "sup_validafotos");
+               // if($this->imagenOrig2!=null){
+                    
+                //}
+                
+                echo "
+            <script type='text/javascript'>
+              window.location='$this->liga'
+                </script>
+                  ";
+                
+            }
+        }catch(Exception $ex){
+            echo Utilerias::mensajeError($ex->getMessage());
+        }
+        
+    }
   
-  
-    public function aceptarFoto($aprob){
+    public function aceptarFoto(){
         
         include "Utilerias/leevar.php";
       //  var_dump($_GET);
         try{
-           
-            $estatus=$na=0;
-              $datosController= array("id"=>$d,
-                "idrec"=>$idrec,
-                  "indice"=>$idmes,
-                "ideta"=>$eta,
-            );
-             //echo "***".$aprob;
-                //ya tenía respuesta
-              //var_dump($this->valSeccion);
-              if($aprob==0){
-                  $estatus=2;//cancelada
-              }else if($aprob==1){
-                  $estatus=1;//aceptada
-              }
-             
-            if ($this->valSeccion!=null) {
+            if($this->imagenOrig!=null){
+                //reemplazo el archivo
+                //var_dump($this->correccionFoto);
+                DatosImagenDetalle::actualizarArchivo($this->numfoto,$this->correccionFoto["cor_rutafoto1"],$this->rec_id,$this->mesas,"imagen_detalle" );
+                //borro el archivo original
+                if (is_file($this->dirimagen."/".$this->imagenOrig["ruta"]) )
                    
+                    unlink($this->dirimagen."/".$this->imagenOrig["ruta"]); 
+                //actualizo estatus
                     $datosController= array("idval"=>$this->idval,
-                        "idsec"=>$sec,
-                        "idaprob"=>$aprob,
-                        "noap"=>0,
-                        "observ"=>$observacionessec,
-                        "estatus"=>$estatus,
-                        "nummuestra"=>$iddet
+                        "idimg"=>$this->numfoto,
+                        "est"=>3
+                        
                     );
-                  //  var_dump($datosController);
-                   // die();
-                    DatosValSeccion::actualizaValidacionsecmues($datosController,"sup_validasecciones");
-                  //  die();
-            }else{
-              
-                if($this->idval==0)
-                {
-                
-               
-                    echo "no hay nada";
-                    // inserta validacion
-                    $datosController= array("id"=>$id,
-                        "idrec"=>$idrec,
-                        "indice"=>$idmes,
-                        "estatus"=>1,
-                        "ideta"=>2,
-                    );
+                    //   var_dump($idval);
+                    //   var_dump($datosController);
+                    DatosValidacion::actualizaValidacionimg($datosController, "sup_validafotos");
+                   
+            }
+            if($this->imagenOrig2!=null){
+                //reemplazo el archivo
+               // var_dump($this->correccionFoto);
+                DatosImagenDetalle::actualizarArchivo($this->idfoto2,$this->correccionFoto["cor_rutafoto2"],$this->rec_id,$this->mesas,"imagen_detalle" );
+                //borro el archivo original
+                if (is_file($this->dirimagen."/".$this->imagenOrig2["ruta"]) )
                     
-                    // inserta validacion detalle
-                    DatosValidacion::InsertaValidacion($datosController, "sup_validacion");
-                
-                    // busca numero de validacion
-                    $datosController= array("id"=>$id,
-                        "idrec"=>$idrec,
-                        "indice"=>$idmes,
-                        "ideta"=>2
-                    );
+                    unlink($this->dirimagen."/".$this->imagenOrig2["ruta"]);
+                    //actualizo estatus
+                            
+            }
+            if($this->imagenOrig3!=null){
+                //reemplazo el archivo
+               // var_dump($this->correccionFoto);
+                DatosImagenDetalle::actualizarArchivo($this->numfoto,$this->correccionFoto["cor_rutafoto3"],$this->rec_id,$this->mesas,"imagen_detalle" );
+                //borro el archivo original
+                if (is_file($this->dirimagen."/".$this->imagenOrig3["cor_rutafoto1"]) )
                     
-                    $respuesta =DatosValidacion::LeeIdValidacion($datosController, "sup_validacion");
-                  //  var_dump($respuesta);
-                    if (sizeof($respuesta)>0) {
-                        foreach($respuesta as $row => $item){
-                            $this->idval= $item["val_id"];
-                        }
-                    }
-                }
-              //  die($idval);
-                // var_dump($idval);
-               //busco la descripcion en el catálogo
-                $descrip=DatosCatalogoDetalle::getCatalogoDetalle("ca_catalogosdetalle",21,$this->pantalla["pa_seccion"]);
-             //   var_dump($descrip);
-            //    die();
-                //  if($resfoto!=null)
-                //      $descrip=$resfoto["cad_descripcionesp"];
-                $datosController2= array("idval"=> $this->idval,
-                    "idsec"=>$sec,
-                    "descrip"=>$descrip,
-                    "idaprob"=>$aprob,
-                    "noap"=>$na,
-                    "observ"=>$observacionessec,
-                    "estatus"=>$estatus,
-                    "nummuestra"=>$iddet
-                );
-               // var_dump($datosController2);
-                DatosValSeccion::ingresaregvalsecmues($datosController2, "sup_validasecciones");
-                $datosController= array("idval"=>$this->idval,
-                    "idsec"=>$sec,
-                );
-               // var_dump($datosController);
-              //  die();
-              //  $respuestaS =DatosValidacion::LeeIdImgValidacion($datosController, "sup_validasecciones");
-             //   if (sizeof($respuestaS)>0) {
-               //     $this->valSeccion=$respuestaS[0];   
-              //  }
-                
-            }  // if existe en validacion
-            //inserto la muestra en la tabla de supervision para poner el resultado
-            
-          //  $respmue=DatosValMuestra::getValidacionMuestra($idval,$this->numuestra,"sup_validainfdetalles");
-                 
-         //  var_dump($respmue);
-          
-           /* if($respmue!=null&&sizeof($respmue)>0){
-                //actualizo
-                $respmue["vam_estatus"]=$estatus;
-                DatosValMuestra::UpdateValidacion($respmue,"sup_validainfdetalles");
-            }else //inserto
-            { */
-            //todo ver primero si la muestra ya se acepto o se rechazo para antes de sumar o restar
-         
-         
+                    unlink($this->dirimagen."/".$this->imagenOrig3["cor_rutafoto1"]);
+                   
+                    
+            }
         
+          // die();
                 echo "
             <script type='text/javascript'>
               window.location='$this->liga'
@@ -301,21 +214,55 @@ class SupCorreccionController
     
    
     
-    public function buscarCorreccionFoto($idfoto1){
+    public function buscarFotoOriginal($idfoto1){
+        
        // var_dump($datosController);
         $respuesta = DatosImagenDetalle::getImagen($this->mesas,$this->rec_id,$idfoto1,"imagen_detalle");
-        
+       
         // valido si se encuentra
         if (sizeof($respuesta)>0) {
            
-                $this->imagenOrig=$respuesta[0];
+                $this->imagenOrig=$respuesta;
                 
             }
-          //  var_dump($this->correccionFoto);
+       if($this->valfoto["vai_descripcionfoto"]==4) //es de 3 fotos
+        {
+                //busco el informe
+               $infdet=DatosInformeDetalle::findByInformeAtra($this->valfoto["val_inf_id"],$idfoto1,$this->rec_id,$this->mesas,"informe_detalle");
+              // var_dump($infdet);
+               $this->idfoto2=$infdet["ind_foto_atributob"];
+               $this->idfoto3=$infdet["ind_foto_atributoc"];
+               $respuesta2 = DatosImagenDetalle::getImagen($this->mesas,$this->rec_id,$this->idfoto2,"imagen_detalle");
+               // valido si se encuentra
+               if (sizeof($respuesta2)>0) {
+                   
+                   $this->imagenOrig2=$respuesta2;
+               }
+               $respuesta3 = DatosImagenDetalle::getImagen($this->mesas,$this->rec_id,$this->idfoto3,"imagen_detalle");
+               
+               // valido si se encuentra
+               if (sizeof($respuesta3)>0) {
+                   
+                   $this->imagenOrig3=$respuesta3;
+               }
+               
+        }
+          //  var_dump($this->imagenOrig);
     }
     
- 
- 
+    public function buscarCorreccionFoto($datosController){
+        // var_dump($datosController);
+        $respuesta =DatosImgInformes::LeeEstatusfoto($datosController, "sup_validafotos");
+        // valido si se encuentra
+        if (sizeof($respuesta)>0) {
+            
+            $this->correccionFoto=$respuesta[0];
+            
+        }
+        //  var_dump($this->correccionFoto);
+    }
+    
+   
     public function getopcsel() {
         return $this->opcsel;
     }

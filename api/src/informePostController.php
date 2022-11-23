@@ -75,9 +75,11 @@ class InformePostController{
                
            if($resp!=null&&$resp[ContratoInformesDet::ID]==$detalle[ContratoInformesDet::ID]){
            }else
-           
-           $datosInfdet->insertar($detalle,$cverecolector,$indice,"informe_detalle",$pdo);
-           
+           {
+                $datosInfdet->insertar($detalle,$cverecolector,$indice,"informe_detalle",$pdo);
+                //actualizo la lista de compra
+                $datosInfdet->sumaCompradosLista($detalle[ContratoInformesDet::COMPRASID],$detalle[ContratoInformesDet::COMPRASDETID],1,"pr_listacompradetalle");
+           }
         }
         $datosInf2=new DatosInforme();
         $resp= $datosInf2->getInformexid($indice,$cverecolector,$informe[ContratoInformes::ID],"informes");

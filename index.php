@@ -4,7 +4,7 @@ session_start();
 
 //error_reporting(E_ERROR|E_NOTICE|E_WARNING);
 //ini_set("display_errors", 1); 
-
+error_reporting(0);
 
 require_once "Controllers/usuarioController.php";
 require_once "Controllers/controller.php";
@@ -64,7 +64,7 @@ require_once "Models/crud_n6.php";
 require_once "Models/crud_ciudades.php";
 
 require_once "Models/crud_sustitucion.php";
-require_once "Models/crud_listacompradetalle_mio.php";
+require_once "Models/crud_listacompradetalle.php";
 require_once "Models/crud_ciudadresidencia.php";
 require_once "Models/crud_causas.php";
 require_once "Models/crud_Supvalidacion.php";

@@ -135,7 +135,7 @@ function prepararMotivo(){
       <div class="col-md-1 labelAzul1">PRESENTACIÓN:
       </div>
       <div class="col-md-2 labelAzulDato"><?php 
-              echo $supMuesCon->muestra["presentacion"];
+      echo $supMuesCon->muestra["presentacion"]." ".$supMuesCon->muestra["empaque"];
           ?>
       </div>
       <div class="col-md-1 labelAzul1">ANÁLISIS:
@@ -418,9 +418,11 @@ function prepararMotivo(){
       $opcsel=$supMuesCon->getopcsel();
       $numsec=$supMuesCon->pantalla["pa_seccion"];
         if ($opcsel==1){
-          $clase= "btn-informesActivado";
+          $clase= "btn-informesActivado disabled";
           
-        } else {
+        }else if ($opcsel==3){
+            $clase= "btn-informes disabled";
+        }else {
         $clase= "btn-informes";
        
         }?>
@@ -428,9 +430,11 @@ function prepararMotivo(){
       </div>
         <?php 
       if ($opcsel==3){
-          $clase= "btn-informesActivado";
+          $clase= "btn-informesActivado disabled";
           
-      } else {
+      }else if ($opcsel==1){
+          $clase= "btn-informes disabled";
+      }else {
         $clase= "btn-informes";
        
       }

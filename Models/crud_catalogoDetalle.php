@@ -11,10 +11,10 @@ $sql="SELECT
   `cad_otro`
 FROM $tabla where ca_catalogosdetalle.cad_idcatalogo= :id order by cad_descripcionesp";
 
-if ($datosModel==13) {
-    $sql=$sql. " order by cad_descripcionesp";
-}
-
+//if ($datosModel==13) {
+//    $sql=$sql. " order by cad_descripcionesp";
+//}
+//echo $sql;
 		$stmt = Conexion::conectar()-> prepare($sql);
          
 		$stmt->bindParam(":id", $datosModel, PDO::PARAM_INT);
@@ -24,6 +24,30 @@ if ($datosModel==13) {
 		return $stmt->fetchAll();
 	}
         
+
+     public function listaCatalogoDetalleAsc($datosModel, $tabla){
+$sql="SELECT
+  `cad_idcatalogo`,
+  `cad_idopcion`,
+  `cad_descripcionesp`,
+  `cad_descripcioning`,
+  `cad_otro`
+FROM $tabla where ca_catalogosdetalle.cad_idcatalogo= :id order by cad_idopcion";
+
+//if ($datosModel==13) {
+//    $sql=$sql. " order by cad_descripcionesp";
+//}
+//echo $sql;
+    $stmt = Conexion::conectar()-> prepare($sql);
+         
+    $stmt->bindParam(":id", $datosModel, PDO::PARAM_INT);
+    
+    $stmt-> execute();
+
+    return $stmt->fetchAll();
+  }
+
+
         
         public function getCatalogoDetalle($tabla,$catalogo,$opcion){
           
@@ -40,7 +64,7 @@ ca_catalogosdetalle.cad_idopcion =  :opcion";
     $stmt-> bindParam(":clavecatalogo", $catalogo, PDO::PARAM_INT);
     $stmt-> bindParam(":opcion",$opcion , PDO::PARAM_INT);
      $stmt-> execute();
-//$stmt->debugDumpParams();
+
     $result_cat=$stmt->fetchall();
      foreach($result_cat as $row_cat) {
         if ($_SESSION["idiomaus"] == 2)

@@ -1,5 +1,7 @@
 <?php
-
+//ini_set("display_errors", 0);
+//echo "ora";
+//error_reporting(0);
         $informeCont=new SupInfmuestraController();
         $informeCont->vistaSupInfMuesController();
         $dirimg= $informeCont->getdirimg();

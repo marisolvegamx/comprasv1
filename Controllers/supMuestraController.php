@@ -1,6 +1,6 @@
 <?php
-//error_reporting(E_ERROR|E_NOTICE|E_WARNING);
-//ini_set("display_errors", 1); 
+//error_reporting(0);
+
 include "Models/crud_pantalla.php";
 include 'Models/crud_informesDetalle.php';
 //include 'Models/crud_imagenesDetalle.php';
@@ -45,6 +45,7 @@ class SupMuestraController
         $this->idsup=$_GET["idsup"];
         $numpantalla=$_GET["pan"];
         $this->numuestra=$_GET["nummues"];
+        if(isset($_GET["admin"]))
         $admin=$_GET["admin"];
         $this->admin=$admin;
         $this->numpan=$numpantalla;
@@ -55,7 +56,7 @@ class SupMuestraController
        
         
       
-    
+      
         $datosCont= array("idinf"=>$this->idinf,
             "idmes"=>$this->mesas,
             "idrec"=>$this->rec_id,
@@ -68,9 +69,9 @@ class SupMuestraController
         if($resp!=null)
         $this->informe=$resp[0];
         $this->idinf=$this->informe["inf_id"];
-        $this->liga="index.php?action=supinformecli02&idmes=".$this->mesas."&idrec=".$this->rec_id."&id=".$this->idinf.'&cli='.$this->idcli.'&pan='.$numpantalla.'&nummues='. $this->numuestra.'&eta='.$this->etapa;
-        $this->liga2="index.php?action=supinformecli03&idmes=".$this->mesas."&idrec=".$this->rec_id."&id=".$this->idinf.'&cli='.$this->idcli.'&pan='.$numpantalla.'&nummues='. $this->numuestra.'&eta='.$this->etapa;
-        
+        $this->liga="index.php?action=supinformecli02&idmes=".$this->mesas."&idrec=".$this->rec_id."&id=".$this->idinf.'&cli='.$this->idcli.'&pan='.$numpantalla.'&nummues='. $this->numuestra.'&eta='.$this->etapa."&idsup=".$this->idsup;
+        $this->liga2="index.php?action=supinformecli03&idmes=".$this->mesas."&idrec=".$this->rec_id."&id=".$this->idinf.'&cli='.$this->idcli.'&pan='.$numpantalla.'&nummues='. $this->numuestra.'&eta='.$this->etapa."&idsup=".$this->idsup;
+       // die($this->liga);
        // $logemail= $_SESSION['Usuario'];
         // busca el email y lee el numero de sugetsupervisorpervisor
       //  $resp1 =UsuarioModel::getsupervisor($logemail,"cnfg_usuarios");
@@ -152,7 +153,7 @@ class SupMuestraController
     public function buscarMuestras(){
         if(!isset($_SESSION["supmu_muestrascli"]))//reviso si ya tengo la consulta si no no la hago
         {   $this->muestras=DatosInformeDetalle::getMuestrasxcliente($this->idinf,  $this->mesas,    $this->rec_id,$this->idcli, "informe_detalle");
-          //var_dump($this->muestras);
+       //   var_dump($this->muestras);
             //guardo en session las muestras
         $_SESSION["supmu_muestrascli"]=$this->muestras;
           
@@ -329,6 +330,7 @@ class SupMuestraController
              //echo "***".$aprob;
                 //ya tenía respuesta
               //var_dump($this->valSeccion);
+              //die();
               if($aprob==0){
                  
               }else if($aprob==1){
@@ -355,7 +357,7 @@ class SupMuestraController
                     DatosValSeccion::actualizaValidacionsecmues($datosController,"sup_validasecciones");
                   //  die();
             }else{
-              
+              //  die($this->idval);
                 if($this->idval==0)
                 {
                 
@@ -405,7 +407,7 @@ class SupMuestraController
                     "nummuestra"=>$iddet
                 );
               //  var_dump($datosController2);
-             //   die();
+               // die();
                 DatosValSeccion::ingresaregvalsecmues($datosController2, "sup_validasecciones");
                 $datosController= array("idval"=>$this->idval,
                     "idsec"=>$sec,
@@ -472,7 +474,7 @@ class SupMuestraController
          //quito una comprada
         if($this->muestra["ind_estatus"]==3)//ya había sido aceptada
         {
-           // echo "resto";
+            echo "resto";
                 DatosListaCompraDet::restaAceptadosLista($this->muestra["ind_comprasid"],$this->muestra["ind_compraddetid"],1,"pr_listacompradetalle");
        // die();
         }
@@ -494,11 +496,16 @@ class SupMuestraController
          "vam_prodcompra"=>$this->muestra["ind_compraddetid"],
          "vam_estatus"=>$estatus
          );*/
+               // var_dump($this->muestra);
+              //  die();
         //   echo "****".$this->muestra["ind_id"];
         //     DatosValMuestra::InsertaValidacion($datosControllermu,"sup_validamuestras");
                // die($this->muestra["ind_id"]);
         DatosInformeDetalle::actualizarEstatus($this->muestra["ind_id"], $this->rec_id, $this->mesas, $estatus, "informe_detalle");
-       
+       //resto de comprados
+        if($this->muestra["ind_estatus"]!=2)//no había sido cancelada
+        
+        DatosInformeDetalle::restaCompradosLista($this->muestra["ind_comprasid"],$this->muestra["ind_compraddetid"],1,"pr_listacompradetalle");
        
         if($this->numpan==6)
             echo "
@@ -530,7 +537,7 @@ class SupMuestraController
         }
         
         try{
-          
+           
                 //revisa si existe validacion en imagenes
                  if ($this->correccionFoto!=null) {
                     // actualiza g
@@ -595,7 +602,7 @@ class SupMuestraController
                         "observ"=>$observ,
                         "cli"=>$cli
                     );
-                //    var_dump($datosController);
+                  //  var_dump($datosController);
                     DatosValidacion::ingresaValidacionimg($datosController, "sup_validafotos");
                     $datoscorr=array("idval"=>$this->idval,
                         "idfoto"=>$numimg
@@ -675,7 +682,7 @@ class SupMuestraController
        // echo $idcompra;
         $respuesta =DatosInformeDetalle::getListaComDet($idcompra,"pr_listacompradetalle");
         $i=0;
-     
+       // var_dump($respuesta);
         if($respuesta!=null){
             $listanueva=array();
             //busco codigos no permitidos
@@ -719,12 +726,13 @@ class SupMuestraController
                 );
                 $nuevaitem["codigosnop"]= $this->getCodigosNoPerm($datosCont);
                 $listanueva[]=$nuevaitem;
+              
                 
             }
-            $detalles=$this->buscarTotMuestras($idcompra,$listanueva);
+           // $detalles=$this->buscarTotMuestras($idcompra,$listanueva);
            
         //   var_dump($detalles);
-           $detalles = $this->buscarBU($idcompra,$detalles);
+            $detalles = $this->buscarBU($idcompra,$listanueva);
            
            
        // calcularTotales(detalles);

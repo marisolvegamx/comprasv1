@@ -391,7 +391,7 @@ $app->post('/infetapa/create', function (Request $request, Response $response) {
             'data' => 'Informes guardados correctamente.'
         );
         $this->get('logger')
-        ->addInfo('InforemesPend: Respuesta Informes guardados correctamente');
+        ->addInfo('InformesEtapa: Respuesta Informes guardados correctamente');
         return $response->withJson($datos, 200);
     } catch (Exception $e) {
         $datos = array(

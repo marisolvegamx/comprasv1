@@ -18,14 +18,13 @@ class DatosInforme{
         
         
         $sSQL= "SELECT inf_visitasIdlocal visitasId, inf_id id,
- inf_consecutivo consecutivo, inf_segunda_muestra segundaMuestra, 
-inf_tercera_muestra terceraMuestra,   inf_comentarios comentarios, 
+ inf_consecutivo consecutivo, 
+  inf_comentarios comentarios, 
 inf_estatus estatus,2 estatusSync,
- inf_primera_muestra primeraMuestra, inf_plantasid plantasId, 
+  inf_plantasid plantasId, 
  inf_ticket_compra ticket_compra, inf_condiciones_traslado condiciones_traslado, 
 inf_causa_nocompra causa_nocompra, cn.n5_nombre as plantaNombre  ,
-cn2.n1_nombre clienteNombre,  n5_idn1 as clientesId,
-inf_primera_muestra sinproducto
+cn2.n1_nombre clienteNombre,  n5_idn1 as clientesId
 FROM $tabla
 inner join ca_nivel5 cn on cn.n5_id =inf_plantasid
 inner join ca_nivel1 cn2 on cn2.n1_id =cn.n5_idn1 
@@ -47,13 +46,12 @@ where inf_indice=:indice and inf_usuario=:cverecolector and inf_visitasIdlocal=:
         
         
         $sSQL= "SELECT inf_visitasIdlocal visitasId, inf_id id,
- inf_consecutivo consecutivo, inf_segunda_muestra segundaMuestra,
-inf_tercera_muestra terceraMuestra,   inf_comentarios comentarios,
+ inf_consecutivo consecutivo,   inf_comentarios comentarios,
 inf_estatus estatus,2 estatusSync
- inf_primera_muestra primeraMuestra, inf_plantasid plantasId,
+ inf_plantasid plantasId,
  inf_ticket_compra ticket_compra, inf_condiciones_traslado condiciones_traslado,
 inf_causa_nocompra causa_nocompra, cn.n4_nombre as plantaNombre  ,cn2.n1_nombre clienteNombre
-1 estatus, 2 estatusSync,inf_primera_muestra sinproducto,
+1 estatus, 2 estatusSync
 FROM informes
 inner join ca_nivel4 cn on cn.n4_id =inf_plantasid
 inner join ca_nivel1 cn2 on cn2.n1_id =cn.n4_idn1
@@ -76,13 +74,13 @@ where inf_indice=:indice and inf_usuario=:cverecolector ";
     public  function insertar($datosModel,$cveusuario,$indice,$tabla,$pdo){
         try{      
             $sSQL= "INSERT INTO $tabla
-( inf_id,inf_consecutivo, inf_visitasIdlocal, inf_segunda_muestra, inf_tercera_muestra,
+( inf_id,inf_consecutivo, inf_visitasIdlocal, 
 inf_indice, inf_usuario,
- inf_comentarios, inf_estatus, inf_primera_muestra, inf_plantasid,
+ inf_comentarios, inf_estatus,  inf_plantasid,
  inf_ticket_compra, inf_condiciones_traslado,inf_causa_nocompra)
-VALUES(:inf_id,:inf_consecutivo, :inf_visitasIdlocal, :inf_segunda_muestra, :inf_tercera_muestra, 
+VALUES(:inf_id,:inf_consecutivo, :inf_visitasIdlocal,  
 :inf_indice,:inf_recolector, 
-:inf_comentarios, :inf_estatus,  :inf_primera_muestra, :inf_plantasid,
+:inf_comentarios, :inf_estatus,   :inf_plantasid,
 :inf_ticket_compra, :inf_condiciones_traslado, :inf_causa_nocompra);
 ";
             
@@ -90,8 +88,8 @@ VALUES(:inf_id,:inf_consecutivo, :inf_visitasIdlocal, :inf_segunda_muestra, :inf
             $stmt->bindParam(":inf_id", $datosModel[ContratoInformes::ID],PDO::PARAM_INT);
             $stmt->bindParam(":inf_consecutivo", $datosModel[ContratoInformes::CONSECUTIVO],PDO::PARAM_INT);
             $stmt->bindParam(":inf_visitasIdlocal", $datosModel[ContratoInformes::VISITASID], PDO::PARAM_INT);
-            $stmt->bindParam(":inf_segunda_muestra", $datosModel[ContratoInformes::SEGUNDAMUESTRA], PDO::PARAM_INT);
-            $stmt->bindParam(":inf_tercera_muestra", $datosModel[ContratoInformes::TERCERAMUESTRA], PDO::PARAM_INT);
+          //  $stmt->bindParam(":inf_segunda_muestra", $datosModel[ContratoInformes::SEGUNDAMUESTRA], PDO::PARAM_INT);
+          //  $stmt->bindParam(":inf_tercera_muestra", $datosModel[ContratoInformes::TERCERAMUESTRA], PDO::PARAM_INT);
            
             $stmt->bindParam(":inf_indice", $indice, PDO::PARAM_STR);
             $stmt->bindParam(":inf_recolector", $cveusuario, PDO::PARAM_STR);
@@ -100,7 +98,7 @@ VALUES(:inf_id,:inf_consecutivo, :inf_visitasIdlocal, :inf_segunda_muestra, :inf
             $stmt->bindParam(":inf_estatus", $datosModel[ContratoInformes::ESTATUS], PDO::PARAM_INT);
           //  $stmt->bindParam(":inf_created_at", $datosModel[ContratoInformes::CREA], PDO::PARAM_STR);
             //$stmt->bindParam(":inf_updated_at", $datosModel[ContratoInformes::"inf_updated_at"], PDO::PARAM_STR);
-            $stmt->bindParam(":inf_primera_muestra", $datosModel[ContratoInformes::PRIMERAMUESTRA],PDO::PARAM_INT);
+          //  $stmt->bindParam(":inf_primera_muestra", $datosModel[ContratoInformes::PRIMERAMUESTRA],PDO::PARAM_INT);
             $stmt->bindParam(":inf_plantasid", $datosModel[ContratoInformes::PLANTASID], PDO::PARAM_INT);
           
             $stmt->bindParam(":inf_ticket_compra", $datosModel[ContratoInformes::TICKETCOMPRA], PDO::PARAM_INT);
@@ -123,10 +121,9 @@ VALUES(:inf_id,:inf_consecutivo, :inf_visitasIdlocal, :inf_segunda_muestra, :inf
     public function updateInforme($datosModel,$cveusuario,$indice,$tabla,$pdo){
         $sSQL= "UPDATE $tabla
 SET inf_visitasIdlocal=:inf_visitasIdlocal, inf_consecutivo=:inf_consecutivo, 
-inf_segunda_muestra=:inf_segunda_muestra,
-inf_tercera_muestra=:inf_tercera_muestra, 
+
 inf_comentarios=:inf_comentarios, 
-inf_estatus=:inf_estatus, inf_primera_muestra=:inf_primera_muestra,
+inf_estatus=:inf_estatus,
 inf_plantasid=:inf_plantasid,  inf_ticket_compra=:inf_ticket_compra,
 inf_condiciones_traslado=:inf_condiciones_traslado, inf_causa_nocompra=:inf_causa_nocompra
 WHERE inf_id=:inf_id and inf_indice=:inf_indice and inf_recolector=:inf_recolector ;
@@ -136,8 +133,8 @@ WHERE inf_id=:inf_id and inf_indice=:inf_indice and inf_recolector=:inf_recolect
         $stmt->bindParam(":inf_id", $datosModel[ContratoInformes::ID],PDO::PARAM_INT);
         $stmt->bindParam(":inf_consecutivo", $datosModel[ContratoInformes::CONSECUTIVO],PDO::PARAM_INT);
         $stmt->bindParam(":inf_visitasIdlocal", $datosModel[ContratoInformes::VISITASID], PDO::PARAM_INT);
-        $stmt->bindParam(":inf_segunda_muestra", $datosModel[ContratoInformes::SEGUNDAMUESTRA], PDO::PARAM_INT);
-        $stmt->bindParam(":inf_tercera_muestra", $datosModel[ContratoInformes::TERCERAMUESTRA], PDO::PARAM_INT);
+      //  $stmt->bindParam(":inf_segunda_muestra", $datosModel[ContratoInformes::SEGUNDAMUESTRA], PDO::PARAM_INT);
+       // $stmt->bindParam(":inf_tercera_muestra", $datosModel[ContratoInformes::TERCERAMUESTRA], PDO::PARAM_INT);
         
         $stmt->bindParam(":inf_indice", $indice, PDO::PARAM_STR);
         $stmt->bindParam(":inf_recolector", $cveusuario, PDO::PARAM_STR);
@@ -146,7 +143,7 @@ WHERE inf_id=:inf_id and inf_indice=:inf_indice and inf_recolector=:inf_recolect
         $stmt->bindParam(":inf_estatus", $datosModel[ContratoInformes::ESTATUS], PDO::PARAM_INT);
         //  $stmt->bindParam(":inf_created_at", $datosModel[ContratoInformes::CREA], PDO::PARAM_STR);
         //$stmt->bindParam(":inf_updated_at", $datosModel[ContratoInformes::"inf_updated_at"], PDO::PARAM_STR);
-        $stmt->bindParam(":inf_primera_muestra", $datosModel[ContratoInformes::PRIMERAMUESTRA],PDO::PARAM_INT);
+       // $stmt->bindParam(":inf_primera_muestra", $datosModel[ContratoInformes::PRIMERAMUESTRA],PDO::PARAM_INT);
         $stmt->bindParam(":inf_plantasid", $datosModel[ContratoInformes::PLANTASID], PDO::PARAM_INT);
         
         $stmt->bindParam(":inf_ticket_compra", $datosModel[ContratoInformes::TICKETCOMPRA], PDO::PARAM_INT);
@@ -369,6 +366,7 @@ and ind_tamanio_id =:tamanio
 and ind_empaque =:empaque and ind_tipoanalisis=:tipoanalisis and inf_plantasid=:planta 
 and str_to_date(concat('01.',vi_indice ),'%d.%m.%Y') <:fechafin
  and str_to_date(concat('01.',vi_indice ),'%d.%m.%Y') >=:fechaini
+and (ind_estatus <> 2 and ind_estatus<>4)
 /*and v.vi_createdat<:fechafin and v.vi_createdat >=:fechaini*/ group by ind_caducidad
 order by ind_caducidad desc";
         $stmt = $econexion-> prepare($sSQL);
@@ -716,13 +714,12 @@ where ca_catalogosdetalle.cad_idcatalogo=:id");
         
         
         $sSQL= "SELECT inf_visitasIdlocal visitasId, inf_id id,
- inf_consecutivo consecutivo, inf_segunda_muestra segundaMuestra,
-inf_tercera_muestra terceraMuestra,   inf_comentarios comentarios,
+ inf_consecutivo consecutivo, 
+  inf_comentarios comentarios,
 inf_estatus estatus,
- inf_primera_muestra primeraMuestra, inf_plantasid plantasId,
+inf_plantasid plantasId,
  inf_ticket_compra ticket_compra, inf_condiciones_traslado condiciones_traslado,
-inf_causa_nocompra causa_nocompra, 
-inf_primera_muestra sinproducto
+inf_causa_nocompra causa_nocompra
 FROM $tabla
 where inf_indice=:indice and inf_usuario=:cverecolector and inf_id=:id ";
         
@@ -805,7 +802,7 @@ where inf_id=:idinf and n5_idn1=:cli and
         $stmt->bindParam(":idrec", $datosModel["idrec"], PDO::PARAM_INT);
         $stmt->bindParam(":cli", $datosModel["cli"], PDO::PARAM_INT);
         $stmt-> execute();
-        //$stmt->debugDumpParams();
+       // $stmt->debugDumpParams();
         return $stmt->fetchall();
         
     }

@@ -11,9 +11,7 @@ class DatosSupInformes extends Conexion{
 //$sql="SELECT  id_sup, inf_indice, n5_idn4 as id_ciudad, sum(val_estatus) as val_estatus FROM ( SELECT inf_id, inf_indice, inf_usuario, inf_plantasid, inf_estatus, n5_nombre, n5_supervisor as id_sup, n5_idn4, val_estatus FROM `informes` INNER JOIN ca_nivel5 on inf_plantasid=n5_id  LEFT JOIN sup_validacion ON inf_indice=val_indice AND inf_usuario=val_rec_id AND inf_id=val_inf_id) as A WHERE inf_indice= :indiceinf ".$condi." GROUP BY id_sup, inf_indice, n5_idn4";
 
 
-$sql="SELECT inf_indice, n5_supervisor as id_sup, n4_nombre as id_ciudad, sum(val_estatus) as val_estatus FROM `informes` INNER JOIN ca_nivel5 on inf_plantasid=n5_id inner join ca_nivel4 on n5_idn4=n4_id LEFT JOIN sup_validacion ON inf_indice=val_indice AND inf_usuario=val_rec_id AND inf_id=val_inf_id where inf_indice =:indiceinf ".$condi." GROUP BY inf_indice, n5_supervisor, n4_nombre";
-
-
+$sql="SELECT inf_indice, n5_supervisor as id_sup, n4_id as numciu, n4_nombre as id_ciudad, sum(val_estatus) as val_estatus FROM `informes` INNER JOIN ca_nivel5 on inf_plantasid=n5_id inner join ca_nivel4 on n5_idn4=n4_id LEFT JOIN sup_validacion ON inf_indice=val_indice AND inf_usuario=val_rec_id AND inf_id=val_inf_id where inf_indice =:indiceinf ".$condi." GROUP BY inf_indice, n5_supervisor, n4_nombre";
 
 	$stmt = Conexion::conectar()-> prepare($sql);
 
@@ -38,7 +36,7 @@ $sql="SELECT inf_indice, n5_supervisor as id_sup, n4_nombre as id_ciudad, sum(va
 
     public function vistaSuptiendaModel($datosModel, $tabla){
 
-	$stmt = Conexion::conectar()-> prepare("SELECT * FROM `visitas` inner join informes on inf_visitasIdlocal=vi_idlocal and inf_indice=vi_indice and inf_usuario=vi_cverecolector INNER JOIN ca_unegocios on vi_tiendaid=une_id where inf_id=:idinf and inf_indice=:idmes and inf_usuario=:idrec;");
+	$stmt = Conexion::conectar()-> prepare("SELECT * FROM `visitas` inner join informes on inf_visitasidlocal=vi_idlocal and inf_indice=vi_indice and inf_usuario=vi_cverecolector INNER JOIN ca_unegocios on vi_tiendaid=une_id where inf_id=:idinf and inf_indice=:idmes and inf_usuario=:idrec;");
 
 	
 
@@ -53,16 +51,17 @@ $sql="SELECT inf_indice, n5_supervisor as id_sup, n4_nombre as id_ciudad, sum(va
   
     public function ActualizaSuptienda($datosModel, $tabla){
 
+//var_dump($datosModel["compdir"]);
 			
     // actualiza visita
-    $stmt = Conexion::conectar()-> prepare("UPDATE `visitas` SET `vi_tipotienda`=:tipotien, `vi_cadenacomercial`=:cadcom, `vi_unedesc`=:nomtien, `vi_geolocalizacion`=:cxy, `vi_complementodir`=:compdir, `vi_direccion`=:dirtien, `vi_zona`=:zona WHERE `vi_idlocal`=:id and `vi_indice`=:indice and `vi_cverecolector`=:idrec");
+    $stmt = Conexion::conectar()-> prepare("UPDATE `visitas` SET `vi_tipotienda`=:tipotien, `vi_cadenacomercial`=:cadcom, `vi_unedesc`=:nomtien, `vi_geolocalizacion`=:cxy, `vi_complementodir`=:compdir1, `vi_direccion`=:dirtien, `vi_zona`=:zona WHERE `vi_tiendaid`=:id and `vi_indice`=:indice and `vi_cverecolector`=:idrec");
 
-		$stmt->bindParam(":id", $datosModel["id"], PDO::PARAM_INT);
+		$stmt->bindParam(":id", $datosModel["idt"], PDO::PARAM_INT);
 		$stmt->bindParam(":indice", $datosModel["indice"], PDO::PARAM_STR);
 		$stmt->bindParam(":nomtien", $datosModel["nomtien"], PDO::PARAM_STR);
 		$stmt->bindParam(":cxy", $datosModel["cxy"], PDO::PARAM_STR);
 		$stmt->bindParam(":tipotien", $datosModel["tipotien"], PDO::PARAM_INT);
-		$stmt->bindParam(":compdir", $datosModel["compdir"], PDO::PARAM_STR);
+		$stmt->bindParam(":compdir1", $datosModel["compdir"], PDO::PARAM_STR);
 		$stmt->bindParam(":cadcom", $datosModel["cadcom"], PDO::PARAM_INT);
 		$stmt->bindParam(":zona", $datosModel["zona"], PDO::PARAM_INT);
 		$stmt->bindParam(":dirtien", $datosModel["dirtien"], PDO::PARAM_STR);
@@ -76,18 +75,22 @@ $sql="SELECT inf_indice, n5_supervisor as id_sup, n4_nombre as id_ciudad, sum(va
 		$stmt->bindParam(":indice", $datosModel["indice"], PDO::PARAM_STR);
 		$stmt->bindParam(":coment", $datosModel["coment"], PDO::PARAM_STR);
 		$stmt->bindParam(":idrec", $datosModel["idrec"], PDO::PARAM_INT);
-		$stmt-> execute();
+		$stmt-> execute();{}
 		
 
     }
 
     public function vistaSigtiendaModel($datosModel, $tabla){
 
-	$stmt = Conexion::conectar()-> prepare("SELECT informes.inf_id, informes.inf_plantasid, informes.inf_indice, informes.inf_usuario, informes.inf_consecutivo FROM informes inner join visitas on inf_id=vi_idlocal and inf_indice=vi_indice and inf_usuario=vi_cverecolector where informes.inf_id>:idinf and inf_indice=:idmes and inf_usuario=:idrec order by informes.inf_id;");
+	$stmt = Conexion::conectar()-> prepare("SELECT informes.inf_id, informes.inf_plantasid, informes.inf_indice, informes.inf_usuario, informes.inf_consecutivo FROM informes inner join visitas on inf_visitasidlocal=vi_idlocal and inf_indice=vi_indice and inf_usuario=vi_cverecolector left join ca_nivel5 on n5_id=inf_plantasid inner join ca_nivel4 on n5_idn4=n4_id where informes.inf_id>:idinf and inf_indice=:idmes and n5_supervisor =:idsup and n4_nombre=:idciu order by informes.inf_id;
+");
+
+
 
 		$stmt->bindParam(":idinf", $datosModel["idinf"], PDO::PARAM_INT);
 		$stmt->bindParam(":idmes", $datosModel["idmes"], PDO::PARAM_STR);
-		$stmt->bindParam(":idrec", $datosModel["idrec"], PDO::PARAM_INT);
+		$stmt->bindParam(":idsup", $datosModel["idsup"], PDO::PARAM_INT);
+		$stmt->bindParam(":idciu", $datosModel["idciu"], PDO::PARAM_INT);
 		$stmt-> execute();
 		return $stmt->fetchall();
 
@@ -95,11 +98,12 @@ $sql="SELECT inf_indice, n5_supervisor as id_sup, n4_nombre as id_ciudad, sum(va
 
     public function vistalasttiendaModel($datosModel, $tabla){
 
-	$stmt = Conexion::conectar()-> prepare("SELECT informes.inf_id, informes.inf_plantasid, informes.inf_indice, informes.inf_usuario, informes.inf_consecutivo FROM informes inner join visitas on inf_id=vi_idlocal and inf_indice=vi_indice and inf_usuario=vi_cverecolector where informes.inf_id>:idinf and inf_indice=:idmes and inf_usuario=:idrec order by informes.inf_id desc;");
+	$stmt = Conexion::conectar()-> prepare("SELECT informes.inf_id, informes.inf_plantasid, informes.inf_indice, informes.inf_usuario, informes.inf_consecutivo FROM informes inner join visitas on inf_visitasidlocal=vi_idlocal and inf_indice=vi_indice and inf_usuario=vi_cverecolector left join ca_nivel5 on n5_id=inf_plantasid inner join ca_nivel4 on n5_idn4=n4_id where informes.inf_id>:idinf and inf_indice=:idmes and n5_supervisor =:idsup and n4_nombre=:idciu order by informes.inf_id desc;");
 
+		$stmt->bindParam(":idsup", $datosModel["idsup"], PDO::PARAM_INT);
+		$stmt->bindParam(":idciu", $datosModel["idciu"], PDO::PARAM_INT);
 		$stmt->bindParam(":idinf", $datosModel["idinf"], PDO::PARAM_INT);
 		$stmt->bindParam(":idmes", $datosModel["idmes"], PDO::PARAM_STR);
-		$stmt->bindParam(":idrec", $datosModel["idrec"], PDO::PARAM_INT);
 		$stmt-> execute();
 		return $stmt->fetchall();
 
@@ -108,11 +112,12 @@ $sql="SELECT inf_indice, n5_supervisor as id_sup, n4_nombre as id_ciudad, sum(va
  public function vistaAnttiendaModel($datosModel, $tabla){
     
 
-	$stmt = Conexion::conectar()-> prepare("SELECT informes.inf_id, informes.inf_plantasid, informes.inf_indice, informes.inf_usuario, informes.inf_consecutivo FROM informes inner join visitas on inf_id=vi_idlocal and inf_indice=vi_indice and inf_usuario=vi_cverecolector where informes.inf_id<:idinf and inf_indice=:idmes and inf_usuario=:idrec order by informes.inf_id desc;");
-
+	$stmt = Conexion::conectar()-> prepare("SELECT informes.inf_id, informes.inf_plantasid, informes.inf_indice, informes.inf_usuario, informes.inf_consecutivo FROM informes inner join visitas on inf_visitasidlocal=vi_idlocal and inf_indice=vi_indice and inf_usuario=vi_cverecolector left join ca_nivel5 on n5_id=inf_plantasid inner join ca_nivel4 on n5_idn4=n4_id where informes.inf_id<:idinf and inf_indice=:idmes and n5_supervisor =:idsup and n4_nombre=:idciu order by informes.inf_id desc;");
+	
 	    $stmt->bindParam(":idinf", $datosModel["idinf"], PDO::PARAM_INT);
 		$stmt->bindParam(":idmes", $datosModel["idmes"], PDO::PARAM_STR);
-		$stmt->bindParam(":idrec", $datosModel["idrec"], PDO::PARAM_INT);
+		$stmt->bindParam(":idsup", $datosModel["idsup"], PDO::PARAM_INT);
+		$stmt->bindParam(":idciu", $datosModel["idciu"], PDO::PARAM_STR);
 		$stmt-> execute();
 		return $stmt->fetchall();
 
@@ -120,13 +125,13 @@ $sql="SELECT inf_indice, n5_supervisor as id_sup, n4_nombre as id_ciudad, sum(va
 
 public function vistaFirtstiendaModel($datosModel, $tabla){
 
-	$stmt = Conexion::conectar()-> prepare("SELECT informes.inf_id, informes.inf_plantasid, informes.inf_indice, informes.inf_usuario, informes.inf_consecutivo FROM informes inner join visitas on inf_id=vi_idlocal and inf_indice=vi_indice and inf_usuario=vi_cverecolector where informes.inf_id<:idinf and inf_indice=:idmes and inf_usuario=:idrec order by informes.inf_id;");
-
+	$stmt = Conexion::conectar()-> prepare("SELECT (inf_id) AS ID, N4_NOMBRE AS CIUDAD, vi_unedesc, vi_cverecolector FROM ( SELECT inf_id, vi_unedesc, n5_idn4, vi_cverecolector FROM `informes` inner join visitas on inf_indice=vi_indice and inf_visitasidlocal=vi_idlocal and inf_usuario= vi_cverecolector left join ca_nivel5 on n5_id=inf_plantasid where inf_indice =:idmes and n5_supervisor =:idsup and inf_id<:idinf ) AS A inner join ca_nivel4 on n5_idn4=n4_id where n4_nombre= :idciu order by inf_id;");
 
 
 	    $stmt->bindParam(":idinf", $datosModel["idinf"], PDO::PARAM_INT);
 		$stmt->bindParam(":idmes", $datosModel["idmes"], PDO::PARAM_STR);
-		$stmt->bindParam(":idrec", $datosModel["idrec"], PDO::PARAM_INT);
+		$stmt->bindParam(":idsup", $datosModel["idsup"], PDO::PARAM_INT);
+		$stmt->bindParam(":idciu", $datosModel["idciu"], PDO::PARAM_INT);
 		$stmt-> execute();
 		return $stmt->fetchall();
 
@@ -174,6 +179,19 @@ public function vistaFirtstiendaModel($datosModel, $tabla){
 
 
 	}
+
+   public function BuscaEncabezadoPlanta($datosModel, $tabla){
+
+	// actualiza tienda
+    $stmt = Conexion::conectar()-> prepare("SELECT n5_id, n1_id, n5_nombre, n1_nombre FROM `ca_nivel5` inner join ca_nivel4 on n5_idn4=n4_id inner join ca_nivel1 on n5_idn1= n1_id where n4_nombre=:ciudad and n5_idn1=:cliente;");
+
+       	$stmt->bindParam(":ciudad", $datosModel["idciu"], PDO::PARAM_STR);
+    	$stmt->bindParam(":cliente", $datosModel["idcli"], PDO::PARAM_INT);
+		$stmt-> execute();
+		return $stmt->fetchall();
+
+	}
+
 
 
 }

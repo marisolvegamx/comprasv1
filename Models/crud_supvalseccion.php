@@ -13,7 +13,7 @@ class DatosValSeccion extends Conexion{
 '.$datosModel["estatus"].',"'.$datosModel["nummuestra"].'", now());';
         
         
-        //	var_dump($sql);
+       // 	var_dump($sql);
         //	die();
         $stmt = Conexion::conectar()-> prepare($sql);
         
@@ -28,7 +28,7 @@ class DatosValSeccion extends Conexion{
         //$stmt->bindParam(":est", $datosModel["estatus"], PDO::PARAM_INT);
         //var_dump($stmt);
         $stmt-> execute();
-        
+      //  die();
         
     }
     

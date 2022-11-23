@@ -58,7 +58,7 @@ and sv.val_rec_id =inf_usuario and sv.val_etapa =2 and sv.val_inf_id =inf_id
 inner join sup_validasecciones sv2 on val_id=sv2.vas_id and vas_nummuestra=ind_id
 inner join pr_listacompradetalle pl on pl.lid_idlistacompra =ind_comprasid and lid_idprodcompra=ind_compraddetid
 and vas_idseccion in (7,10)
-where inf_indice=:indice and inf_usuario=:rec and (ind_estatus=:estatus or ind_estatus=4");
+where inf_indice=:indice and inf_usuario=:rec and (ind_estatus=:estatus or ind_estatus=4)");
 	    
 	    $stmt->bindParam(":rec",$recolector , PDO::PARAM_INT);
 	    $stmt->bindParam(":indice",  $indice, PDO::PARAM_STR);
@@ -79,8 +79,16 @@ val_estatus, val_etapa, i.inf_plantasid  ,
  cn.n5_nombre as plantaNombre  ,val_rec_id,
 cn2.n1_nombre clienteNombre,  n5_idn1 ,
 v.vi_unedesc nombreTienda,vai_descripcionfoto ,
-cc.cad_descripcionesp ,vai_numfoto ,
-val_etapa etapa,vai_estatus ,vai_fecha , vai_observaciones 
+cc.cad_descripcionesp ,vai_numfoto ,vai_numcorreccion,
+val_etapa etapa,vai_estatus ,vai_fecha , vai_observaciones ,date_format(vai_fecha, '%d-%m-%Y') as fecha,
+CASE
+    WHEN cad_descripcionesp='foto_atributoa' THEN 'FOTO POSICION 1'
+     WHEN cad_descripcionesp='foto_atributob' THEN 'FOTO POSICION 2'
+      WHEN cad_descripcionesp='foto_atributoc' THEN 'FOTO POSICION 3'
+    WHEN cad_descripcionesp = 'etiqueta_evaluacion' THEN 'ETIQUETA EVALUACION'
+     WHEN cad_descripcionesp = 'foto_codigo_produccion' THEN 'FOTO CODIGO DE PRODUCCION'
+    ELSE UPPER(cad_descripcionesp)
+END as descMostrar
 FROM sup_validacion
 INNER JOIN sup_validafotos ON val_id=vai_id
 inner join ca_catalogosdetalle cc on cc.cad_idopcion =vai_descripcionfoto and cc.cad_idcatalogo =20
@@ -103,7 +111,27 @@ inner join visitas v on v.vi_idlocal =i.inf_visitasIdlocal  and v.vi_cverecolect
 	    
 	}
 	
-
+	public function actualizaContValFotos($datosModel, $tabla){
+	    try {
+	        // busca el id de validacion
+	        $stmt = Conexion::conectar()-> prepare("UPDATE $tabla 
+SET `vai_estatus`=:estatus, vai_numcorreccion=vai_numcorreccion+1,
+vai_observaciones=:motivo WHERE `vai_id`=:idval and `vai_numfoto`=:numimg");
+	        
+	        $stmt->bindParam(":idval", $datosModel["idval"], PDO::PARAM_INT);
+	        $stmt->bindParam(":estatus", $datosModel["est"], PDO::PARAM_INT);
+	        $stmt->bindParam(":numimg", $datosModel["idimg"], PDO::PARAM_INT);
+	      //  $stmt->bindParam(":numcor", $datosModel["numcor"], PDO::PARAM_INT);
+	        $stmt->bindParam(":motivo", $datosModel["motivo"], PDO::PARAM_STR);
+	        $stmt-> execute();
+	      //  $stmt->debugDumpParams();
+	        return "success";
+	    } catch (Exception $ex) {
+	        
+	        return "error";
+	    }
+	}
+	
 	
 
 }	

@@ -52,18 +52,28 @@
                 </div>
                 <div class="col-md-3 tituloSupBotones" ><a href="<?php if($pan==7){
                     echo "index.php?action=supinformecli03&idmes=".$supMuesCon->mesas."&idrec=".$supMuesCon->rec_id."&id=".$id."&cli=".$supMuesCon->idcli."&idsup=".$supMuesCon->idsup."&eta=".$supMuesCon->etapa."&pan=".($pan-1)."&nummues=".$supMuesCon->numuestra;}
-                    if($pan==5){echo "index.php?action=supinformecli01&idmes=".$supMuesCon->mesas."&idrec=".$supMuesCon->rec_id."&id=".$id."&cli=".$supMuesCon->idcli."&eta=".$supMuesCon->etapa."&pan=".($pan-1)."&idsup=".$idsup."&nummues=".$supMuesCon->numuestra;}else{
-                        echo "index.php?action=supinformecli02&idmes=".$supMuesCon->mesas."&idrec=".$supMuesCon->rec_id."&idsup=".$supMuesCon->idsup."&id=".$id."&cli=".$supMuesCon->idcli."&eta=".$supMuesCon->etapa."&pan=".($pan-1)."&nummues=".$supMuesCon->numuestra;}?>"><img src="Views/dist/img/Retrocede-1.jpg"></a>
+                    if($pan==5){
+                        echo "index.php?action=supinformecli01&idmes=".$supMuesCon->mesas."&idrec=".$supMuesCon->rec_id."&id=".$id."&cli=".$supMuesCon->idcli."&eta=".$supMuesCon->etapa."&pan=".($pan-1)."&idsup=".$supMuesCon->idsup."&nummues=".$supMuesCon->numuestra;
+                    }else{
+                        echo "index.php?action=supinformecli02&idmes=".$supMuesCon->mesas."&idrec=".$supMuesCon->rec_id."&idsup=".$supMuesCon->idsup."&id=".$id."&cli=".$supMuesCon->idcli."&eta=".$supMuesCon->etapa."&pan=".($pan-1)."&nummues=".$supMuesCon->numuestra;
+                    }?>"><img src="Views/dist/img/Retrocede-1.jpg"></a>
                 </div>
-                <div class="col-md-3 tituloSupBotones" ><a href="<?php 
+                <div class="col-md-3 tituloSupBotones" ><a <?php if($pan==9){
+                   echo "class='disabled'";
+                }
+                    ?>href="<?php 
                 $classof="";
                 if($pan==9){
-                 $classof="-off";
+                   $classof="-off";
+                    if($supMuesCon->numuestra<sizeof($supMuesCon->muestras)){
+                        echo "index.php?action=supinformecli02&idmes=".$supMuesCon->mesas."&idrec=".$supMuesCon->rec_id."&id=".$id."&eta=".$supMuesCon->etapa."&idsup=".$supMuesCon->idsup."&cli=".$supMuesCon->idcli."&pan=5&nummues=".($supMuesCon->numuestra+1);
+                        $classof="";
+                    }
                 }else
                 if($pan==5){
                     echo "index.php?action=supinformecli03&idmes=".$supMuesCon->mesas."&idrec=".$supMuesCon->rec_id."&id=".$id."&cli=".$supMuesCon->idcli."&idsup=".$supMuesCon->idsup."&eta=".$supMuesCon->etapa."&pan=".($pan+1)."&nummues=".$supMuesCon->numuestra;}
-                    else{
-                        echo "index.php?action=supinformecli02&idmes=".$supMuesCon->mesas."&idsup=".$supMuesCon->idsup."&idrec=".$supMuesCon->rec_id."&id=".$id."&cli=".$supMuesCon->idcli."&eta=".$supMuesCon->etapa."&pan=".($pan+1)."&nummues=".$supMuesCon->numuestra;}
+                else{
+                    echo "index.php?action=supinformecli02&idmes=".$supMuesCon->mesas."&idsup=".$supMuesCon->idsup."&idrec=".$supMuesCon->rec_id."&id=".$id."&cli=".$supMuesCon->idcli."&eta=".$supMuesCon->etapa."&pan=".($pan+1)."&nummues=".$supMuesCon->numuestra;}
                         
                     
                     ?>"><img src="Views/dist/img/Avanza-1<?= $classof?>.jpg"></a>
@@ -101,7 +111,7 @@
                 
                 </a>
                 </div>
-                <div class="col-md-3 tituloSupBotones" ><a href="<?php if ($supMuesCon->numuestra>1) echo "index.php?action=supinformecli02&idmes=".$supMuesCon->mesas."&idrec=".$supMuesCon->rec_id."&id=".$id."&eta=".$supMuesCon->etapa."&cli=".$supMuesCon->idcli."&pan=".$pan."&nummues=".($supMuesCon->numuestra-1)?>"><img src="Views/dist/img/Retrocede-1.jpg"></a>
+                <div class="col-md-3 tituloSupBotones" ><a href="<?php if ($supMuesCon->numuestra>1) echo "index.php?action=supinformecli02&idmes=".$supMuesCon->mesas."&idrec=".$supMuesCon->rec_id."&id=".$id."&eta=".$supMuesCon->etapa."&idsup=".$supMuesCon->idsup."&cli=".$supMuesCon->idcli."&pan=".$pan."&nummues=".($supMuesCon->numuestra-1)?>"><img src="Views/dist/img/Retrocede-1.jpg"></a>
                 </div>
                 <div class="col-md-3 tituloSupBotones" >
                 <a href="<?php 
@@ -160,7 +170,7 @@
     </div>
     <!-- esto va en otro archivo -->
    <?php   if ($admin=="edI"){
-             echo '<form role="form" method="post" action="index.php?action=supinformecli02&admin=act&idmes='.$supMuesCon->mesas.'&idrec='.$supMuesCon->rec_id.'&id='.$id.'&cli='.$supMuesCon->idcli.'&nummues='.$supMuesCon->numuestra.'&pan='.$pan.'">';
+       echo '<form role="form" method="post" action="index.php?action=supinformecli02&admin=act&idmes='.$supMuesCon->mesas.'&idrec='.$supMuesCon->rec_id."&idsup=".$supMuesCon->idsup.'&id='.$id.'&cli='.$supMuesCon->idcli.'&nummues='.$supMuesCon->numuestra.'&pan='.$pan.'">';
           }?>
     <div class="row">
     <div class="col-md-1 labelAzul1">PRODUCTO:
@@ -172,7 +182,7 @@
       <div class="col-md-1 labelAzul1">PRESENTACIÓN:
       </div>
       <div class="col-md-2 labelAzulDato"><?php 
-              echo $supMuesCon->muestra["presentacion"];
+      echo $supMuesCon->muestra["presentacion"]." ".$supMuesCon->muestra["empaque"];
           ?>
       </div>
       <div class="col-md-1 labelAzul1">ANÁLISIS:
@@ -364,7 +374,7 @@
 
         } else {
              echo '
-            <a href="index.php?action=supinformecli02&admin=edI&idmes='.$supMuesCon->mesas.'&idrec='.$supMuesCon->rec_id.'&id='.$id.'&cli='.$supMuesCon->idcli.'&pan='.$pan.'&nummues='.$nummues.'" class="btn btn-informes btn-block ">EDITAR</a>';
+            <a href="index.php?action=supinformecli02&admin=edI&idmes='.$supMuesCon->mesas."&idsup=".$supMuesCon->idsup.'&idrec='.$supMuesCon->rec_id.'&id='.$id.'&cli='.$supMuesCon->idcli.'&pan='.$pan.'&nummues='.$nummues.'" class="btn btn-informes btn-block ">EDITAR</a>';
         } 
         ?>
      
@@ -447,12 +457,23 @@
       </div>
       <div class="col-md-3 areaBoton" >  <?php 
         $opcsel=$supMuesCon->getopcsel();
-        if ($opcsel==1){
-          $clase= "btn-informesActivado";
-          
-        } else {
-        $clase= "btn-informes";
-       
+        if($pan==5){ 
+            if ($opcsel==1){
+              $clase= "btn-informesActivado disabled";
+              
+            } else if ($opcsel==3){
+                $clase= "btn-informes disabled";
+            }else{
+            $clase= "btn-informes";
+           
+            }
+        }else {
+            if ($opcsel==1){
+                $clase= "btn-informesActivado disabled";
+                
+            } else{
+                $clase= "btn-informes";
+        }
         }
         $numsec=$supMuesCon->pantalla["pa_seccion"];
        // if($supMuesCon->idcli==5)
@@ -465,13 +486,30 @@
       </div>
       <div class="col-md-3 areaBoton">
         <?php 
-      if ($opcsel==3){
-          $clase= "btn-informesActivado";
+        if($pan==5){ 
+          if ($opcsel==3){
+              $clase= "btn-informesActivado disabled";
+              
+          }else if ($opcsel==1){
+              $clase= "btn-informes disabled";
+          }
+              else {
           
-      } else {
-        $clase= "btn-informes";
-       
-      }
+            $clase= "btn-informes";
+           
+          }
+        }
+        else{
+            if ($opcsel==3){
+                $clase= "btn-informesActivado disabled";
+                
+            }
+            else {
+                
+                $clase= "btn-informes";
+                
+            }
+        }
     
       echo '
         <a onclick="javascript:prepararMotivo();" href="" class="btn '.$clase .' btn-sm btn-block " data-toggle="modal" data-target="#modal-correccion">NO</a>';

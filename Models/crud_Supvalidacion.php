@@ -155,6 +155,7 @@ public function LeeIdvalidafoto($idval, $idimg, $tabla){
 
 public function actualizaValidacionimg($datosModel, $tabla){
  try {
+   //  var_dump($datosModel);
 	// busca el id de validacion
 	$stmt = Conexion::conectar()-> prepare("UPDATE $tabla SET `vai_estatus`=:estatus WHERE `vai_id`=:idval and `vai_numfoto`=:numimg");
 
@@ -163,6 +164,7 @@ public function actualizaValidacionimg($datosModel, $tabla){
 		$stmt->bindParam(":numimg", $datosModel["idimg"], PDO::PARAM_INT);
 	
 		$stmt-> execute();
+		//$stmt->debugDumpParams();
 		    return "success";
         } catch (Exception $ex) {
 
@@ -242,7 +244,13 @@ public function LeeEstatusFoto($datosModel, $tabla){
 public function LeeEstatusinforme($datosModel, $tabla){
 
 	// busca el id de validacion
-	$stmt = Conexion::conectar()-> prepare("SELECT val_estatus FROM `sup_validafotos` inner join `sup_validacion` on val_id=vai_id where val_indice=:indice and val_rec_id=:idrec and val_inf_id=idinf and vai_cliente=:idcli  and val_etapa =:ideta and vai_numfoto>2 group by val_estatus;
+	$stmt = Conexion::conectar()-> prepare("SELECT val_estatus FROM 
+`sup_validafotos`
+ inner join `sup_validacion` on val_id=vai_id
+ where val_indice=:indice and val_rec_id=:idrec and 
+val_inf_id=:idinf and vai_cliente=:idcli  
+and val_etapa =:ideta and vai_numfoto>2 
+group by val_estatus;
 ");
 
 		$stmt->bindParam(":indice", $datosModel["idmes"], PDO::PARAM_STR);
@@ -250,7 +258,7 @@ public function LeeEstatusinforme($datosModel, $tabla){
 		$stmt->bindParam(":idrec", $datosModel["idrec"], PDO::PARAM_INT);
 		$stmt->bindParam(":ideta", $datosModel["ideta"], PDO::PARAM_INT);
 		$stmt->bindParam(":idcli", $datosModel["idcli"], PDO::PARAM_INT);
-		$stmt-> execute();
+		$stmt->execute();
 
 	return $stmt->fetchall();
 

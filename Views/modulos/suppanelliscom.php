@@ -1,4 +1,7 @@
- <?php foreach($supMuesCon->listaCompra as $detalle){
+ <?php 
+ 
+ foreach($supMuesCon->listaCompra as $detalle){
+    // var_dump($detalle);
     // echo $supMuesCon->muestra["ind_comprasid"]."--",$supMuesCon->muestra["ind_compraddetid"];
     // echo "**".$detalle["lid_idlistacompra"]."--".$detalle["lid_idlistacompra"];
      if($supMuesCon->muestra["ind_comprasid"]==$detalle["lid_idlistacompra"]&&$supMuesCon->muestra["ind_compraddetid"]==$detalle["lid_idprodcompra"])
@@ -8,7 +11,7 @@
  <div class="listado" style="<?= $clasesel?>" >
                       <div class="row">
                         <div class="col-md-10 listadoTitulo"><?= $detalle["pro_producto"]?></div>
-                        <div class="col-md-2"><?= ($detalle["lid_saldoaceptado"]==""?0:$detalle["lid_saldoaceptado"])."/".$detalle["comprados"]."/".$detalle["lid_cantidad"]?></div>
+                        <div class="col-md-2"><?= ($detalle["lid_saldoaceptado"]==""?0:$detalle["lid_saldoaceptado"])."/".($detalle["comprados"]==""?0:$detalle["comprados"])."/".$detalle["lid_cantidad"]?></div>
                       </div>
                       <div class="row">
                         <div class="col-md-12 listadoTitulo"><?= $detalle["desctam"]." ".$detalle["descemp"]?></div>

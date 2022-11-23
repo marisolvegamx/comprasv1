@@ -97,7 +97,8 @@ class EnlacesPaginas{
 			#AQUI INICIA SECCION INDICADORES   
 			$enlacesModel == "suplistaetapas" ||
             $enlacesModel == "suppreparacion" ||
-            //$enlacesModel == "indestadisticares"  ||
+            $enlacesModel == "suplistacorrecciones"  ||
+		    $enlacesModel == "supnvacorreccion"  ||
             //$enlacesModel == "indindicadoresgrid"  ||
             //$enlacesModel == "indcumplimientoestabl" ||
             //$enlacesModel == "indindicadores" ||

@@ -202,6 +202,39 @@ WHERE val_rec_id=:rec
         
     }
     
+    public function getUltCorxValFoto($indice,$recolector,$valid,$numfoto,$tabla){
+        
+        // consulta
+        
+        $stmt = Conexion::conectar()->prepare("select sup_correccion.cor_id,
+	sup_correccion.cor_indice,
+	sup_correccion.cor_cverecolector,
+	sup_correccion.cor_valid,
+	sup_correccion.cor_rutafoto1,
+	sup_correccion.cor_rutafoto2,
+	sup_correccion.cor_rutafoto3,
+	sup_correccion.cor_estatus,
+	sup_correccion.cor_createdat,
+	sup_correccion.cor_numfoto FROM $tabla
+INNER JOIN sup_validafotos ON val_id=vai_id
+INNER JOIN sup_correccion
+ON sup_correccion.cor_valid = sup_validafotos.vai_id AND
+		sup_correccion.cor_numfoto = sup_validafotos.vai_numfoto
+WHERE val_rec_id=:rec
+ AND val_indice=:indice
+ and cor_valid=:corid and cor_numfoto=:numfoto order by cor_id desc limit 1");
+        
+        $stmt->bindParam(":rec",$recolector , PDO::PARAM_INT);
+        $stmt->bindParam(":indice",  $indice, PDO::PARAM_STR);
+        //   $stmt->bindParam(":etapa", $etapa, PDO::PARAM_INT);
+        $stmt->bindParam(":corid", $valid, PDO::PARAM_INT);
+        $stmt->bindParam(":numfoto", $numfoto, PDO::PARAM_INT);
+        $stmt-> execute();
+        //	$stmt->debugDumpParams();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+        
+    }
+    
    
     
     

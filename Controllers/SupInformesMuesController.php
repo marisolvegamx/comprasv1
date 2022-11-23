@@ -77,7 +77,7 @@ class SupInfmuestraController{
 				$this->idplanta= $item["inf_plantasid"];
 				$this->idtienda= $item["vi_tiendaid"];
          $this->nomtienc=$item["VI_UNEDESC"];
-         
+                $idvisita=$item["vi_idlocal"];
 				$this->coment=$item["inf_comentarios"];
 				$this->nomrec=$item["rec_nombre"];
 				$this->fecharep=$item["fecharep"];
@@ -184,14 +184,14 @@ class SupInfmuestraController{
             $this->nomticket=$result["imd_ruta"];
            // var_dump($this->nomticket);
             //busca el id de prod exhibido
-      $datosCon3= array("idinf"=>$this->idinf,
+            $datosCon3= array("idinf"=>$idvisita,
                          "idmes"=>$this->mesas,
                          "idrec"=>$this->rec_id,
                          "idcli"=>$this->idcli,
   
       );
 
-      //var_dump($datosCon3);
+    //  var_dump($datosCon3);
 
    
    $result3=DatosInfoMues::fotoproexhib($datosCon3,"producto_exhibido");
@@ -203,10 +203,11 @@ class SupInfmuestraController{
 
     
                  
-
+     //   echo "prod*****";
+     //   var_dump($this->pexhib);
       $result2=DatosImagenDetalle::getnomImagen($this->mesas,$this->rec_id,$this->pexhib,"imagen_detalle");
        // var_dump($result2);
-        
+     // var_dump($result2);
          //foreach($result2 as $row => $item0){
            $this->nombrepex = $result2["imd_ruta"];   
          // $this->nombrepex);
@@ -227,9 +228,9 @@ class SupInfmuestraController{
          //}
 
          //}
-              //var_dump($this->idprodexc);
+       
         $result7=DatosImagenDetalle::getnomImagen($this->mesas,$this->rec_id,$this->idprodexc,"imagen_detalle");
-
+        
         //foreach($result7 as $row => $item7){
             $this->nomprodexc=$result7["imd_ruta"];      
          //}     

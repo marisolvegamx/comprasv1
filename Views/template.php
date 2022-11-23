@@ -17,9 +17,6 @@
   <!-- overlayScrollbars -->
   <link rel="stylesheet" href="Views/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
  <!--   <script src="Views/dist/js/jquery-3.0.0.min.js"></script> -->
-<!-- Efecto lupa -->
-    <link rel="stylesheet" href="Views/plugins/zoomy/normalize.min.css">
-    <link rel="stylesheet" href="Views/plugins/zoomy/zoomy.css">
 <!-- jQuery -->
 <script src="Views/plugins/jquery/jquery.min.js"></script>
  <!-- jQuery UI 1.11.4 -->
@@ -34,7 +31,65 @@
  <link rel="stylesheet" href="Views/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
   <link rel="stylesheet" href="Views/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
   <link rel="stylesheet" href="Views/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+<!-- script lupa -->
+ <script>
 
+function magnify(imgID, zoom) {
+  var img, glass, w, h, bw;
+  img = document.getElementById(imgID);
+  /*create magnifier glass:*/
+  glass = document.createElement("DIV");
+  glass.setAttribute("class", "img-magnifier-glass");
+  /*insert magnifier glass:*/
+  img.parentElement.insertBefore(glass, img);
+  /*set background properties for the magnifier glass:*/
+  glass.style.backgroundImage = "url('" + img.src + "')";
+  glass.style.backgroundRepeat = "no-repeat";
+  glass.style.backgroundSize = (img.width * zoom) + "px " + (img.height * zoom) + "px";
+  bw = 3;
+  w = glass.offsetWidth / 2;
+  h = glass.offsetHeight / 2;
+  /*execute a function when someone moves the magnifier glass over the image:*/
+  glass.addEventListener("mousemove", moveMagnifier);
+  img.addEventListener("mousemove", moveMagnifier);
+  /*and also for touch screens:*/
+  glass.addEventListener("touchmove", moveMagnifier);
+  img.addEventListener("touchmove", moveMagnifier);
+  function moveMagnifier(e) {
+    var pos, x, y;
+    /*prevent any other actions that may occur when moving over the image*/
+    e.preventDefault();
+    /*get the cursor's x and y positions:*/
+    pos = getCursorPos(e);
+    x = pos.x;
+    y = pos.y;
+    /*prevent the magnifier glass from being positioned outside the image:*/
+    if (x > img.width - (w / zoom)) {x = img.width - (w / zoom);}
+    if (x < w / zoom) {x = w / zoom;}
+    if (y > img.height - (h / zoom)) {y = img.height - (h / zoom);}
+    if (y < h / zoom) {y = h / zoom;}
+    /*set the position of the magnifier glass:*/
+    glass.style.left = (x - w) + "px";
+    glass.style.top = (y - h) + "px";
+    /*display what the magnifier glass "sees":*/
+    glass.style.backgroundPosition = "-" + ((x * zoom) - w + bw) + "px -" + ((y * zoom) - h + bw) + "px";
+  }
+  function getCursorPos(e) {
+    var a, x = 0, y = 0;
+    e = e || window.event;
+    /*get the x and y positions of the image:*/
+    a = img.getBoundingClientRect();
+    /*calculate the cursor's x and y coordinates, relative to the image:*/
+    x = e.pageX - a.left;
+    y = e.pageY - a.top;
+    /*consider any page scrolling:*/
+    x = x - window.pageXOffset;
+    y = y - window.pageYOffset;
+    return {x : x, y : y};
+  }
+}
+</script>
+<!-- termina script lupa -->
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
@@ -263,18 +318,29 @@
                 </a>
                 <ul class="nav nav-treeview">
                   <li class="nav-item">
-                    <a href="index.php?action=imgchica" class="nav-link">
+                    <a href="index.php?action=pantalla-6" class="nav-link">
                       <i class="far fa-circle nav-icon"></i>
-                      <p>Ejemplo</p>
+                      <p>Pantalla 6</p>
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a href="index.php?action=imggrande" class="nav-link">
+                    <a href="index.php?action=pantalla-7" class="nav-link">
                       <i class="far fa-circle nav-icon"></i>
-                      <p>Ejemplo 2</p>
+                      <p>Pantalla 7</p>
                     </a>
                   </li>
-                  
+                  <li class="nav-item">
+                    <a href="index.php?action=pantalla-8" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Pantalla 8</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="index.php?action=pantalla-9" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Pantalla 9</p>
+                    </a>
+                  </li>
                 </ul>
               </li>
            

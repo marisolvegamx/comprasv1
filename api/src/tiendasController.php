@@ -198,24 +198,25 @@ and vi_cverecolector=i.inf_usuario  and vi_indice=i.inf_indice ";
             
         }
         // agregando filtros
-        if(isset($tipo)&&$tipo!=0) {
-            $sql.=" and vi_tipotienda=:tipo";
-            
-        }
+     
         
-        // agregando filtros
-        if(isset($cadenacomercial)&&$cadenacomercial!=0) {
-            $sql.=" and vi_cadenacomercial=:cadena";
-            
-        }
       //   $sql.=" left join ca_unegocioshabilitada cuh on cuh.une_id=cu.une_id and  str_to_date(concat('01.',une_idindice ),'%d.%m.%Y')=:fechafin";
      
        // $sql.=" left join ca_nivel5 on n5_id=inf_plantasid
 //where  une_cla_ciudad=:ciudad ";
 //and une_cla_pais=:pais";
         // agregando filtros
-       $sql.=" where une_estatusgen=1 
-  group by cu.une_id";
+       $sql.=" where une_estatusgen=1 ";
+       if(isset($tipo)&&$tipo!=0) {
+           $sql.=" and une_tipotienda=:tipo";
+           
+       }
+       
+       // agregando filtros
+       if(isset($cadenacomercial)&&$cadenacomercial!=0) {
+           $sql.=" and une_cadenacomercial=:cadena";
+       }
+           $sql.=" group by cu.une_id";
    //              echo $sql;
         $stmt = Conexion::conectar()-> prepare($sql." order by une_descripcion" );
      //   $stmt-> bindParam(":ciudad", $ciudad, PDO::PARAM_STR);
