@@ -1,5 +1,6 @@
 <?php
-//error_reporting(0);
+//error_reporting(E_ERROR|E_NOTICE|E_WARNING);
+//ini_set("display_errors", 1); 
 
 include "Models/crud_pantalla.php";
 include 'Models/crud_informesDetalle.php';
@@ -67,7 +68,7 @@ class SupMuestraController
         $resp =DatosInforme::vistaSupInformeDetalleModel($datosCont, "informes");
      //  var_dump($resp);
         if($resp!=null)
-        $this->informe=$resp[0];
+            $this->informe=$resp[0];
         $this->idinf=$this->informe["inf_id"];
         $this->liga="index.php?action=supinformecli02&idmes=".$this->mesas."&idrec=".$this->rec_id."&id=".$this->idinf.'&cli='.$this->idcli.'&pan='.$numpantalla.'&nummues='. $this->numuestra.'&eta='.$this->etapa."&idsup=".$this->idsup;
         $this->liga2="index.php?action=supinformecli03&idmes=".$this->mesas."&idrec=".$this->rec_id."&id=".$this->idinf.'&cli='.$this->idcli.'&pan='.$numpantalla.'&nummues='. $this->numuestra.'&eta='.$this->etapa."&idsup=".$this->idsup;
@@ -90,6 +91,7 @@ class SupMuestraController
             "cli"=>$this->idcli
         );
          $resp2=DatosSupvisita::vistaSupInfvisModel($datosCont, "visitas");
+      //  var_dump($resp);
          $this->buscarMuestras();
         //   var_dump($this->muestras);
          $this->destruirSesion();
@@ -539,7 +541,7 @@ class SupMuestraController
         try{
            
                 //revisa si existe validacion en imagenes
-                 if ($this->correccionFoto!=null) {
+                if ($this->correccionFoto!=null) {
                     // actualiza g
                    // echo "encontre la foto";
                     $datosController= array("idval"=>$this->idval,
@@ -594,15 +596,26 @@ class SupMuestraController
                    // var_dump($resfoto);
                  //  if($resfoto!=null)
                       //  $numfoto=$resfoto["cad_idopcion"];
-                        $numfoto= $this->pantalla["pa_foto1"];
+                    $numfoto= $this->pantalla["pa_foto1"];
+                   
+                  //  var_dump($datosController);
+                  //busco el consecutivo x informe
+                    $resp=DatosValidacion::getUltimoConsInf($this->idval,"sup_validafotos");
+                  // var_dump($resp);
+                  // die();
+                    $consec=1;
+                    if($resp!=null){
+                        $consec=$resp[0]+1;
+                        
+                    }
                     $datosController= array("idval"=>$this->idval,
                         "idimg"=>$numimg,
                         "desimg"=>$numfoto,
                         "est"=>$est,
                         "observ"=>$observ,
-                        "cli"=>$cli
+                        "cli"=>$cli,
+                        "cons"=>$consec
                     );
-                  //  var_dump($datosController);
                     DatosValidacion::ingresaValidacionimg($datosController, "sup_validafotos");
                     $datoscorr=array("idval"=>$this->idval,
                         "idfoto"=>$numimg

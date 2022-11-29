@@ -149,11 +149,11 @@ public function SuplistaEtapasController(){
   $this->idmes=$_GET["idmes"];
   $this->idsup=$_GET["idsup"];
 
-  $enc_prin='<th>NOMBRE </th>';
-  $enc_tot='<th ></th>';
+  $enc_prin='<th style="background-color: #8596b0; text-align: center; color: #FFFFFF;">ETAPA</th>';
+  $enc_tot='<th style=" background-color: #8596b0; text-align: center; color: #FFFFFF;"></th>';
   $nt=0;
    //$i=6;
-   var_dump($i);
+   //var_dump($i);
     for ($i=4; $i<=6; $i=$i+1) {
     $datosCont= array("idciu"=>$this->idciu,
                       "idcli"=>$i,
@@ -164,14 +164,14 @@ public function SuplistaEtapasController(){
     $nr=0;
     foreach($resp0 as $row => $item0){
         $planta= $item0["n5_nombre"];
-             $enc_cli = '<th >'.$planta.'</th>'; 
+               $enc_cli = '<th style="background-color: #8596b0; text-align: center; color: #FFFFFF;  " >'.$planta.'</th>'; 
              $cliente=$item0["n1_nombre"];
              $enc_tot=$enc_tot.$enc_cli;
              $nr=$nr+1;
     }
      $nt=$nt+$nr;
 
-    $enc_prin=$enc_prin.'<th colspan="'.$nr.'" style="background-color: #cccccc;"> '.$cliente.' </th>';
+        $enc_prin=$enc_prin.'<th colspan="'.$nr.'" style="background-color: #8596b0; color: #FFFFFF;  text-align: center;"> '.$cliente.' </th>';
 
   }
 
@@ -200,7 +200,7 @@ foreach($respetapas as $row => $item){
               $idcli =$item0["n1_id"];
 
                    $enc_cli = '<td align="center">
-           <a href="index.php?action=suppreparacion&idmes='.$this->idmes.'&idrec=1&idplan='.$idplan.'&cli='.$idcli.'&numdet=1&eta=1"><i class="fa fa-circle fa-2x" style="color:'.$nomestatus.';"></i></a>
+           <a href="index.php?action=suppreparacion&idmes='.$this->idmes.'&idrec=1&idplan='.$idplan.'&cli='.$i.'&numdet=1&eta=1"><i class="fa fa-circle fa-2x" style="color:'.$nomestatus.';"></i></a>
 </td>  '; 
 
                 //echo $enc_cli;
@@ -253,9 +253,10 @@ foreach($respetapas as $row => $item){
           if ($numetapa==2) {
             echo '
           <td colspan='.$nt.' align="center">
-           <a href="index.php?action=suplistatiendas&admin=li&idmes='.$this->idmes.'&idsup='.$this->idsup.'&idciu='.$this->idciu.'&eta='.$numetapa.'"><i class="fa fa-circle fa-2x" style="color:'.$nomestatus.';"></i></a>
+      <a href="index.php?action=suplistatiendas&admin=li&idmes='.$this->idmes.'&idsup='.$this->idsup.'&idciu='.$this->idciu.'&eta='.$numetapa.'" class="btn btn-informes btn-sm btn-block "> COMPRA </a>    
 </td>  ';
-          }else{
+
+         }else{
             echo '
           <td colspan='.$nt.'> </td>  ';
           }
@@ -304,7 +305,7 @@ public function vistaSupInformeComController(){
 	  $respuesta =DatosSupInformes::vistaSupInformeDetalleModel($datosCont, "informes");
 			//var_dump($respuesta);
 			foreach($respuesta as $row => $item){
-				$this->consec= $item["inf_consecutivo"];
+			//	$this->consec= $item["inf_consecutivo"];
          $this->numsup=$item["n5_supervisor"];
 				$this->cliente= $item["n5_idn1"];
 				$this->visid=$item["inf_visitasIdlocal"];
@@ -377,7 +378,7 @@ public function vistaSupInformeComController(){
 	    // asigna datos a variables
     	foreach($respuesta2 as $row => $item2){
 			$this->nomplan= $item2["vi_unedesc"];
-      //$this->consec= $item2["vi_idlocal"];
+      $this->consec= $item2["vi_idlocal"];
 			$this->idtienda=$item2["vi_tiendaid"];
 			$idcadena= $item2["vi_cadenacomercial"];
 			$this->idcad = $idcadena;	
@@ -569,9 +570,21 @@ public function getidsig(){
      $this->sup_id=$_GET["idsup"];
      $this->ciu_id=$_GET["idciu"];
 
+     $datosCont= array("idinf"=>$this->idinf,
+         "idmes"=>$this->mesas,
+         "idrec"=>$this->rec_id,
+     );
+     
+     $respuesta =DatosSupInformes::vistaSupInformeDetalleModel($datosCont, "informes");
+     //var_dump($respuesta);
+     foreach($respuesta as $row => $item){
+         //	$this->consec= $item["inf_consecutivo"];
+       //  $this->numsup=$item["n5_supervisor"];
+        // $this->cliente= $item["n5_idn1"];
+         $this->visid=$item["inf_visitasIdlocal"];
+     }
 
-
-    $datosCont= array("idinf"=>$this->idinf,
+     $datosCont= array("idinf"=>$this->visid,
                          "idmes"=>$this->mesas,
                          "idrec"=>$this->rec_id,
                          "idsup"=>$this->sup_id,
@@ -600,14 +613,14 @@ public function getidant(){
      $this->sup_id=$_GET["idsup"];
 
 
-     $datosCont= array("idinf"=>$this->idinf,
+     $datosCont= array("idinf"=>$this->visid,
                          "idmes"=>$this->mesas,
                          "idrec"=>$this->rec_id,
                          "idsup"=>$this->sup_id,
                          "idciu"=>$this->idciu,
                                );
 	 $respuesta1 =DatosSupInformes::vistaAnttiendaModel($datosCont, "informes");
-		//var_dump($respuesta1);	
+	// var_dump($this->visid);	
 	 foreach($respuesta1 as $row => $item1){
 	 	$ncons1[]=$item1["inf_id"];
 	  }
@@ -630,7 +643,7 @@ public function getidfirst(){
       $this->sup_id=$_GET["idsup"];
        $this->ciu_id=$_GET["idciu"];
 
-     $datosCont= array("idinf"=>$this->idinf,
+     $datosCont= array("idinf"=>$this->visid,
                          "idmes"=>$this->mesas,
                          "idsup"=>$this->sup_id,
                          "idciu"=>$this->ciu_id,
@@ -639,7 +652,7 @@ public function getidfirst(){
 	 $respuesta =DatosSupInformes::vistaFirtstiendaModel($datosCont, "informes");
 			//var_dump($respuesta);	
 	 foreach($respuesta as $row => $item){
-	 	$ncons[]=$item["ID"];
+	 	$ncons[]=$item["inf_id"];
 	  }	
 	  //$totreg=array_count_values($ncons);
 	  //var_dump($totreg);
@@ -661,7 +674,7 @@ public function getidlast(){
     $this->sup_id=$_GET["idsup"];
        $this->ciu_id=$_GET["idciu"];
 
-  $datosCont= array("idinf"=>$this->idinf,
+  $datosCont= array("idinf"=>$this->visid,
                          "idmes"=>$this->mesas,
                          "idrec"=>$this->rec_id,
                          "idsup"=>$this->sup_id,
@@ -956,8 +969,44 @@ public function SuplistaTiendasController(){
      $this->idmes=$_GET["idmes"];
      $this->idsup=$_GET["idsup"];
      $this->ideta=$_GET["eta"];
+// se genera el encabezado
+
+                  
+     $enc_prin='<th style=" width: 5%; background-color: #8596b0; text-align: center; color: #FFFFFF;">NO.</th>
+     <th style="width: 25%; background-color: #8596b0; text-align: center; color: #FFFFFF;">NOMBRE </th><th style="  background-color: #8596b0; text-align: center; color: #FFFFFF;">TIENDA</th>';
+  $enc_tot='<th style=" background-color: #8596b0; text-align: center; color: #FFFFFF;"></th><th style="  background-color: #8596b0; text-align: center; color: #FFFFFF;"></th><th style="  background-color: #8596b0; text-align: center; color: #FFFFFF;"></th>';
+  $nt=0;
+   //$i=6;
+   //var_dump($i);
+    for ($i=4; $i<=6; $i=$i+1) {
+    $datosCont= array("idciu"=>$this->idciu,
+                      "idcli"=>$i,
+                     );
+    //}
+    //var_dump($datosCont);
+    $resp0 =DatosSupInformes::BuscaEncabezadoPlanta($datosCont, "ca_nivel5");
+    $nr=0;
+    foreach($resp0 as $row => $item0){
+        $planta= $item0["n5_nombre"];
+             $enc_cli = '<th style="background-color: #8596b0; text-align: center; color: #FFFFFF;  " >'.$planta.'</th>'; 
+             $cliente=$item0["n1_nombre"];
+             $enc_tot=$enc_tot.$enc_cli;
+             $nr=$nr+1;
+    }
+     $nt=$nt+$nr;
+
+    $enc_prin=$enc_prin.'<th colspan="'.$nr.'" style="background-color: #8596b0; color: #FFFFFF;  text-align: center;"> '.$cliente.' </th>';
+
+  }
+
+  echo $enc_prin;
+  echo '<tr>'.$enc_tot.'</tr>';
 
 
+
+
+
+// se generan datos
        $datosCont= array("idciu"=>$this->idciu,
                          "idmes"=>$this->idmes,
                          "idsup"=>$this->idsup,
@@ -968,8 +1017,8 @@ public function SuplistaTiendasController(){
    foreach($respuesta as $row => $item){
 				$idtienda= $item["vi_tiendaid"];
 				$mes_asig= $item["inf_indice"];
-                $idvis=$item["vi_idlocal"];
-				$id= $item["ID"];
+        $idvis=$item["vi_idlocal"];
+				$idt= $item["ID"]; 
 				
 				$aux = explode(".", $mes_asig);
                        
@@ -1022,14 +1071,6 @@ public function SuplistaTiendasController(){
 				//$idtipot=$item["une_tipotienda"];
 				$idrec=$item["vi_cverecolector"];
 
- 				
-				// busca supervisor
-				//$resp=DatosCatalogoDetalle::listaCatalogoDetalleOpc(2, $idtipot,"ca_catalogosdetalle");
-				//$tipot=$resp["cad_descripcionesp"];
-
-				//$resp3=DatosCatalogoDetalle::listaCatalogoDetalleOpc(4, $idzona,"ca_catalogosdetalle");
-				//$zona=$resp3["cad_descripcionesp"];
-
           //calcula tienda
          
 				   if ($item["EST"]==1) {
@@ -1038,113 +1079,90 @@ public function SuplistaTiendasController(){
 					     $nomesttien="green";
 				   } else if ($item["EST"]==3) {
 					     $nomestien="red";  
-			   } else {
+  			   } else {
 					   $nomesttien="blue";
 				  }
 
-
-
-          // busca estatus de informes pepsi
-           $datosContPEP= array("idmes"=>$this->idmes,
-                         "idinf"=>$id,
-                         "idrec"=>$this->idrec,
-                         "ideta"=>$this->ideta,
-                         "idcli"=>4,
-                     );
-    //
-        $resp=DatosValidacion::LeeEstatusinforme($datosContPEP,"sup_validafotos");
-        $estpep=$resp["val_estatus"];
-
-
-          // valido color de pepsi
-          if ($estpep=1) {
-             $nomestpepsi="yellow";
-          } else if ($estpep==3) {
-            $nomestpepsi="green";
-          } else if ($estpep==2) {
-            $nomestpepsi="red";
-          } else {
-          $nomestpepsi="blue";
-        }
-
-        // busca estatus informes peñafiel
-        $datosContPEN= array("idmes"=>$this->idmes,
-                         "idinf"=>$id,
-                         "idrec"=>$this->idrec,
-                         "ideta"=>$this->ideta,
-                         "idcli"=>5,
-                     );
-    //
-        $resp=DatosValidacion::LeeEstatusinforme($datosContPEN,"sup_validafotos");
-        $estpen=$resp["val_estatus"];
-
-
-          // valido color de pepsi
-          if ($estpen=1) {
-             $nomestpena="yellow";
-          } else if ($estpen==3) {
-            $nomestpena="green";
-          } else if ($estpen==2) {
-            $nomestpena="red";
-          } else {
-          $nomestpena="blue";
-        }
-
-        // busca estatus informes electrop
-        $datosContELE= array("idmes"=>$this->idmes,
-                         "idinf"=>$id,
-                         "idrec"=>$this->idrec,
-                         "ideta"=>$this->ideta,
-                         "idcli"=>6,
-                     );
-    //
-        $resp=DatosValidacion::LeeEstatusinforme($datosContELE,"sup_validafotos");
-        $estele=$resp["val_estatus"];
-
-
-          // valido color de pepsi
-          if ($estele=1) {
-             $nomestele="yellow";
-          } else if ($estele==3) {
-            $nomestele="green";
-          } else if ($estele==2) {
-            $nomestele="red";
-          } else {
-            $nomestele="blue";
-        }
            echo
             '  <tr>
-	        <td>'.$id.'</td>       
+	        <td>'.$idvis.'</td>       
 					<td>'.$nomtien.'</td>
-					<td>
-					 <a href="index.php?action=supinforme&idmes='.$this->idmes.'&idrec='.$idrec.'&id='.$id.'&sec=1&eta=2&idsup='.$this->idsup.'&idciu='.$this->idciu.'"><i class="fa fa-circle fa-2x" style="color:'.$nomesttien.';"></i></a></td>  
+					<td  style="text-align: center;">
+					 <a href="index.php?action=supinforme&idmes='.$this->idmes.'&idrec='.$idrec.'&id='.$idt.'&sec=1&eta=2&idsup='.$this->idsup.'&idciu='.$this->idciu.'"><i class="fa fa-circle fa-2x" style="color:'.$nomesttien.';"></i></a></td>  
                     
         ';
-           if ($item["TPEPSI"]>0){
-           echo '
-           <td> 
-           <a href="index.php?action=supinformecli01&idmes='.$this->idmes.'&idrec='.$idrec.'&id='.$id.'&cli=4&sec=4&eta=2&idsup='.$this->idsup.'"><i class="fa fa-circle fa-2x" style="color:'.$nomestpepsi.';"></i></a></td>';
-           } else {
-            echo '<td> </td>';
-           }  
-            
-            if ($item["TPENA"]>0){
-              echo ' 
-          <td>
-           <a href="index.php?action=supinformecli01&idmes='.$this->idmes.'&idrec='.$idrec.'&id='.$id.'&cli=5&sec=4&eta=2&idsup='.$this->idsup.'"><i class="fa fa-circle fa-2x" style="color:'.$nomestpena.';"></i></a></td>';
-         } else {
-            echo '<td> </td>';
-           }
-            if ($item["TELEC"]>0){
-              echo'
-        <td>
-           <a href="index.php?action=supinformecli01&idmes='.$this->idmes.'&idrec='.$idrec.'&id='.$id.'&cli=6&sec=4&eta=2&idsup='.$this->idsup.'"><i class="fa fa-circle fa-2x" style="color:'.$nomestsele.';"></i></a></td>';
-           } else {
-            echo '<td> </td>';
-           }          
+        // AQUI VA LA BUSQUEDA DE OPCIONES DE PLANTA
+         for ($i=4; $i<7; $i=$i+1) {
+        
+                $datosCont= array("idciu"=>$this->idciu,
+                      "idcli"=>$i,
+                     );
+                $resp1 =DatosSupInformes::BuscaEncabezadoPlanta($datosCont, "ca_nivel5");
+                foreach($resp1 as $row => $item1){
+                   $idplanta= $item1["n5_id"];
+                   //var_dump($idplanta);
+                   $datosCont0= array("idplan"=>$idplanta,
+                      "idmes"=>$this->idmes,
+                      "idtien"=>$idvis,
+                     );
+               // var_dump($datosCont0);
+                $resp1=DatosSupInformes::verificaInforme($datosCont0, "informes");  
+                    if ($resp1){
+                        foreach($resp1 as $row1=> $item1){
+                            $id = $item1["inf_id"];
+                            $estinf=$item1["estatusinf"];
+                           
+                        } 
+                    }else {
+                       $estinf=6;
+                       $colorest="";                           
+                    }
+                   
+                   if ($id){
+                     if ($estinf){ 
+                        if ($estinf==0){
+                           $colorest="blue";
+                        } else if ($estinf==1) {
+                           $colorest="yellow";
+                        } else if ($estinf==3) {
+                           $colorest="green";     
+                        } else if ($estinf==2) {
+                          $colorest="red";
+                        }    
+                      }  else {
+                         $estinf=0;  
+                         $colorest="blue";
+                      }
+                   }  
 
+              if ($estinf<>6) {
+
+                //echo '<td>';
+                  echo '
+                 <td style="text-align: center;"> 
+                 <a href="index.php?action=supinformecli01&idmes='.$this->idmes.'&idrec='.$idrec.'&id='.$id.'&cli='.$i.'&sec=4&idciu='.$this->idciu.'&eta=2&idsup='.$this->idsup.'"><i class="fa fa-circle fa-2x" style="color:'.$colorest.';"></i></a>';
+
+                   // calculamos las alertas
+                      $datosCont2= array("idinf"=>$id,
+                      "idmes"=>$this->idmes,
+                      "idrec"=>$idrec,
+                     );
+
+                 //     var_dump($datosCont2);
+                
+                     $resp2=DatosSupInformes::verificaalerta($datosCont2, "sup_validacion");
+
+                     if ($resp2) {       
+                       echo '       
+                    <a href="index.php?action=suplistacorrecciones&idmes='.$this->idmes.'&idrec='.$idrec.'&id='.$id.'&cli=4&sec=4&eta=2&idciu='.$this->idciu.'&idsup='.$this->idsup.'" style="margin-right:-19px"><i class="fa fa-bell fa-1x" style="color:red;"></i></a>';
+                     }    
+                  //   echo '</td>';
+               } else {
+                echo '<td> </td>';
+              }  
+            }        
 	        }        
-
+     }       
  }
 
  public function actualizadir(){
@@ -1395,7 +1413,7 @@ public function noaceptarsec1(){
 		} else {
 			$estatus=1; 
 		}
-     echo "entre a solicitar correccion";
+    // echo "entre a solicitar correccion";
     //var_dump($idsup);
     //var_dump($idciu);
 		$regresar="index.php?action=supinforme".$pan."&idmes=".$indice."&idrec=".$idrec."&id=".$id."&sec=".$sec."&eta=2&idsup=".$idsup."&idciu=".$idciu;
@@ -1820,7 +1838,7 @@ public function solcorreccion(){
              }
              
            }
-       
+       //die();
    // echo "
    //         <script type='text/javascript'>
    //           window.location='$regresar'
@@ -2004,5 +2022,42 @@ public function noaceptarimg(){
     echo Utilerias::mensajeError($ex->getMessage());
   }     
 }
+  public function SuplistacorreccionController(){
+    include "Utilerias/leevar.php";
+          $datosController= array("idmes"=>$idmes,
+                      "idrec"=>$idrec,
+                      "idinf"=>$id,
+                                   );
+        
+         $respuesta =DatosSupInformes::verificaalerta($datosController, "sup_validacion");
+
+       if (sizeof($respuesta)>0) {
+          //echo "lo encontre en principal";
+          foreach($respuesta as $row => $item){
+            if ($item["vai_estatus"]==1){
+               $estatus="Solicitud de correccion"; 
+            } else if ($item["vai_estatus"]==4){
+              $estatus="Correccion recibida";
+            } else if ($item["vai_estatus"]==5){
+              $estatus="Solicitud leída";
+            }  
+            $ids=$item["val_id"];
+            $idf=$item["vai_numfoto"];
+
+            echo '<tr><td>'.$item["VAL_INF_ID"].'</td>
+                  <td>'.$item["rec_nombre"].'</td>
+
+                    <td  style="text-align: center;">
+           <a href="index.php?action=supnvacorreccion&idmes='.$idmes.'&idrec='.$idrec.'&id='.$ids.'&numf='.$idf.'&idi='.$id.'&idciu='.$idciu.'&idsup='.$idsup.'">'.$estatus.'</a></td>  
+                    
+             
+
+                  <td>'.$item["vai_observaciones"].'</td></tr>';
+          }
+       }   
+    
+
+  }
+
 
 }
