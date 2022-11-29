@@ -1,7 +1,5 @@
 <?php
-//ini_set("display_errors", 0);
-//echo "ora";
-//error_reporting(0);
+
         $informeCont=new SupInfmuestraController();
         $informeCont->vistaSupInfMuesController();
         $dirimg= $informeCont->getdirimg();
@@ -124,50 +122,54 @@
                <div class="col-md-3 tituloSupBotones" ><a 
                 <?php
 
-                if ($first){ 
-                    echo '  
-                   href="index.php?action=supinformecli01&idmes='.$idmes.'&idrec='.$idrec.'&id='.$first.'&cli='.$idcli.'&sec='.$sec.'&eta=2&idsup='.$idsup.'"';
+                if ($first){
+                   echo 'href="#"'; 
+                   // echo '  
+                   //href="index.php?action=supinformecli01&idmes='.$idmes.'&idrec='.$idrec.'&id='.$first.'&cli='.$idcli.'&sec='.$sec.'&eta=2&idsup='.$idsup.'"';
                 } else {
                    echo 'href="#"';
                 }
                 
                 
                 ?>
-                ><img src="Views/dist/img/Retrocede-Final.jpg"></a>
+                ><img src="Views/dist/img/Retrocede-Final-off.jpg"></a>
                 </div>
                <div class="col-md-3 tituloSupBotones" ><a 
                  <?php
                  if ($ant){
-                    echo '
-                    href="index.php?action=supinformecli01&idmes='.$idmes.'&cli='.$idcli.'&idrec='.$idrec.'&id='.$ant.'&sec='.$sec.'&eta=2&idsup='.$idsup.'"';
+                    echo 'href="#"';
+                    //echo '
+                    //href="index.php?action=supinformecli01&idmes='.$idmes.'&cli='.$idcli.'&idrec='.$idrec.'&id='.$ant.'&sec='.$sec.'&eta=2&idsup='.$idsup.'"';
                 } else {
                   echo 'href="#"';
                 }
                 
                 ?>
-                ><img src="Views/dist/img/Retrocede-1.jpg"></a>
+                ><img src="Views/dist/img/Retrocede-1-off.jpg"></a>
                 </div>
                <div class="col-md-3 tituloSupBotones" ><a 
                  <?php
                  if ($sig){
-                echo '
-                href="index.php?action=supinformecli01&idmes='.$idmes.'&cli='.$idcli.'&idrec='.$idrec.'&id='.$sig.'&sec='.$sec.'&eta=2&idsup='.$idsup.'"';
+                  echo 'href="#"';
+                //echo '
+                //href="index.php?action=supinformecli01&idmes='.$idmes.'&cli='.$idcli.'&idrec='.$idrec.'&id='.$sig.'&sec='.$sec.'&eta=2&idsup='.$idsup.'"';
                 } else {
                   echo 'href="#"';
                 }
                 ?>
-                ><img src="Views/dist/img/Avanza-1.jpg"></a>
+                ><img src="Views/dist/img/Avanza-1-off.jpg"></a>
                 </div>
                <div class="col-md-3 tituloSupBotones" ><a 
                  <?php
                  if ($last){    
-                 echo ' 
-                href="index.php?action=supinformecli01&idmes='.$idmes.'&cli='.$idcli.'&idrec='.$idrec.'&id='.$last.'&sec='.$sec.'&eta=2&idsup='.$idsup.'"';
+                  echo 'href="#"';
+                 //echo ' 
+                //href="index.php?action=supinformecli01&idmes='.$idmes.'&cli='.$idcli.'&idrec='.$idrec.'&id='.$last.'&sec='.$sec.'&eta=2&idsup='.$idsup.'"';
                 } else {
                   echo 'href="#"';
                 }
                 ?>
-                ><img src="Views/dist/img/Avanza-Final.jpg"></a>
+                ><img src="Views/dist/img/Avanza-Final-off.jpg"></a>
                 </div>
               </div>
       </div>

@@ -55,7 +55,7 @@ include_once  'Controllers/supCorreccionController.php';
       </div>
       <div class="col-md-4 labelAzulDatoFecha"><?php echo $supCorCon->indiceletra ?>
       </div>
-      <div class="col-md-2 labelAzul1">NO DE CORRECCION:
+      <div class="col-md-2 labelAzul1">REPROCESO:
       </div>
       <div class="col-md-4 labelAzulDato"><?php echo $supCorCon->valfoto["vai_numcorreccion"]?>
       </div>

@@ -1,0 +1,49 @@
+
+ 
+ <!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCqa-ZHLmzXhgsxIeyyMetH_fAH34HLJ9k&callback=initMap" type="text/javascript"></script>
+<script type="text/javascript">
+ window.onload = function () {
+ var mapOptions = {
+ center: new google.maps.LatLng(17.3828, 78.4815),
+ zoom: 14,
+ mapTypeId: google.maps.MapTypeId.ROADMAP
+ };
+ var infoWindow = new google.maps.InfoWindow();
+ var latlngbounds = new google.maps.LatLngBounds();
+
+ //This will load your map with default location co-ordinates.
+ var map = new google.maps.Map(document.getElementById("mapDiv"), mapOptions);
+
+ //To capture click event.
+ google.maps.event.addListener(map, 'click', function (e) {
+ document.getElementById("latitude").value = e.latLng.lat();
+ document.getElementById("longitude").value = e.latLng.lng();
+ placeMarker(e.latLng,map);
+ });
+ }
+//Adding marker on click
+var marker;
+function placeMarker(location,map) {
+ /* if ( marker ) {
+    marker.setPosition(location);
+  } else {*/
+    marker = new google.maps.Marker({
+      position: location,
+      map: map
+    });
+  //}
+}
+ </script>
+</head>
+<body>
+
+<div id="mapDiv" style="width: 300px; height: 300px"> </div>
+<input id="latitude" name="latitude" type="text">
+<input id="longitude" name="longitude" type="text">
+</body>
+</html>

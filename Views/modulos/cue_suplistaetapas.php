@@ -1,5 +1,5 @@
 <section class="content-header">
-<h1>INFORMES DE COMPRA</h1>
+<h1>ETAPAS CLIENTES</h1>
 </section>
 <section class="content container-fluid">
 	    
@@ -66,26 +66,23 @@ $idmes=$_GET["idmes"];
  <table class="table table-bordered table-hover">
       <tr>
         <td style="width: 40%">SUPERVISOR : <?php echo $nomsup ?></td>
-        <td style="width: 20%">INDICE : <?php echo $mesasignacion ?></td>
-        <td style="width: 20%">CIUDAD : <?php echo $idciu ?></td>
-        <td style="width: 10%">
-            <button  class="btn btn-default float-sm-right" ><a 
-            <?php echo
-              'href="index.php?action=suplistaetapas&admin=li&idmes='.$idmes.'&idsup='.$idsup.'&idciu='.$idciu.'&eta=2&idc='.$id_ciu.'">   Regresar  ';
-                ?>
-                </a>
-              </button>
-</td>
+        <td style="width: 30%">INDICE : <?php echo $mesasignacion ?></td>
+        <td style="width: 30%">CIUDAD : <?php echo $idciu ?></td>
       </tr>
-     
+      <tr>
+        
+        <td style="width: 30%" colspan="2"><td style="width: 10%">
+            <button  class="btn btn-default float-sm-right" ><a href="index.php?action=suplistainformes">   Regresar  </a></button>
+</td>  </td>
+      </tr>
 </table>
          <div class="box-body table-responsive no-padding">
-              <table class="table table-bordered table-hover">
+              <table class="table table-hover">
                 
 <?php
-
+             // busca encabezados de plantas
 $ingreso = new SupInformesController();
-$ingreso -> SuplistaTiendasController();
+$ingreso -> SuplistaEtapasController();
 
 ?>
 
