@@ -277,13 +277,16 @@ and vi_cverecolector=i.inf_usuario  and vi_indice=i.inf_indice ";
             $sql="select ";
             if($cliente==4)
                 $sqlcolor="
-if(une_estatus=2,'1',if(une_idindice is not null,'3','2')) as color ";
+if(une_estatus=2,'1',if(une_idindice is not null,'3',if(val_estatus is not null and  val_estatus=2,'3','2')
+	)) as color ";
             if($cliente==5)
                 $sqlcolor="
-if(une_estatuspen=2,'1',if(une_idindice is not null,'3','2')) as color ";
+if(une_estatuspen=2,'1',if(une_idindice is not null,'3',if(val_estatus is not null and  val_estatus=2,'3','2')
+	)) as color";
             if($cliente==6)
                 $sqlcolor="
-if(une_estatuselec=2,'1',if(une_idindice is not null,'3','2')) as color ";
+if(une_estatuselec=2,'1',if(une_idindice is not null,'3',if(val_estatus is not null and  val_estatus=2,'3','2')
+	)) as color ";
       $sql=$sql.$sqlcolor."    from
 	ca_unegocios cu
 inner join visitas on
@@ -298,7 +301,7 @@ inner join informes i on
 	and vi_indice = i.inf_indice
 	left join ca_nivel5 on n5_id=inf_plantasid
 left join sup_validacion on val_rec_id=i.inf_usuario and i.inf_indice=val_indice and val_inf_id=inf_id
- and val_estatus=3 and 
+  and 
 val_etapa=2
 left join ca_unegocioshabilitada cuh on
 	cuh.une_id = cu.une_id ";

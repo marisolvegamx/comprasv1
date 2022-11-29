@@ -104,6 +104,7 @@ class ContratoVisitas{
     const DIRECCION="direccion";
     const TIPOTIENDAID="tipoId";
     const PUNTOCARDINAL="puntoCardinal";
+    const CONSECUTIVOCD="consecutivocd";
     
     
 }

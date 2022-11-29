@@ -47,7 +47,7 @@ class solCorreccionController{
         
         
         $rs = $this->datosInf->getMuestrasCanceladas($indice,$recolector, 2);
-        // var_dump($rs);
+       //  var_dump($rs);
         //  die();
         $this->listacanceladas=$rs;
         //actualizo el estatus a leido
@@ -71,7 +71,7 @@ class solCorreccionController{
         
        // $this->getUpdate($fecha, $recolector,$indice);
        $this->getCanceladas($indice, $recolector,2);
-        if(sizeof($this->listasolicitudesi)>0)
+        if(sizeof($this->listasolicitudesi)>0||sizeof($this->listacanceladas)>0)
         { 
             $response["inserts"]=$this->listasolicitudesi;
             $response["canceladas"]=$this->listacanceladas;
