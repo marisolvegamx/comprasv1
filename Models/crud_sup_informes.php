@@ -82,8 +82,9 @@ $sql="SELECT inf_indice, n5_supervisor as id_sup, n4_id as numciu, n4_nombre as 
 
     public function vistaSigtiendaModel($datosModel, $tabla){
 
-	$stmt = Conexion::conectar()-> prepare("SELECT informes.inf_id, informes.inf_plantasid, informes.inf_indice, informes.inf_usuario, informes.inf_consecutivo FROM informes inner join visitas on inf_visitasidlocal=vi_idlocal and inf_indice=vi_indice and inf_usuario=vi_cverecolector left join ca_nivel5 on n5_id=inf_plantasid inner join ca_nivel4 on n5_idn4=n4_id where informes.inf_id>:idinf and inf_indice=:idmes and n5_supervisor =:idsup and n4_nombre=:idciu order by informes.inf_id;
+	$stmt = Conexion::conectar()-> prepare("SELECT vi_idlocal,inf_id FROM `visitas` inner join ca_recolectores on rec_id=vi_cverecolector inner join informes on vi_idlocal=inf_visitasidlocal left join ca_nivel5 on n5_id=inf_plantasid inner join ca_nivel4 on n5_idn4=n4_id where vi_idlocal>:idinf and vi_indice=:idmes and n5_supervisor =:idsup and n4_nombre=:idciu group by vi_idlocal ORDER BY vi_idlocal;
 ");
+
 
 
 
@@ -98,7 +99,9 @@ $sql="SELECT inf_indice, n5_supervisor as id_sup, n4_id as numciu, n4_nombre as 
 
     public function vistalasttiendaModel($datosModel, $tabla){
 
-	$stmt = Conexion::conectar()-> prepare("SELECT informes.inf_id, informes.inf_plantasid, informes.inf_indice, informes.inf_usuario, informes.inf_consecutivo FROM informes inner join visitas on inf_visitasidlocal=vi_idlocal and inf_indice=vi_indice and inf_usuario=vi_cverecolector left join ca_nivel5 on n5_id=inf_plantasid inner join ca_nivel4 on n5_idn4=n4_id where informes.inf_id>:idinf and inf_indice=:idmes and n5_supervisor =:idsup and n4_nombre=:idciu order by informes.inf_id desc;");
+	$stmt = Conexion::conectar()-> prepare("SELECT vi_idlocal,inf_id FROM `visitas` inner join ca_recolectores on rec_id=vi_cverecolector inner join informes on vi_idlocal=inf_visitasidlocal and inf_indice = vi_indice
+	and inf_usuario = vi_cverecolector left join ca_nivel5 on n5_id=inf_plantasid inner join ca_nivel4 on n5_idn4=n4_id where vi_idlocal>:idinf and vi_indice=:idmes and n5_supervisor =:idsup and n4_nombre=:idciu group by vi_idlocal ORDER BY vi_idlocal DESC;");
+
 
 		$stmt->bindParam(":idsup", $datosModel["idsup"], PDO::PARAM_INT);
 		$stmt->bindParam(":idciu", $datosModel["idciu"], PDO::PARAM_INT);
@@ -112,27 +115,34 @@ $sql="SELECT inf_indice, n5_supervisor as id_sup, n4_id as numciu, n4_nombre as 
  public function vistaAnttiendaModel($datosModel, $tabla){
     
 
-	$stmt = Conexion::conectar()-> prepare("SELECT informes.inf_id, informes.inf_plantasid, informes.inf_indice, informes.inf_usuario, informes.inf_consecutivo FROM informes inner join visitas on inf_visitasidlocal=vi_idlocal and inf_indice=vi_indice and inf_usuario=vi_cverecolector left join ca_nivel5 on n5_id=inf_plantasid inner join ca_nivel4 on n5_idn4=n4_id where informes.inf_id<:idinf and inf_indice=:idmes and n5_supervisor =:idsup and n4_nombre=:idciu order by informes.inf_id desc;");
+	$stmt = Conexion::conectar()-> prepare("SELECT vi_idlocal, inf_id FROM `visitas` inner join ca_recolectores on rec_id=vi_cverecolector inner join informes on vi_idlocal=inf_visitasidlocal and inf_indice = vi_indice
+	and inf_usuario = vi_cverecolector inner join ca_nivel5 on n5_id=inf_plantasid inner join ca_nivel4 on n5_idn4=n4_id where vi_idlocal<:idinf and vi_indice=:idmes and n5_supervisor =:idsup and n4_nombre=:idciu group by vi_idlocal ORDER BY vi_idlocal DESC;");
 	
+
 	    $stmt->bindParam(":idinf", $datosModel["idinf"], PDO::PARAM_INT);
 		$stmt->bindParam(":idmes", $datosModel["idmes"], PDO::PARAM_STR);
 		$stmt->bindParam(":idsup", $datosModel["idsup"], PDO::PARAM_INT);
 		$stmt->bindParam(":idciu", $datosModel["idciu"], PDO::PARAM_STR);
 		$stmt-> execute();
+		//$stmt->debugDumpParams();
 		return $stmt->fetchall();
 
     }
 
 public function vistaFirtstiendaModel($datosModel, $tabla){
 
-	$stmt = Conexion::conectar()-> prepare("SELECT (inf_id) AS ID, N4_NOMBRE AS CIUDAD, vi_unedesc, vi_cverecolector FROM ( SELECT inf_id, vi_unedesc, n5_idn4, vi_cverecolector FROM `informes` inner join visitas on inf_indice=vi_indice and inf_visitasidlocal=vi_idlocal and inf_usuario= vi_cverecolector left join ca_nivel5 on n5_id=inf_plantasid where inf_indice =:idmes and n5_supervisor =:idsup and inf_id<:idinf ) AS A inner join ca_nivel4 on n5_idn4=n4_id where n4_nombre= :idciu order by inf_id;");
+	$stmt = Conexion::conectar()-> prepare("SELECT vi_idlocal,inf_id FROM `visitas` inner join ca_recolectores on rec_id=vi_cverecolector inner join informes on vi_idlocal=inf_visitasidlocal and inf_indice = vi_indice
+	and inf_usuario = vi_cverecolector left join ca_nivel5 on n5_id=inf_plantasid inner join ca_nivel4 on n5_idn4=n4_id where vi_idlocal<:idinf and vi_indice=:idmes and n5_supervisor =:idsup and n4_nombre=:idciu group by vi_idlocal ORDER BY vi_idlocal;
+");
+
 
 
 	    $stmt->bindParam(":idinf", $datosModel["idinf"], PDO::PARAM_INT);
 		$stmt->bindParam(":idmes", $datosModel["idmes"], PDO::PARAM_STR);
 		$stmt->bindParam(":idsup", $datosModel["idsup"], PDO::PARAM_INT);
-		$stmt->bindParam(":idciu", $datosModel["idciu"], PDO::PARAM_INT);
+		$stmt->bindParam(":idciu", $datosModel["idciu"], PDO::PARAM_STR);
 		$stmt-> execute();
+		
 		return $stmt->fetchall();
 
     }
@@ -192,7 +202,37 @@ public function vistaFirtstiendaModel($datosModel, $tabla){
 
 	}
 
+    public function verificaInforme($datosModel, $tabla){
 
+	// actualiza tienda
+    $stmt = Conexion::conectar()-> prepare("SELECT inf_id, inf_plantasid, inf_indice, inf_visitasidlocal, sum(vai_numfoto) as estatusinf FROM `informes` left join sup_validacion on inf_id=val_inf_id and inf_indice=val_indice and inf_usuario=val_rec_id left join sup_validafotos on val_id=vai_id where inf_plantasid=:planta and inf_indice=:indice and inf_visitasidlocal=:idtienda group by inf_plantasid;");
+
+       	$stmt->bindParam(":indice", $datosModel["idmes"], PDO::PARAM_STR);
+    	$stmt->bindParam(":planta", $datosModel["idplan"], PDO::PARAM_INT);
+    	$stmt->bindParam(":idtienda", $datosModel["idtien"], PDO::PARAM_INT);
+		$stmt-> execute();
+		return $stmt->fetchall();
+
+	}
+
+
+    public function verificaalerta($datosModel, $tabla){
+
+	// actualiza tienda
+    $stmt = Conexion::conectar()-> prepare("
+    SELECT val_id, VAL_INF_ID, vai_numfoto, val_indice, val_rec_id, vai_estatus, vai_observaciones, rec_nombre FROM sup_validafotos inner join sup_validacion on val_id=vai_id inner join ca_recolectores on val_rec_id=rec_id where val_indice=:indice and val_rec_id=:idrec and val_inf_id=:idinf and (vai_estatus=1 or vai_estatus=4 or vai_estatus=5);");
+
+
+
+       	$stmt->bindParam(":indice", $datosModel["idmes"], PDO::PARAM_STR);
+    	$stmt->bindParam(":idrec", $datosModel["idrec"], PDO::PARAM_INT);
+    	$stmt->bindParam(":idinf", $datosModel["idinf"], PDO::PARAM_INT);
+		$stmt-> execute();
+		return $stmt->fetchall();
+
+	}
 
 }
+
+
 ?>

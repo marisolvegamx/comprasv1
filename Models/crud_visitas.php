@@ -16,7 +16,7 @@ class DatosVisita{
  vi_fotofachada fotoFachada,
 vi_estatus estatus, vi_cverecolector claveUsuario,
  vi_createdat createdAt, vi_updatedat updatedAt,
-vi_direccion direccion ,
+vi_direccion direccion ,vi_consecutivocd,
 cu.une_cadenacomercial cadenaComercial ,vi_complementodir complementodireccion,
 cu.une_puntocardinal puntoCardinal,
 cu.une_cla_ciudad ciudadId, '' ciudad,une_descripcion as tiendaNombre,
@@ -42,9 +42,9 @@ where vi_indice=:vi_indice and vi_cverecolector=:vi_cverecolector;";
             
             $sSQL= " INSERT INTO $tabla
 ( vi_idlocal, vi_indice,vi_geolocalizacion, vi_direccion,vi_complementodir,vi_tiendaid, vi_fotofachada,
- vi_estatus, vi_cverecolector, vi_createdat, vi_updatedat, vi_unedesc, vi_tipotienda,vi_puntocardinal)
+ vi_estatus, vi_cverecolector, vi_createdat, vi_updatedat, vi_unedesc, vi_tipotienda,vi_puntocardinal, vi_consecutivocd)
 VALUES( :vi_idlocal, :vi_indice,:vi_geolocalizacion,:vi_direccion,:vi_complementodir, :vi_tiendaid, :vi_fotofachada,
- :vi_estatus, :vi_cverecolector, :vi_createdat, :vi_updatedat,:vi_unedesc, :vi_tipotienda,:vi_puntocardinal);";
+ :vi_estatus, :vi_cverecolector, :vi_createdat, :vi_updatedat,:vi_unedesc, :vi_tipotienda,:vi_puntocardinal,:vi_consecutivocd);";
             
             $stmt=$pdo->prepare($sSQL);
             $stmt->bindParam(":vi_idlocal", $datosModel[ContratoVisitas::ID],PDO::PARAM_INT);
@@ -63,6 +63,7 @@ VALUES( :vi_idlocal, :vi_indice,:vi_geolocalizacion,:vi_direccion,:vi_complement
             $stmt->bindParam(":vi_createdat",  $datosModel[ContratoVisitas::CREATEDAT], PDO::PARAM_STR);
             $stmt->bindParam(":vi_updatedat", $datosModel[ContratoVisitas::UPDATEDAT], PDO::PARAM_STR);
             $stmt->bindParam(":vi_puntocardinal", $datosModel[ContratoVisitas::PUNTOCARDINAL], PDO::PARAM_STR);
+            $stmt->bindParam(":vi_consecutivocd", $datosModel[ContratoVisitas::CONSECUTIVOCD], PDO::PARAM_INT);
             
            if(!$stmt-> execute())
            { $stmt->debugDumpParams();
@@ -125,7 +126,7 @@ WHERE vi_idlocal=:idlocal and  vi_indice=:indice and vi_cverecolector=:reco;";
  vi_fotofachada ,
 vi_estatus , vi_cverecolector ,
  vi_createdat , vi_updatedat ,
-vi_direccion 
+vi_direccion,vi_consecutivocd 
 FROM $tabla
 where vi_indice=:vi_indice and vi_cverecolector=:vi_cverecolector and vi_idlocal=:vi_id;";
         

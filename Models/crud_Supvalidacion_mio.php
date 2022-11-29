@@ -174,8 +174,8 @@ public function actualizaValidacionimg($datosModel, $tabla){
     public function ingresaValidacionimg($datosModel, $tabla){
 
 	// busca el id de validacion
-    $sql='INSERT INTO `sup_validafotos`(`vai_id`, `vai_numfoto`, `vai_descripcionfoto`, `vai_estatus`, `vai_observaciones`,vai_fecha,vai_consecutivoinf)
- VALUES ('.$datosModel["idval"].','.$datosModel["idimg"].','.$datosModel["desimg"].','.$datosModel["est"].',"'.$datosModel["observ"].'", now(),'.$datosModel["cons"].');';
+    $sql='INSERT INTO `sup_validafotos`(`vai_id`, `vai_numfoto`, `vai_descripcionfoto`, `vai_estatus`, `vai_observaciones`)
+ VALUES ('.$datosModel["idval"].','.$datosModel["idimg"].','.$datosModel["desimg"].','.$datosModel["est"].',"'.$datosModel["observ"].'");';
    	//	echo $sql;
 	$stmt = Conexion::conectar()-> prepare($sql);
 
@@ -255,18 +255,6 @@ public function LeeEstatusinforme($datosModel, $tabla){
 	return $stmt->fetchall();
 
 	}
-	public function getUltimoConsInf($idval, $tabla){
-	    
-	  
-	    $stmt = Conexion::conectar()-> prepare("SELECT max(vai_consecutivoinf) 
-FROM `sup_validafotos` where vai_id=:idval");
-	    
-	    $stmt->bindParam(":idval", $idval, PDO::PARAM_INT);
-	   
-	    $stmt-> execute();
-	    
-	    return $stmt->fetch();
-	    
-	}
+
 
 }	

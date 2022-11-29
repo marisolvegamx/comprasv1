@@ -29,8 +29,9 @@ class DatosUneImagenes{
             $stmt->bindParam(":ui_exrecolector",   $cverecolector, PDO::PARAM_INT);
             
             if(!$stmt->execute())
-            { $stmt->debugDumpParams();
-            var_dump($stmt->errorInfo());
+            {// $stmt->debugDumpParams();
+        //    var_dump($stmt->errorInfo());
+                Utilerias::guardarError("DatosUneImagenes.insertar "+$stmt->errorInfo()[1]);
             throw new Exception("Hubo un error al insertar uneimagenes ".$stmt->errorInfo()[1]);
             
             }
