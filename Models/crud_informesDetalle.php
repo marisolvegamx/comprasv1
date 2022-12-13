@@ -524,4 +524,50 @@ where ind_informes_id=:idinf and ind_foto_atributoa=:fotoatra  and ind_recolecto
         
     }
     
+    
+    public function actualizarCancelada($indice,$rec,$id,$estatus,$tabla){
+        try{
+           // echo $indice."--".$rec."--".$id."--".$estatus;
+            $sSQL= "UPDATE $tabla
+                    SET
+                    ind_estatus=:ind_estatus
+                     WHERE ind_id=:id and ind_indice=:indice and ind_recolector=:rec";
+            
+            $stmt=DatosInformeDetalle::getInstance()->prepare($sSQL);
+            $stmt->bindParam(":id", $id,PDO::PARAM_INT);
+            $stmt->bindParam(":rec", $rec, PDO::PARAM_INT);
+            $stmt->bindParam(":indice", $indice, PDO::PARAM_STR);
+            $stmt->bindParam(":ind_estatus", $estatus, PDO::PARAM_INT);
+            $stmt->debugDumpParams();
+           // die($sSQL);
+          //  
+            $stmt->execute();
+            //   $this->updateFechaLista($idlis, "pr_listacompra");
+                 
+            
+        }catch(PDOException $ex){
+            throw new Exception("Hubo un error al actualizar el estatus ".$ex);
+        }
+    }
+    public function getCancelada($idlis,$prdocom,$estatus,$tabla){
+        try{
+            //echo $idlis."--".$prdocom."--".$estatus;
+            $sSQL= "select * from $tabla
+                     WHERE ind_comprasid=:idlis and ind_compraddetid=:claop and (ind_estatus=2 or ind_estatus=5)";
+            
+            $stmt=DatosInformeDetalle::getInstance()->prepare($sSQL);
+            $stmt->bindParam(":idlis", $idlis,PDO::PARAM_INT);
+            $stmt->bindParam(":claop", $prdocom, PDO::PARAM_INT);
+           // $stmt->bindParam(":ind_estatus", $estatus, PDO::PARAM_INT);
+             $stmt->debugDumpParams();
+            // die($sSQL);
+            //
+            $stmt->execute();
+            //   $this->updateFechaLista($idlis, "pr_listacompra");
+            return $stmt->fetch();
+            
+        }catch(PDOException $ex){
+            throw new Exception("Hubo un error al actualizar el estatus ".$ex);
+        }
+    }
 }

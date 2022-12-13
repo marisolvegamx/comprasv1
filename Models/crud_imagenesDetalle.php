@@ -190,7 +190,7 @@ imd_indice=:imd_indice and imd_usuario=:imd_recolector;";
                 
                 throw new Exception($stmt->errorCode()."-".$stmt->errorInfo()[2]);
             }
-            
+         //   $stmt->debugDumpParams();
         }catch(PDOException $ex){
             Utilerias::guardarError("DatosInformeDetalle.actualizarArchivo "+$ex->getMessage());
             throw new Exception("Hubo un error al actualizarArchivo la imagen");

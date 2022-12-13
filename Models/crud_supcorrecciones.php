@@ -127,7 +127,7 @@ FROM $tabla WHERE cor_id=:cor_id AND cor_indice=:cor_indice AND cor_cverecolecto
         
         
         $stmt-> execute();
-        //  $stmt->debugDumpParams();
+        // $stmt->debugDumpParams();
         return $stmt->fetch(PDO::FETCH_ASSOC); //para que solo devuelva los nombres de columnas
         
         

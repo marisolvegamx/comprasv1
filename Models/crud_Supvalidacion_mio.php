@@ -174,8 +174,8 @@ public function actualizaValidacionimg($datosModel, $tabla){
     public function ingresaValidacionimg($datosModel, $tabla){
 
 	// busca el id de validacion
-    $sql='INSERT INTO `sup_validafotos`(`vai_id`, `vai_numfoto`, `vai_descripcionfoto`, `vai_estatus`, `vai_observaciones`)
- VALUES ('.$datosModel["idval"].','.$datosModel["idimg"].','.$datosModel["desimg"].','.$datosModel["est"].',"'.$datosModel["observ"].'");';
+    $sql='INSERT INTO `sup_validafotos`(`vai_id`, `vai_numfoto`, `vai_descripcionfoto`, `vai_estatus`, `vai_observaciones`,vai_fecha)
+ VALUES ('.$datosModel["idval"].','.$datosModel["idimg"].','.$datosModel["desimg"].','.$datosModel["est"].',"'.$datosModel["observ"].'", now());';
    	//	echo $sql;
 	$stmt = Conexion::conectar()-> prepare($sql);
 
@@ -188,6 +188,25 @@ public function actualizaValidacionimg($datosModel, $tabla){
 		$stmt-> execute();
 		        
 	}
+	
+	public function ingresaValidacionimg2($datosModel, $tabla){
+	    
+	    // busca el id de validacion
+	    $sql='INSERT INTO `sup_validafotos`(`vai_id`, `vai_numfoto`, `vai_descripcionfoto`, `vai_estatus`, `vai_observaciones`,vai_fecha,vai_consecutivoinf)
+ VALUES ('.$datosModel["idval"].','.$datosModel["idimg"].','.$datosModel["desimg"].','.$datosModel["est"].',"'.$datosModel["observ"].'", now(),'.$datosModel["cons"].');';
+	    //	echo $sql;
+	    $stmt = Conexion::conectar()-> prepare($sql);
+	    
+	    //	$stmt->bindParam(":idval", $datosModel["idval"], PDO::PARAM_INT);
+	    //	$stmt->bindParam(":estatus", $datosModel["est"], PDO::PARAM_INT);
+	    //	$stmt->bindParam(":numimg", $datosModel["idimg"], PDO::PARAM_INT);
+	    //	$stmt->bindParam(":descripfoto", $datosModel["desimg"], PDO::PARAM_STR);
+	    //	$stmt->bindParam(":idcli", $datosModel["idcli"], PDO::PARAM_INT);
+	    //	$stmt->bindParam(":observ", $datosModel["observ"], PDO::PARAM_STR);
+	    $stmt-> execute();
+	    
+	}
+	
 
 public function LeeImgticket($uneid, $recid, $indice, $tabla){
 
@@ -234,7 +253,7 @@ public function LeeEstatusFoto($datosModel, $tabla){
 		$stmt->bindParam(":ideta", $datosModel["ideta"], PDO::PARAM_INT);
 		$stmt->bindParam(":idfoto", $datosModel["idfoto"], PDO::PARAM_INT);
 		$stmt-> execute();
-
+     //  $stmt->debugDumpParams();
 	return $stmt->fetchall();
 
 	}
@@ -255,6 +274,18 @@ public function LeeEstatusinforme($datosModel, $tabla){
 	return $stmt->fetchall();
 
 	}
-
+	public function getUltimoConsInf($idval, $tabla){
+	    
+	  
+	    $stmt = Conexion::conectar()-> prepare("SELECT max(vai_consecutivoinf) 
+FROM `sup_validafotos` where vai_id=:idval");
+	    
+	    $stmt->bindParam(":idval", $idval, PDO::PARAM_INT);
+	   
+	    $stmt-> execute();
+	    
+	    return $stmt->fetch();
+	    
+	}
 
 }	

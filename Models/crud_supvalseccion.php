@@ -13,7 +13,7 @@ class DatosValSeccion extends Conexion{
 '.$datosModel["estatus"].',"'.$datosModel["nummuestra"].'", now());';
         
         
-       // 	var_dump($sql);
+        	//var_dump($sql);
         //	die();
         $stmt = Conexion::conectar()-> prepare($sql);
         

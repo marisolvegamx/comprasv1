@@ -66,7 +66,7 @@ VALUES( :vi_idlocal, :vi_indice,:vi_geolocalizacion,:vi_direccion,:vi_complement
             $stmt->bindParam(":vi_consecutivocd", $datosModel[ContratoVisitas::CONSECUTIVOCD], PDO::PARAM_INT);
             
            if(!$stmt-> execute())
-           { $stmt->debugDumpParams();
+           {// $stmt->debugDumpParams();
                throw new Exception("Hubo un error al insertar visita".$stmt->errorInfo()[0]);
              
            }
@@ -168,6 +168,20 @@ WHERE vi_idlocal=:idlocal and  vi_indice=:indice and vi_cverecolector=:reco;";
             
             throw new Exception("Hubo un error al actualizar dir del informe");
         }
+        
+    }
+    
+    public function vistaSupInfvisModel($datosModel, $tabla){
+        
+        $stmt = Conexion::conectar()-> prepare("SELECT *, date_format(vi_createdat, '%d-%m-%Y') as fecharep, date_format(vi_createdat, '%H:%i') as horarep FROM `visitas` inner join informes on inf_visitasidlocal=vi_idlocal and inf_indice=vi_indice and inf_usuario=vi_cverecolector  where inf_id=:idv and inf_indice=:indice and inf_usuario=:cverec;");
+        
+        
+        $stmt->bindParam(":idv", $datosModel["idinf"],PDO::PARAM_INT);
+        $stmt->bindParam(":indice", $datosModel["idmes"],PDO::PARAM_STR);
+        $stmt->bindParam(":cverec", $datosModel["idrec"],PDO::PARAM_INT);
+        $stmt-> execute();
+      //  $stmt->debugDumpParams();
+        return $stmt->fetchall();
         
     }
 }

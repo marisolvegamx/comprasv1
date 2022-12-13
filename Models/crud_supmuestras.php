@@ -37,7 +37,7 @@ class DatosInfoMues extends Conexion{
 	public function vistaFirstMuesModel($datosModel, $tabla){
 
 
-    $stmt = Conexion::conectar()-> prepare("SELECT `inf_visitasIdlocal`, `inf_id`, `inf_consecutivo`, `inf_indice`, `inf_usuario`, `inf_plantasid`, n5_nombre, n5_idn1 vi_tiendaid FROM `informes` INNER JOIN visitas ON inf_indice=vi_indice AND inf_visitasIdlocal=vi_idlocal and inf_usuario=vi_cverecolector inner join ca_nivel5 ON n5_id= inf_plantasid where inf_indice=:indice and informes.inf_id<:idinf and inf_usuario=:idrec and n5_idn1=:idcli order by informes.inf_id;");
+    $stmt = Conexion::conectar()-> prepare("SELECT `inf_visitasIdlocal`, `inf_id`, `inf_consecutivo`, `inf_indice`, `inf_usuario`, `inf_plantasid`, n5_nombre, n5_idn1 vi_tiendaid FROM `informes` INNER JOIN visitas ON inf_indice=vi_indice AND inf_id=vi_idlocal and inf_usuario=vi_cverecolector inner join ca_nivel5 ON n5_id= inf_plantasid where inf_indice=:indice and informes.inf_id<:idinf and inf_usuario=:idrec and n5_idn1=:idcli order by informes.inf_id;");
 
 	$stmt->bindParam(":indice", $datosModel["idmes"], PDO::PARAM_STR);
 	$stmt->bindParam(":idinf", $datosModel["idinf"], PDO::PARAM_INT);
@@ -51,7 +51,7 @@ class DatosInfoMues extends Conexion{
 public function vistaAnttiendaModel($datosModel, $tabla){
     
 
-	$stmt = Conexion::conectar()-> prepare("SELECT `inf_visitasIdlocal`, `inf_id`, `inf_consecutivo`, `inf_indice`, `inf_usuario`, `inf_plantasid`, n5_nombre, n5_idn1 vi_tiendaid FROM `informes` INNER JOIN visitas ON inf_indice=vi_indice AND inf_visitasIdlocal=vi_idlocal and inf_usuario=vi_cverecolector inner join ca_nivel5 ON n5_id= inf_plantasid where inf_indice=:idmes and informes.inf_id<:idinf and inf_usuario=:idrec and n5_idn1=:idcli order by informes.inf_id desc;");
+	$stmt = Conexion::conectar()-> prepare("SELECT `inf_visitasIdlocal`, `inf_id`, `inf_consecutivo`, `inf_indice`, `inf_usuario`, `inf_plantasid`, n5_nombre, n5_idn1 vi_tiendaid FROM `informes` INNER JOIN visitas ON inf_indice=vi_indice AND inf_id=vi_idlocal and inf_usuario=vi_cverecolector inner join ca_nivel5 ON n5_id= inf_plantasid where inf_indice=:idmes and informes.inf_id<:idinf and inf_usuario=:idrec and n5_idn1=:idcli order by informes.inf_id desc;");
 
 	    $stmt->bindParam(":idinf", $datosModel["idinf"], PDO::PARAM_INT);
 		$stmt->bindParam(":idmes", $datosModel["idmes"], PDO::PARAM_STR);
@@ -64,7 +64,7 @@ public function vistaAnttiendaModel($datosModel, $tabla){
 
     public function vistaSigtiendaModel($datosModel, $tabla){
 
-	$stmt = Conexion::conectar()-> prepare("SELECT `inf_visitasIdlocal`, `inf_id`, `inf_consecutivo`, `inf_indice`, `inf_usuario`, `inf_plantasid`, n5_nombre, n5_idn1 vi_tiendaid FROM `informes` INNER JOIN visitas ON inf_indice=vi_indice AND inf_visitasIdlocal=vi_idlocal and inf_usuario=vi_cverecolector inner join ca_nivel5 ON n5_id= inf_plantasid where inf_indice=:idmes and informes.inf_id>:idinf and inf_usuario=:idrec and n5_idn1=:idcli order by informes.inf_id ;");
+	$stmt = Conexion::conectar()-> prepare("SELECT `inf_visitasIdlocal`, `inf_id`, `inf_consecutivo`, `inf_indice`, `inf_usuario`, `inf_plantasid`, n5_nombre, n5_idn1 vi_tiendaid FROM `informes` INNER JOIN visitas ON inf_indice=vi_indice AND inf_id=vi_idlocal and inf_usuario=vi_cverecolector inner join ca_nivel5 ON n5_id= inf_plantasid where inf_indice=:idmes and informes.inf_id>:idinf and inf_usuario=:idrec and n5_idn1=:idcli order by informes.inf_id ;");
 
 		$stmt->bindParam(":idinf", $datosModel["idinf"], PDO::PARAM_INT);
 		$stmt->bindParam(":idmes", $datosModel["idmes"], PDO::PARAM_STR);
@@ -78,7 +78,7 @@ public function vistaAnttiendaModel($datosModel, $tabla){
 
     public function vistalasttiendaModel($datosModel, $tabla){
 
-	$stmt = Conexion::conectar()-> prepare("SELECT `inf_visitasIdlocal`, `inf_id`, `inf_consecutivo`, `inf_indice`, `inf_usuario`, `inf_plantasid`, n5_nombre, n5_idn1 vi_tiendaid FROM `informes` INNER JOIN visitas ON inf_indice=vi_indice AND inf_visitasIdlocal=vi_idlocal and inf_usuario=vi_cverecolector inner join ca_nivel5 ON n5_id= inf_plantasid where inf_indice=:idmes and informes.inf_id>:idinf and inf_usuario=:idrec and n5_idn1=:idcli order by informes.inf_id desc;");
+	$stmt = Conexion::conectar()-> prepare("SELECT `inf_visitasIdlocal`, `inf_id`, `inf_consecutivo`, `inf_indice`, `inf_usuario`, `inf_plantasid`, n5_nombre, n5_idn1 vi_tiendaid FROM `informes` INNER JOIN visitas ON inf_indice=vi_indice AND inf_id=vi_idlocal and inf_usuario=vi_cverecolector inner join ca_nivel5 ON n5_id= inf_plantasid where inf_indice=:idmes and informes.inf_id>:idinf and inf_usuario=:idrec and n5_idn1=:idcli order by informes.inf_id desc;");
 
 		$stmt->bindParam(":idinf", $datosModel["idinf"], PDO::PARAM_INT);
 		$stmt->bindParam(":idmes", $datosModel["idmes"], PDO::PARAM_STR);
