@@ -80,10 +80,16 @@
                   
 
 
-                </div>
-                <div class="col-md-3 tituloSupBotones" ><a href="index.php?action=supinformecli02&idmes='.$idmes.'&idrec='.$idrec.'&id='.$idinf.'&idsup='.$idsup.'&cli='.$idcli.'&sec='.$sec.'&nummues=1&pan=9&eta=2"><img src="Views/dist/img/Avanza-Final.jpg"></a>
+                 </div>';
+                if($informeCont->idcli>4)
+                    echo ' <div class="col-md-3 tituloSupBotones" ><a href="index.php?action=supinformecli02&idmes='.$idmes.'&idrec='.$idrec.'&id='.$idinf.'&idsup='.$idsup.'&cli='.$idcli.'&sec='.$sec.'&eta=2&pan=8&nummues=1"><img src="Views/dist/img/Avanza-Final.jpg"></a>';
+                    else
+                        echo
+                '<div class="col-md-3 tituloSupBotones" ><a href="index.php?action=supinformecli02&idmes='.$idmes.'&idrec='.$idrec.'&id='.$idinf.'&idsup='.$idsup.'&cli='.$idcli.'&sec='.$sec.'&nummues=1&pan=9&eta=2"><img src="Views/dist/img/Avanza-Final.jpg"></a>';
+                    echo '
                 </div>
                 ';
+               
                 ?>
               </div>
       </div>
