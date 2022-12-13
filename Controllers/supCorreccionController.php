@@ -161,7 +161,7 @@ class SupCorreccionController
         try{
             if($this->imagenOrig!=null){
                 //reemplazo el archivo
-                //var_dump($this->correccionFoto);
+              //  var_dump($this->imagenOrig);
                 DatosImagenDetalle::actualizarArchivo($this->numfoto,$this->correccionFoto["cor_rutafoto1"],$this->rec_id,$this->mesas,"imagen_detalle" );
                 //borro el archivo original
                 if (is_file($this->dirimagen."/".$this->imagenOrig["ruta"]) )
@@ -181,6 +181,7 @@ class SupCorreccionController
             if($this->imagenOrig2!=null){
                 //reemplazo el archivo
                // var_dump($this->correccionFoto);
+            //    var_dump($this->imagenOrig2);
                 DatosImagenDetalle::actualizarArchivo($this->idfoto2,$this->correccionFoto["cor_rutafoto2"],$this->rec_id,$this->mesas,"imagen_detalle" );
                 //borro el archivo original
                 if (is_file($this->dirimagen."/".$this->imagenOrig2["ruta"]) )
@@ -190,13 +191,14 @@ class SupCorreccionController
                             
             }
             if($this->imagenOrig3!=null){
+            //    var_dump($this->imagenOrig3);
                 //reemplazo el archivo
                // var_dump($this->correccionFoto);
-                DatosImagenDetalle::actualizarArchivo($this->numfoto,$this->correccionFoto["cor_rutafoto3"],$this->rec_id,$this->mesas,"imagen_detalle" );
+                DatosImagenDetalle::actualizarArchivo($this->idfoto3,$this->correccionFoto["cor_rutafoto3"],$this->rec_id,$this->mesas,"imagen_detalle" );
                 //borro el archivo original
-                if (is_file($this->dirimagen."/".$this->imagenOrig3["cor_rutafoto1"]) )
+                if (is_file($this->dirimagen."/".$this->imagenOrig3["ruta"]) )
                     
-                    unlink($this->dirimagen."/".$this->imagenOrig3["cor_rutafoto1"]);
+                    unlink($this->dirimagen."/".$this->imagenOrig3["ruta"]);
                    
                     
             }
@@ -262,6 +264,14 @@ class SupCorreccionController
         //  var_dump($this->correccionFoto);
     }
     
+    public function calcTiempoResp($tiempoini,$tiempofin){
+     // echo $tiempoini."--".$tiempofin;
+        $firstDate  = new DateTime($tiempoini);
+        $secondDate = new DateTime($tiempofin);
+        $intvl = $firstDate->diff($secondDate);
+            return $intvl->days." días";
+        
+    }
    
     public function getopcsel() {
         return $this->opcsel;

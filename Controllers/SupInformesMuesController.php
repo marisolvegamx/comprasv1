@@ -1,7 +1,9 @@
 <?php
-
-
+//error_reporting(E_ERROR|E_NOTICE|E_WARNING);
+ini_set("display_errors", 0); 
+include "Models/crud_informesDetalle.php";
 include 'Models/crud_imagenesDetalle.php';
+include 'Models/crud_supvalseccion.php';
 class SupInfmuestraController{
     
 
@@ -76,15 +78,15 @@ class SupInfmuestraController{
         //var_dump($this->ticket);
 				$this->idplanta= $item["inf_plantasid"];
 				$this->idtienda= $item["vi_tiendaid"];
-         $this->nomtienc=$item["VI_UNEDESC"];
+                $this->nomtienc=$item["VI_UNEDESC"];
                 $idvisita=$item["vi_idlocal"];
 				$this->coment=$item["inf_comentarios"];
 				$this->nomrec=$item["rec_nombre"];
 				$this->fecharep=$item["fecharep"];
 				$this->horarep=$item["horarep"];
 				$this->numtien=$item["inf_consecutivo"];
-        $this->numciu=$item["n5_idn4"];
-        $this->causaNOC=$item["inf_causa_nocompra"];
+                $this->numciu=$item["n5_idn4"];
+                $this->causaNOC=$item["inf_causa_nocompra"];
         
       }
 
@@ -125,9 +127,9 @@ class SupInfmuestraController{
     	  //  foreach($respuesta3 as $row => $item3){
 			  // $this->nomtienc= $item3["une_descripcion"];
 		//	}
-		    
+		
 		    //$this->eta="2";
-            $datosCont2= array("idinf"=>$this->idinf,
+         /*   $datosCont2= array("idinf"=>$this->idinf,
                          "idmes"=>$this->mesas,
                          "idrec"=>$this->rec_id,
                          "ideta"=>$this->ideta,
@@ -137,7 +139,7 @@ class SupInfmuestraController{
               foreach($respuesta4 as $row => $item4){
                  $this->nombreimg= $item4["imd_ruta"];
                  $this->idimg= $item4["imd_idlocal"];
-              }             
+              }*/             
 
            
         $datosCont2= array("idinf"=>$this->idinf,
@@ -148,7 +150,7 @@ class SupInfmuestraController{
       ); 
         //var_dump($datosCont2);
         $respuesta4 =DatosValidacion::LeeEstatusSec($datosCont2, "sup_validacion");
-        //var_dump($respuesta4);
+      //  var_dump($respuesta4);
         foreach($respuesta4 as $row => $item4){
             $resnoap= $item4["vas_noaplica"];
             if ($resnoap==0){
@@ -163,18 +165,7 @@ class SupInfmuestraController{
             }  
         }
 
-        $datosCont3= array("idinf"=>$this->idinf,
-                         "idmes"=>$this->mesas,
-                         "idrec"=>$this->rec_id,
-                         "ideta"=>$this->ideta,
-                         "idfoto"=>$this->idimg,
-      );
-      //var_dump($datosCont3);
-      $respuesta5 =DatosValidacion::LeeEstatusFoto($datosCont3, "sup_validacion");
-        //var_dump($respuesta4);
-        foreach($respuesta5 as $row => $item5){
-            $this->estfot= $item5["vai_estatus"];      
-        }
+       
 
 
       // busca imagen ticket
@@ -194,11 +185,12 @@ class SupInfmuestraController{
     //  var_dump($datosCon3);
 
    
-   $result3=DatosInfoMues::fotoproexhib($datosCon3,"producto_exhibido");
-   //var_dump($result3);
+        $result3=DatosInfoMues::fotoproexhib($datosCon3,"producto_exhibido");
+  // var_dump($result3);
 
-      foreach($result3 as $row => $item5){
-            $this->pexhib= $item5["pe_imagenid"];      
+        foreach($result3 as $row => $item5){
+            $this->pexhib= $item5["pe_imagenid"];  
+          
         }
 
     
@@ -209,7 +201,22 @@ class SupInfmuestraController{
        // var_dump($result2);
      // var_dump($result2);
          //foreach($result2 as $row => $item0){
-           $this->nombrepex = $result2["imd_ruta"];   
+           $this->nombrepex = $result2["imd_ruta"]; 
+           $this->nombreimg= $result2["imd_ruta"];
+           $this->idimg= $result2["imd_idlocal"];
+           $datosCont3= array("idinf"=>$this->idinf,
+               "idmes"=>$this->mesas,
+               "idrec"=>$this->rec_id,
+               "ideta"=>$this->ideta,
+               "idfoto"=> $this->pexhib,
+           );
+           //var_dump($datosCont3);
+           $respuesta5 =DatosValidacion::LeeEstatusFoto($datosCont3, "sup_validafotos");
+           
+           //var_dump($respuesta4);
+           foreach($respuesta5 as $row => $item5){
+               $this->estfot= $item5["vai_estatus"];
+           }
          // $this->nombrepex);
         //}    
        //var_dump($this->nompexhib);  
@@ -489,10 +496,10 @@ public function noaceptarprodex(){
       $estatus=1; 
     }
      
-    $regresar="index.php?action=supinformecli".$pan."&idmes=".$indice."&idrec=".$idrec."&id=".$id."&cli=".$cli;
+    $regresar="index.php?action=supinformecli".$pan."&idmes=".$indice."&idrec=".$idrec."&id=".$id."&cli=".$cli."&eta=2&idsup=".$idsup;
 
     if ($sec==4){
-        $descrip="foto anaquel";
+        $descrip=3;
     }else if ($sec==2){
         $descrip="direccion en ticket";
     }
@@ -520,7 +527,8 @@ public function noaceptarprodex(){
             //var_dump($datosController1);
            // valida si existe la seccion
           $respuestaS =DatosValidacion::LeeIdvalidafoto($idval, $img, "sup_validafotos");
-          //var_dump($respuestaS);
+          
+         
            if (sizeof($respuestaS)>0) {   
           
           // actualiza validacion
@@ -532,16 +540,25 @@ public function noaceptarprodex(){
              DatosValidacion::actualizaValidacionimg($datosController,"sup_validafotos");
             } else {
               // ingresa seccion
-              echo "no existe seccion";
+             // echo "no existe seccion";
+              $resp=DatosValidacion::getUltimoConsInf($idval,"sup_validafotos");
+              // var_dump($resp);
+              // die();
+              $consec=1;
+              if($resp!=null){
+                  $consec=$resp[0]+1;
+                  
+              }
                 $datosController2= array("idval"=>$idval,
                       "idcli"=>$cli,
                       "observ"=>$observ,
                       "est"=>$est,
                       "idimg"=>$img,
-                      "desimg"=>2,
-                                   );
-                //var_dump($datosController2);
-                DatosValidacion::ingresaValidacionimg($datosController2, "sup_validafotos");
+                      "desimg"=>3,
+                    "cons"=>$consec         );
+               // var_dump($datosController2);
+               
+                DatosValidacion::ingresaValidacionimg2($datosController2, "sup_validafotos");
 
             }  
 
@@ -571,21 +588,29 @@ public function noaceptarprodex(){
               $idval= $item["val_id"];
             }
           } 
+          $resp=DatosValidacion::getUltimoConsInf($idval,"sup_validafotos");
+          // var_dump($resp);
+          // die();
+          $consec=1;
+          if($resp!=null){
+              $consec=$resp[0]+1;
+              
+          }
 
         $datosController2= array("idval"=>$idval,
                       "idcli"=>$cli,
                       "observ"=>$observ,
                       "est"=>$est,
                       "idimg"=>$img,
-                      "desimg"=>2,
-                                   );
+                      "desimg"=>3,
+                           "cons"=>$consec        );
         
-        DatosValidacion::ingresaValidacionimg($datosController2, "sup_validafotos"); }
+        DatosValidacion::ingresaValidacionimg2($datosController2, "sup_validafotos"); }
        //var_dump($respuesta);
         if ($est==3){
           DatosValidacion::actualizaValidacionpr($datosController,"sup_validacion");
         }
-
+//die();
     echo "
             <script type='text/javascript'>
               window.location='$regresar'
@@ -599,7 +624,7 @@ public function noaceptarprodex(){
 }
 
 public function aceptarsec(){
-    
+  
   include "Utilerias/leevar.php";
    try{
     if ($pan) {
@@ -616,6 +641,7 @@ public function aceptarsec(){
     
        $respuesta =DatosValidacion::LeeIdValidacion($datosController, "sup_validacion");
        // valido si se encuentra
+     // var_dump($respuesta);
        if (sizeof($respuesta)>0) {
           foreach($respuesta as $row => $item){
              $idval= $item["val_id"];
@@ -628,42 +654,58 @@ public function aceptarsec(){
                   );
             //var_dump($datosController);
           $respuestaS =DatosValidacion::LeeIdImgValidacion($datosController, "sup_validasecciones");
-          //var_dump($respuestaS);
+         // var_dump($respuestaS);
            if (sizeof($respuestaS)>0) { 
               //echo "lo encontre";  
                $datosController= array("idval"=>$idval,
                 "idsec"=>$sec,
                 "idaprob"=>$acep,
                 "noap"=>$noa,
-                "observ"=>"",
+                   "observ"=>$observacionessec,
                 "estatus"=>$est,
               );
               DatosValidacion::actualizaValidacionsec($datosController,"sup_validasecciones");
            }else{
                //echo "no esta la seccion";
-              if ($sec==4){
+              if ($cli==4){
                   $descrip="producto exhibido PEPSI";
                }else{
-                 if ($sec==5){
+                 if ($cli==5){
                     $descrip="producto exhibido PEÑAFIEL";
                  } else {
-                 if ($sec==6){
+                 if ($cli==6){
                     $descrip="producto exhibido ELECTRO";   
                  }
                }
               }
         
-                  $datosController2= array("idval"=>$idval,
+                /*  $datosController2= array("idval"=>$idval,
                       "idsec"=>$sec,
                       "descrip"=>$descrip,
                       "idaprob"=>$acep,
                       "noap"=>$noa,
-                      "observ"=>$solicitud,
+                      "observ"=>$observacionessec,
                       "estatus"=>$est,
                                    );
                 //var_dump($datosController2);
-                DatosValidacion::ingresaregvalsec($datosController2, "sup_validasecciones");           
-            }  // if validacion de seccion
+                DatosValidacion::ingresaregvalsec($datosController2, "sup_validasecciones");*/           
+                
+                $datosController2= array("idval"=> $idval,
+                    "idsec"=>$sec,
+                    "descrip"=>$descrip,
+                    "idaprob"=>$acep,
+                    "noap"=>$noa,
+                    "observ"=>$observacionessec,
+                    "estatus"=>$est,
+                    
+                    "nummuestra"=>0
+                );
+                //  var_dump($datosController2);
+                // die();
+                DatosValSeccion::ingresaregvalsecmues($datosController2, "sup_validasecciones");
+                
+           
+           }  // if validacion de seccion
 
        }else {
            //echo "no hay nada";  
@@ -691,26 +733,64 @@ public function aceptarsec(){
             }
           } 
          // var_dump($idval);
-          if ($sec==4){
-                  $descrip="producto exhibido PEPSI";
+          if ($cli==4){
+              $descrip="producto exhibido PEPSI";
           }else{
-             if ($sec==5){
-                $descrip="producto exhibido PEÑAFIEL";
-             }
+              if ($cli==5){
+                  $descrip="producto exhibido PEÑAFIEL";
+              } else {
+                  if ($cli==6){
+                      $descrip="producto exhibido ELECTRO";
+                  }
+              }
           }
-          $datosController2= array("idval"=>$idval,
+       /*   $datosController2= array("idval"=>$idval,
                       "idsec"=>$sec,
                       "descrip"=>$descrip,
                       "idaprob"=>$acep,
                       "noap"=>$noa,
-                      "observ"=>$solicitud,
+              "observ"=>$observacionessec,
                       "estatus"=>$est,
                                    );
          //var_dump($datosController2);
-        DatosValidacion::ingresaregvalsec($datosController2, "sup_validasecciones");
+        DatosValidacion::ingresaregvalsec($datosController2, "sup_validasecciones");*/
        
-           
-       }  // if existe en validacion
+        $datosController2= array("idval"=> $idval,
+            "idsec"=>$sec,
+            "descrip"=>$descrip,
+            "idaprob"=>$acep,
+            "noap"=>$noa,
+            "observ"=>$observacionessec,
+            "estatus"=>$est,
+            "nummuestra"=>0
+        );
+        //  var_dump($datosController2);
+        // die();
+        DatosValSeccion::ingresaregvalsecmues($datosController2, "sup_validasecciones");
+        
+       } 
+    
+       //si no se acepta se cancela el informe
+       //busco las muestras
+      // echo $can;
+       if($acep==0&&$can==1){
+      
+       
+           $rsdet=DatosInformeDetalle::getInformesDetxInf($indice, $idrec,$id,"informe_detalle");
+         //  var_dump($rsdet);
+           foreach ($rsdet as $muestra) {
+               echo $muestra["id"];
+               DatosInformeDetalle::actualizarEstatus($muestra["id"], $idrec, $indice, 2, "informe_detalle");
+               //busco el detalle para actualizar los comprados y los aceptados
+               //resto de comprados
+               if($muestra["ind_estatus"]!=2)//no había sido cancelada
+                   
+                   DatosInformeDetalle::restaCompradosLista($muestra["comprasId"],$muestra["comprasDetId"],1,"pr_listacompradetalle");
+                   
+           }
+       }
+       die();
+       // if existe en validacion
        echo "
             <script type='text/javascript'>
              window.location='$regresar'

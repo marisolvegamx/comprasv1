@@ -1,6 +1,5 @@
 <?php
-//error_reporting(E_ERROR|E_NOTICE|E_WARNING);
-//ini_set("display_errors", 1); 
+
 class SupInformesController{
 
   public $i;
@@ -144,7 +143,6 @@ class SupInformesController{
 		}
 
 
-
 public function SuplistaEtapasController(){
 // busca encabezados de plantas
   $this->idciu=$_GET["idciu"];
@@ -184,64 +182,37 @@ public function SuplistaEtapasController(){
 $respetapas=DatosCatalogoDetalle::listaCatalogoDetalleAsc(19, "ca_catalogosdetalle");
 
 
-
 foreach($respetapas as $row => $item){
         $numetapa= $item["cad_idopcion"];
         $nometapa= $item["cad_descripcionesp"];
 
     if ($numetapa == 1){
-       $enc_tot1="";
        for ($i=4; $i<=6; $i=$i+1) {
-           $datosCont1= array("idciu"=>$this->idciu,
-            "idcli"=>$i,
-           );
-
-           $resp1 =DatosSupInformes::BuscaEncabezadoPlanta($datosCont1, "ca_nivel5");
-
-          //var_dump($resp0);
-          foreach($resp1 as $row => $item0){
-              $idplan= $item0["n5_id"];
-              //$idcli =$i;
-                //var_dump($idplan);
-                  // verifica si tiene accion
-                  $datosCont1= array("idcli"=>$i,
-                            "idmes"=>$this->idmes,
-                            "ideta"=>$numetapa,
-                            "idpla"=>$idplan,
+          $datosCont= array("idciu"=>$this->idciu,
+                            "idcli"=>$i,
                            );
-                 // var_dump($datosCont1);
-                  $resp2=DatosSupInformes::BuscaEtapasPlanta($datosCont1, "pr_listacompra");
-                  if ($resp2){
-                  //var_dump($resp2);
-                      foreach($resp2 as $row => $item2){
-                          $idetapa= $item2["red_idetapa"];
-                           //var_dump($idetapa);
-                          if ($idetapa) {  // si existe accion
-                      
-                        // verifica si ya tiene supervision
-                           $enc_cli = '<td align="center">
-                           <a href="index.php?action=suppreparacion&idmes='.$this->idmes.'&idrec=1&idplan='.$idplan.'&cli='.$i.'&numdet=1&eta=1"><i class="fa fa-circle fa-2x" style="color:'.$nomestatus.';"></i></a>
-                             </td>  '; 
-                          }else{
-                             $enc_cli = '<td align="center"> </td>';
+          //}
+          //var_dump($datosCont);
+          $resp0 =DatosSupInformes::BuscaEncabezadoPlanta($datosCont, "ca_nivel5");
+          
+          foreach($resp0 as $row => $item0){
+              $idplan= $item0["n5_id"];
+              $idcli =$item0["n1_id"];
 
-                          }  
-                      }    
-                   } else {
-                      $enc_cli = '<td align="center"> </td>';
-                   }
-                         
-                 
-                   $enc_tot1=$enc_tot1.$enc_cli;
+                   $enc_cli = '<td align="center">
+           <a href="index.php?action=suppreparacion&idmes='.$this->idmes.'&idrec=1&idplan='.$idplan.'&cli='.$i.'&numdet=1&eta=1"><i class="fa fa-circle fa-2x" style="color:'.$nomestatus.';"></i></a>
+</td>  '; 
+
+                //echo $enc_cli;
+                $enc_tot1=$enc_tot1.$enc_cli;
+                   
               }
            
-          
+
           //$enc_prin=$enc_prin.'<th colspan="'.$nr.'" style="background-color: #cccccc;"> '.$cliente.' </th>';
 
         }
-
-       // echo $enc_tot1;
-    }  // if etapa 1
+    }
 
 
 
@@ -286,8 +257,8 @@ foreach($respetapas as $row => $item){
 </td>  ';
 
          }else{
-         //   echo '
-         // <td colspan='.$nt.'> </td>  ';
+            echo '
+          <td colspan='.$nt.'> </td>  ';
           }
 
         //if ($item["pena"]>0) {
@@ -1065,8 +1036,7 @@ public function SuplistaTiendasController(){
    foreach($respuesta as $row => $item){
 				$idtienda= $item["vi_tiendaid"];
 				$mes_asig= $item["inf_indice"];
-        $idvis=$item["ID"];
-        $idinf=$item["inf_id"];
+        $idvis=$item["vi_idlocal"];
 				$idt= $item["ID"]; 
 				
 				$aux = explode(".", $mes_asig);
@@ -1137,25 +1107,9 @@ public function SuplistaTiendasController(){
 	        <td>'.$idvis.'</td>       
 					<td>'.$nomtien.'</td>
 					<td  style="text-align: center;">
-					 <a href="index.php?action=supinforme&idmes='.$this->idmes.'&idrec='.$idrec.'&id='.$idt.'&sec=1&eta=2&idsup='.$this->idsup.'&idciu='.$this->idciu.'"><i class="fa fa-circle fa-2x" style="color:'.$nomesttien.';"></i></a>
+					 <a href="index.php?action=supinforme&idmes='.$this->idmes.'&idrec='.$idrec.'&id='.$idt.'&sec=1&eta=2&idsup='.$this->idsup.'&idciu='.$this->idciu.'"><i class="fa fa-circle fa-2x" style="color:'.$nomesttien.';"></i></a></td>  
                     
         ';
-            $datosCont2= array("idinf"=>$idinf,
-                      "idmes"=>$this->idmes,
-                      "idrec"=>$idrec,
-                     );
-
-          $resp4=DatosSupInformes::verificaalertatien($datosCont2, "sup_validacion");
-
-                 if ($resp4) {
-                 foreach($resp4 as $row => $item4){
-                   $op=$item4["vai_descripcionfoto"];   
-                    }   
-                       
-                   echo '       
-                <a href="index.php?action=suplistacorrecciones&idmes='.$this->idmes.'&idrec='.$idrec.'&id='.$idinf.'&cli=4&op='.$op.'&sec=4&eta=2&idciu='.$this->idciu.'&idsup='.$this->idsup.'" style="margin-right:-19px"><i class="fa fa-bell fa-1x" style="color:red;"></i></a>';
-                 }    
-           echo '</td>  ';      
         // AQUI VA LA BUSQUEDA DE OPCIONES DE PLANTA
          for ($i=4; $i<7; $i=$i+1) {
         
@@ -2110,14 +2064,9 @@ public function noaceptarimg(){
           $datosController= array("idmes"=>$idmes,
                       "idrec"=>$idrec,
                       "idinf"=>$id,
-                                 );
-
-           // var_dump($op);
-        if ($op<3) {
-          $respuesta=DatosSupInformes::verificaalertatien($datosController, "sup_validacion");
-        }else{
+                                   );
+        
          $respuesta =DatosSupInformes::verificaalerta($datosController, "sup_validacion");
-        }
 
        if (sizeof($respuesta)>0) {
           //echo "lo encontre en principal";

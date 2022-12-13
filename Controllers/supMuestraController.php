@@ -3,10 +3,15 @@
 //ini_set("display_errors", 1); 
 
 include "Models/crud_pantalla.php";
-include 'Models/crud_informesDetalle.php';
-//include 'Models/crud_imagenesDetalle.php';
-include 'Models/crud_supvalmuestras.php';
-include 'Models/crud_supvalseccion.php';
+
+//include 'Models/crud_informesDetalle.php';
+
+include 'Models/crud_visitas.php';
+
+include 'Models/crud_supvalfotos.php';
+
+//include 'Models/crud_supvalseccion.php';
+
 include 'Models/crud_productoExhibido.php';
 include 'Models/crud_informes.php';
 
@@ -90,7 +95,7 @@ class SupMuestraController
             "idrec"=>$this->rec_id,
             "cli"=>$this->idcli
         );
-         $resp2=DatosSupvisita::vistaSupInfvisModel($datosCont, "visitas");
+         $resp2=DatosVisita::vistaSupInfvisModel($datosCont, "visitas");
       //  var_dump($resp);
          $this->buscarMuestras();
         //   var_dump($this->muestras);
@@ -616,7 +621,7 @@ class SupMuestraController
                         "cli"=>$cli,
                         "cons"=>$consec
                     );
-                    DatosValidacion::ingresaValidacionimg($datosController, "sup_validafotos");
+                    DatosValidacion::ingresaValidacionimg2($datosController, "sup_validafotos");
                     $datoscorr=array("idval"=>$this->idval,
                         "idfoto"=>$numimg
                     );
@@ -762,8 +767,7 @@ class SupMuestraController
         // Log.d(TAG,"siglas kkkkkk "+lista.getSiglas());
         //pongo el nombre
         }
-    
-        
+      
           $this->listaCompra=$detalles;
                     
     }
@@ -883,8 +887,10 @@ class SupMuestraController
     }
     public function getLigapanu(){
         //devuelve a la ultima pantalla
-       
-        if($this->numpan<9)
+        if($this->numpan<9&&$this->idcli>4)
+            return "index.php?action=supinformecli02&idmes=".$this->mesas."&idrec=".$this->rec_id."&id=".$this->idinf.'&cli='.$this->idcli."&eta=".$this->etapa.'&pan=8&idsup='.$this->idsup.'&nummues='. $this->numuestra;
+            
+        if($this->numpan<9&&$this->idcli==4)
             return "index.php?action=supinformecli02&idmes=".$this->mesas."&idrec=".$this->rec_id."&id=".$this->idinf.'&cli='.$this->idcli."&eta=".$this->etapa.'&pan=9&idsup='.$this->idsup.'&nummues='. $this->numuestra;
         return "";
     }
