@@ -33,7 +33,6 @@ $informeCont=new SupInformesController();
         $infant=$informeCont->getidant();
         $direc2=$informeCont->asdirec2();
         $inffirst=$informeCont->getidfirst();
-
         $inflast=$informeCont->getidlast();
 
         // datos de edicion
@@ -56,17 +55,17 @@ $informeCont=new SupInformesController();
            $coordc =$informeCont->getcoordc();
            $idtienda=$informeCont->getidtien();
            $idtipc=$informeCont->getidtipc();
-           $numfotof=$informeCont->getfotof();
+           //$idimg=$informeCont->getfotof();
            $dirimagen=$informeCont->getdirimagen();
-           $fotofacc=$informeCont->getfotofacc(); 
            $nomimg=$informeCont->getnombreimg();
-           $numimg=$informeCont->getfotof();
-           $stimg = $informeCont->getestfot();
+            $stimg = $informeCont->getestfottik();
            $nomticketc=$informeCont->getnomticket();
            $nomticketf= $informeCont->getnomticketf();
            $nomciudad= $informeCont->getnomciudad();
            $numtkt= $informeCont->getnumtkt(); 
-           var_dump($nomticketc);
+           $numtktc= $informeCont->getnumimgtkt();
+           //var_dump($numtkt);
+           //var_dump($numtktc);
 
       include "Utilerias/leevar.php";
       if(isset($_GET["admin"])){
@@ -107,15 +106,15 @@ $informeCont=new SupInformesController();
               <div class="row">
                 <?php
                 echo '
-                <div class="col-md-3 tituloSupBotones" ><a href="index.php?action=supinforme&idmes='.$idmes.'&idrec='.$idrec.'&id='.$nunminf.'&sec=1&eta=2"><img src="Views/dist/img/Retrocede-Final.jpg"></a>
+                <div class="col-md-3 tituloSupBotones" ><a href="index.php?action=supinforme&idmes='.$idmes.'&idrec='.$idrec.'&id='.$nunminf.'&sec=1&eta=2&idsup='.$idsup.'&idciu='.$nomciudad.'"><img src="Views/dist/img/Retrocede-Final.jpg"></a>
                 </div>
 
-                <div class="col-md-3 tituloSupBotones" ><a href="index.php?action=supinforme02&idmes='.$idmes.'&idrec='.$idrec.'&id='.$nunminf.'&sec=1&eta=2"><img src="Views/dist/img/Retrocede-1.jpg"></a>
+                <div class="col-md-3 tituloSupBotones" ><a href="index.php?action=supinforme02&idmes='.$idmes.'&idrec='.$idrec.'&id='.$nunminf.'&sec=1&eta=2&idsup='.$idsup.'&idciu='.$nomciudad.'"><img src="Views/dist/img/Retrocede-1.jpg"></a>
                 </div>
-                <div class="col-md-3 tituloSupBotones" ><a href="index.php?action=supinforme03&idmes='.$idmes.'&idrec='.$idrec.'&id='.$nunminf.'&sec=3&eta=2"><img src="Views/dist/img/Avanza-1.jpg"></a>
-                </div>
-                <div class="col-md-3 tituloSupBotones" ><a href="index.php?action=supinforme03&idmes='.$idmes.'&idrec='.$idrec.'&id='.$nunminf.'&sec=3&eta=2"><img src="Views/dist/img/Avanza-Final.jpg"></a>
-                </div>';
+                 <div class="col-md-3 tituloSupBotones" ><a href="#"><img src="Views/dist/img/Avanza-1-off.jpg"></a>
+            </div>
+            <div class="col-md-3 tituloSupBotones" ><a href="#"><img src="Views/dist/img/Avanza-Final-off.jpg"></a>
+            </div>';
                 ?>
               </div>
       </div>
@@ -145,7 +144,7 @@ $informeCont=new SupInformesController();
               }else{
 
                 echo '      
-        <div class="col-md-3 tituloSupBotones" ><a href="index.php?action=supinforme03&idmes='.$idmes.'&idrec='.$idrec.'&id='.$inffirst.'&sec=3&eta=2"><img src="Views/dist/img/Retrocede-Final.jpg"></a>
+        <div class="col-md-3 tituloSupBotones" ><a href="index.php?action=supinforme03&idmes='.$idmes.'&idrec='.$idrec.'&id='.$inffirst.'&sec=3&eta=2&idsup='.$idsup.'&idciu='.$nomciudad.'"><img src="Views/dist/img/Retrocede-Final.jpg"></a>
             </div>';
           }
             //var_dump($infant);
@@ -155,17 +154,16 @@ $informeCont=new SupInformesController();
             </div>';
           }else{
             echo '  
-            <div class="col-md-3 tituloSupBotones" ><a href="index.php?action=supinforme03&idmes='.$idmes.'&idrec='.$idrec.'&id='.$infant.'&sec=3&eta=2"><img src="Views/dist/img/Retrocede-1.jpg"></a>
+            <div class="col-md-3 tituloSupBotones" ><a href="index.php?action=supinforme03&idmes='.$idmes.'&idrec='.$idrec.'&id='.$infant.'&sec=3&eta=2&idsup='.$idsup.'&idciu='.$nomciudad.'"><img src="Views/dist/img/Retrocede-1.jpg"></a>
             </div>';
           }  
-
           if ($infsig==0){
               echo '
             <div class="col-md-3 tituloSupBotones" ><a href="#"><img src="Views/dist/img/Avanza-1-off.jpg"></a>
             </div>';
           } else {
               echo '
-            <div class="col-md-3 tituloSupBotones" ><a href="index.php?action=supinforme03&idmes='.$idmes.'&idrec='.$idrec.'&id='.$infsig.'&sec=3&eta=2"><img src="Views/dist/img/Avanza-1.jpg"></a>
+            <div class="col-md-3 tituloSupBotones" ><a href="index.php?action=supinforme03&idmes='.$idmes.'&idrec='.$idrec.'&id='.$infsig.'&sec=3&eta=2&idsup='.$idsup.'&idciu='.$nomciudad.'"><img src="Views/dist/img/Avanza-1.jpg"></a>
             </div>';
           }  
           if ($inflast==0){
@@ -174,7 +172,7 @@ $informeCont=new SupInformesController();
             </div>';
           }else{  
             echo '
-            <div class="col-md-3 tituloSupBotones" ><a href="index.php?action=supinforme03&idmes='.$idmes.'&idrec='.$idrec.'&id='.$inflast.'&sec=3&eta=2"><img src="Views/dist/img/Avanza-Final.jpg"></a>
+            <div class="col-md-3 tituloSupBotones" ><a href="index.php?action=supinforme03&idmes='.$idmes.'&idrec='.$idrec.'&id='.$inflast.'&sec=3&eta=2&idsup='.$idsup.'&idciu='.$nomciudad.'"><img src="Views/dist/img/Avanza-Final.jpg"></a>
             </div>';
           }
             ?>
@@ -557,11 +555,15 @@ $informeCont=new SupInformesController();
       <div class="col-md-6 areaImagen areaScrollP6"> <div>
          <div> 
           <div class="img-magnifier-container">
-           <img id="myimage" class="d-block w-100" height="1134" src=
+           <img id="myimage" class="d-block w-100" src=
         <?php
-        
+        if ($numtkt>0) {
         $img=$server.$dirimagen.'/'.$nomticketf;
          echo '"'.$img.'"';
+       } else {
+
+         echo '"Views/dist/img/sin-foto.jpg"';
+         }
         ?>
         />
           </div>
@@ -574,10 +576,16 @@ $informeCont=new SupInformesController();
            <div class="col-md-6 areaImagen areaScrollP6"> <div>
          <div>
           <div class="img-magnifier-container">
-           <img id="myimage2" class="d-block w-100" height="1134" src=';
+           <img id="myimage2" class="d-block w-100"  src=';
+        if ($numtktc>0) {
         
         $img=$server.$dirimagen.'/'.$nomticketc;
          echo '"'.$img.'"';
+
+       } else {
+           echo '"Views/dist/img/sin-foto.jpg"';
+       }
+
           echo '
         />
           </div>
@@ -611,7 +619,7 @@ $informeCont=new SupInformesController();
        
       }
       echo '
-     href="index.php?action=supinforme03&pan=3&admin=cor&est=2&eta=2&sec='.$sec.'&img='.$idimg.'&indice='.$idmes.'&idrec='.$idrec.'&id='.$nunminf.'&img='.$numimg.'" class="btn '.$clase .' btn-sm btn-block "';
+     href="index.php?action=supinforme03&pan=3&admin=cor&est=2&eta=2&sec='.$sec.'&indice='.$idmes.'&idrec='.$idrec.'&id='.$nunminf.'&img='.$numtkt.'&idsup='.$idsup.'&idciu='.$nomciudad.'" class="btn '.$clase .' btn-sm btn-block "';
 
       ?> 
       >CANCELAR</a>
@@ -628,7 +636,7 @@ $informeCont=new SupInformesController();
       }
       
       echo '
-      href="index.php?action=supinforme03&pan=3&admin=cor&est=3&eta=2&sec='.$sec.'&img='.$idimg.'&indice='.$idmes.'&idrec='.$idrec.'&id='.$nunminf.'&img='.$numimg.'" class="btn '.$clase.' btn-sm btn-block "';
+      href="index.php?action=supinforme03&pan=3&admin=cor&est=3&eta=2&sec='.$sec.'&indice='.$idmes.'&idrec='.$idrec.'&id='.$nunminf.'&img='.$numtkt.'&idsup='.$idsup.'&idciu='.$nomciudad.'" class="btn '.$clase.' btn-sm btn-block "';
       ?>
       >ACEPTAR </a>
       </div>
@@ -659,7 +667,7 @@ $informeCont=new SupInformesController();
       }
       
          echo '
-        <a href="index.php?action=supinforme&admin=aceptar&indice='.$idmes.'&idrec='.$idrec.'&id='.$nunminf.'&sec=3&eta=2&pan=3&est=2" class="btn '.$clase .' btn-sm btn-block ">SI</a>'; 
+        <a href="index.php?action=supinforme&admin=aceptar&indice='.$idmes.'&idrec='.$idrec.'&id='.$nunminf.'&sec=3&eta=2&pan=3&est=2&idsup='.$idsup.'&idciu='.$nomciudad.'" class="btn '.$clase .' btn-sm btn-block ">SI</a>'; 
         ?>
       </div>
       
@@ -686,7 +694,7 @@ $informeCont=new SupInformesController();
        
       }
       echo '
-        <a href="index.php?action=supinforme&admin=noap&indice='.$idmes.'&idrec='.$idrec.'&id='.$nunminf.'&sec=3&eta=2&pan=3"  class="btn '.$clase .' btn-sm btn-block ">NO APLICA</a>';
+        <a href="index.php?action=supinforme&admin=noap&indice='.$idmes.'&idrec='.$idrec.'&id='.$nunminf.'&sec=3&eta=2&pan=3&idsup='.$idsup.'&idciu='.$nomciudad.'"  class="btn '.$clase .' btn-sm btn-block ">NO APLICA</a>';
         ?>
       </div>
     </div>
@@ -708,6 +716,9 @@ $informeCont=new SupInformesController();
                  <input type="hidden" name="id" id="id" value='.$nunminf.'>
                  
                  <input type="hidden"  name="indice" id="indice" value='.$idmes.'>
+                 <input type="hidden" name="idsup" id="idsup" value="'.$idsup.'">
+                 <input type="hidden" name="idciu" id="idciu" value="'.$nomciudad.'">
+     
                  <input type="hidden" name="idrec" id="idrec" value="'.$idrec.'">';
             ?>
               <p> Escribe el motivo </p>
@@ -747,13 +758,13 @@ $informeCont=new SupInformesController();
 
         <?php
               echo '
-              "index.php?action=supinforme03&pan=3&admin=cor&est=1&eta=2&indice='.$idmes.'&idrec='.$idrec.'&id='.$nunminf.'&img='.$idimg.'&sec='.$sec.'"';
+              "index.php?action=supinforme03&pan=3&admin=cor&est=1&eta=2&indice='.$idmes.'&idrec='.$idrec.'&id='.$nunminf.'&img='.$numtkt.'&sec='.$sec.'&idsup='.$idsup.'&idciu='.$nomciudad.'"';
             ?>
               >
               
               <p> Escribe el motivo de corrección</p>
               <?php echo '
-                  <input type="hidden" name="img" id="img" value='.$numimg.'>';
+                  <input type="hidden" name="img" id="img" value='.$numtkt.'>';
               ?>
               <input type="text"  name="observ" id="observ" style="width: 450px;">
               <p>  </p>

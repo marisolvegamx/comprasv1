@@ -1,4 +1,5 @@
 <?php
+
    include "Utilerias/leevar.php";
    include "api/src/contratoapp.php";
    include_once  'Controllers/supMuestraController.php';
@@ -37,8 +38,12 @@ function prepararMotivo(){
                 <div class="col-md-3 tituloSupBotones" ><a href="index.php?action=supinformecli02&idmes='.$idmes.'&idrec='.$idrec.'&id='.$id.'&cli='.$cli.'&idsup='.$supMuesCon->idsup.'&nummues='.$supMuesCon->numuestra.'&pan=5&eta=2"><img src="Views/dist/img/Retrocede-1.jpg"></a>
                 </div>
                 <div class="col-md-3 tituloSupBotones" ><a href="index.php?action=supinformecli02&idmes='.$idmes.'&idrec='.$idrec.'&id='.$id.'&idsup='.$supMuesCon->idsup.'&cli='.$cli.'&eta=2&pan=7&nummues='.$supMuesCon->numuestra.'"><img src="Views/dist/img/Avanza-1.jpg"></a>
-                </div>
-                <div class="col-md-3 tituloSupBotones" ><a href="index.php?action=supinformecli02&idmes='.$idmes.'&idrec='.$idrec.'&id='.$id.'&idsup='.$supMuesCon->idsup.'&cli='.$cli.'&sec='.$sec.'&eta=2&pan=9&nummues='.$supMuesCon->numuestra.'"><img src="Views/dist/img/Avanza-Final.jpg"></a>
+                </div>';
+                if($supMuesCon->idcli>4)
+                    echo ' <div class="col-md-3 tituloSupBotones" ><a href="index.php?action=supinformecli02&idmes='.$idmes.'&idrec='.$idrec.'&id='.$id.'&idsup='.$supMuesCon->idsup.'&cli='.$cli.'&sec='.$sec.'&eta=2&pan=8&nummues='.$supMuesCon->numuestra.'"><img src="Views/dist/img/Avanza-Final.jpg"></a>';
+              else 
+                echo '<div class="col-md-3 tituloSupBotones" ><a href="index.php?action=supinformecli02&idmes='.$idmes.'&idrec='.$idrec.'&id='.$id.'&idsup='.$supMuesCon->idsup.'&cli='.$cli.'&sec='.$sec.'&eta=2&pan=9&nummues='.$supMuesCon->numuestra.'"><img src="Views/dist/img/Avanza-Final.jpg"></a>';
+              echo'
                 </div>
                 ';
                 ?>
@@ -152,7 +157,7 @@ function prepararMotivo(){
       </div>
     </div>
     <div class="row">
-    <div class="col-md-1 labelAzul1">NÚMERO TIENDA:
+    <div class="col-md-1 labelAzul1">TIENDA:
       </div>
       <div class="col-md-2 labelAzulDato"><?php  echo $supMuesCon->informe["inf_consecutivo"];
           ?>
@@ -505,7 +510,7 @@ function prepararMotivo(){
                 ';
             ?>
               <p> Escribe el motivo </p>
-              <input type="text"  name="observacionessec" id="observacionessec" style="width: 450px;">
+              <input type="text"  name="observacionessec" id="observacionessec" style="width: 450px;" value="<?php $supMuesCon->valSeccion["vas_observaciones"]?>">
               <p>  </p>
 
               <button type="button" class="btn btn-primary" onclick="javascript: document.getElementById('divcanc').style.display='block'; document.getElementById('divpreg').style.display='none'">Actualizar</button>

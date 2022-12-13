@@ -2,14 +2,16 @@
 
 
   include_once  'Controllers/supMuestraController.php';
+
   include "api/src/contratoapp.php";
   include "Utilerias/leevar.php";
+ 
   $supMuesCon=new SupMuestraController();
   $supMuesCon->vistaMuestra();
   //var_dump($supMuesCon->muestra);
 
   // $enlacesModel == "supinformecli02" ||
-   //echo "--".$idc;
+
   //clave mari AIzaSyANZ_tj0m9KI-W0MZKmXImqpH_V6AkJgfI
   ?>
 
@@ -73,6 +75,10 @@
                 if($pan==5){
                     echo "index.php?action=supinformecli03&idmes=".$supMuesCon->mesas."&idrec=".$supMuesCon->rec_id."&id=".$id."&cli=".$supMuesCon->idcli."&idsup=".$supMuesCon->idsup."&eta=".$supMuesCon->etapa."&pan=".($pan+1)."&nummues=".$supMuesCon->numuestra;}
                 else{
+                    if(($pan+1)==9&&$supMuesCon->idcli>4){ //no voy a la 9
+                     
+                        $classof="-off";
+                    }else
                     echo "index.php?action=supinformecli02&idmes=".$supMuesCon->mesas."&idsup=".$supMuesCon->idsup."&idrec=".$supMuesCon->rec_id."&id=".$id."&cli=".$supMuesCon->idcli."&eta=".$supMuesCon->etapa."&pan=".($pan+1)."&nummues=".$supMuesCon->numuestra;}
                         
                     
@@ -199,7 +205,7 @@
       </div>
     </div>
     <div class="row">
-    <div class="col-md-1 labelAzul1">NÚMERO TIENDA:
+    <div class="col-md-1 labelAzul1">TIENDA:
       </div>
       <div class="col-md-2 labelAzulDato"><?php  echo $supMuesCon->informe["inf_consecutivo"];
           ?>
@@ -580,10 +586,13 @@
                 ';
             ?>
               <p> Escribe el motivo </p>
-              <input type="text"  name="observacionessec" id="observacionessec" style="width: 450px;">
+              <input type="text"  name="observacionessec" id="observacionessec" style="width: 450px;" value="<?php $supMuesCon->valSeccion["vas_observaciones"]?>">
               <p>  </p>
 
-              <button type="button" class="btn btn-primary" onclick="javascript: document.getElementById('divcanc').style.display='block'; document.getElementById('divpreg').style.display='none'">Actualizar</button>
+              <button type="button" class="btn btn-primary" onclick="<?php 
+              if($pan==5&&$pan==6)
+                  echo "javascript: document.getElementById('divcanc').style.display='block'; document.getElementById('divpreg').style.display='none'"; 
+                  else echo 'javascript:noaceptarsec(\''.$supMuesCon->liga.'\',\''.$numsec.'\',\''.$supMuesCon->idval.'\',\'no\')';?>">Actualizar</button>
               </div>
               <div id="divcanc" style="display: none">
               <p>¿Desea cancelar la muestra?</p>

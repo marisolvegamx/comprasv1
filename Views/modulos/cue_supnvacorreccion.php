@@ -10,13 +10,18 @@ include_once  'Controllers/supCorreccionController.php';
   ?>
 <div class="row" style="margin-top: 5px;">
 
-      <div class="col-md-12 tituloSupCorreciones" >CORRECCIONES
+      <div class="col-md-11 tituloSupCorreciones" >CORRECCIONES
       </div>
+      <?php
+      echo '      
+        <div class="col-md-1 tituloSupCorreciones" ><a href="index.php?action=suplistacorrecciones&idmes='.$idmes.'&idrec='.$idrec.'&id='.$idi.'&sec=4&cli='.$cli.'&eta=2&idsup='.$idsup.'&idciu='.$idciu.'"><img src="Views/dist/img/Retrocede-Final.jpg"></a>
+            </div>';
+      ?> 
     </div>
     <div class="row">
       <div class="col-md-2 labelAzul1"> NO. DE CORRECCION:
       </div>
-      <div class="col-md-4 labelAzulDato"><?php echo $supCorCon->valfoto["val_id"]?>
+      <div class="col-md-4 labelAzulDato"><?php echo $supCorCon->valfoto["vai_consecutivoinf"]?>
    
       </div>
        <div class="col-md-2 labelAzul1">ESTATUS:
@@ -68,7 +73,10 @@ include_once  'Controllers/supCorreccionController.php';
       </div>
       <div class="col-md-2 labelAzul1">TIEMPO DE RESPUESTA:
       </div>
-      <div class="col-md-4 labelAzulDato"><?php echo $supCorCon->valfoto["clienteNombre"]?>
+      <div class="col-md-4 labelAzulDato"><?php if($supCorCon->valfoto["vai_estatus"]==4){
+          echo $supCorCon->calcTiempoResp($supCorCon->valfoto["vai_fecha"],$supCorCon->correccionFoto["cor_createdat"]);
+      
+      }?>
       </div>
     </div>
     <div class="row">
@@ -128,8 +136,9 @@ include_once  'Controllers/supCorreccionController.php';
       <?php }?>
 </div>
 </div>
+<!-- panel 2 -->
       <div class="col-md-6 areaImagenDer areaScrollP6">
-       <div class="carousel slide" id="carousel-920444" data-interval="0">
+       <div class="carousel slide" id="carousel2" data-interval="0">
 
 <div class="carousel-inner">
   <div class="carousel-item active">
@@ -140,13 +149,13 @@ include_once  'Controllers/supCorreccionController.php';
        <?php if($supCorCon->valfoto["vai_descripcionfoto"]==4){ //es 360?>
       <div class="carousel-item">
      
-        <img class="d-block w-100"  src="<?= $supCorCon->dirimagen.'\\'.$supCorCon->imagenOrig2["ruta"] ?>" />
+        <img class="d-block w-100"  src="<?= $supCorCon->dirimagen.'\\'.$supCorCon->correccionFoto["cor_rutafoto2"] ?>" />
    
     
       </div>
        <div class="carousel-item">
      
-        <img class="d-block w-100"  src="<?= $supCorCon->dirimagen.'\\'.$supCorCon->imagenOrig3["ruta"] ?>" />
+        <img class="d-block w-100"  src="<?= $supCorCon->dirimagen.'\\'.$supCorCon->correccionFoto["cor_rutafoto3"] ?>" />
    
     
       </div>
@@ -155,16 +164,17 @@ include_once  'Controllers/supCorreccionController.php';
   </div> 
   	
     <?php if($supCorCon->valfoto["vai_descripcionfoto"]==4){ //es 360?>
-  <a class="carousel-control-prev" href="#carousel-920444" data-slide="prev">
+  <a class="carousel-control-prev" href="#carousel2" data-slide="prev">
     <span class="carousel-control-prev-icon"></span>
     <span class="sr-only">Anterior</span></a>
-  <a class="carousel-control-next" href="#carousel-920444" data-slide="next">
+  <a class="carousel-control-next" href="#carousel2" data-slide="next">
     <span class="carousel-control-next-icon"></span>
     <span class="sr-only">Siguiente</span></a>
       <?php }?>
       </div>
       </div>
    </div>
+   <!-- fin fotos -->
     <div class="row">
       <div class="col-md-12 espacioHor">
       </div>

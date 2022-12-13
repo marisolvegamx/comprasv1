@@ -59,7 +59,24 @@
 ?>
 
 
+ <script type="text/javascript">
 
+function noaceptarsec(liga,op){
+	
+	if(op=="si")
+	  ligasub=liga+'&can=1';
+	else
+		  ligasub=liga+'&can=0';
+	 
+	document.getElementById("form_secc").action=ligasub;
+	console.log(ligasub);
+	document.getElementById("form_secc").submit();
+}
+function prepararMotivo(){
+	document.getElementById('divcanc').style.display='none';
+	 document.getElementById('divpreg').style.display='block';
+}
+</script>
 
 <div class="row" style="margin-top: 5px;">
       <div class="col-md-10 tituloSup" >INFORME DE COMPRA
@@ -439,9 +456,9 @@
         $clasen= "btn-informes";
           }
        $hrefn= '
-        <a href="index.php?action=supinformecli01&admin=aceptar&pan=1&indice='.$idmes.'&idrec='.$idrec.'&cli='.$idcli.'&id='.$idinf.'&sec=4&eta=2&acep=0&noa=0"';
+        <a onclick="javascript:prepararMotivo();" href="';
 
-       echo $hrefn.' class="btn '.$clasen.' btn-sm btn-block ">NO</a>';
+       echo $hrefn.'" class="btn '.$clasen.' btn-sm btn-block " data-toggle="modal" data-target="#modal-seccion">NO</a>';
       
       ?>
        
@@ -485,7 +502,7 @@
 
         <?php
               echo '
-              "index.php?action=supinformecli01&pan=1&admin=cor&est=1&eta=2&indice='.$idmes.'&cli='.$idcli.'&idrec='.$idrec.'&id='.$idinf.'&img='.$idimg.'"';
+              "index.php?action=supinformecli01&pan=1&admin=cor&est=1&eta=2&idsup='.$idsup.'&indice='.$idmes.'&cli='.$idcli.'&idrec='.$idrec.'&id='.$idinf.'&img='.$idimg.'"';
             ?>
               >
               
@@ -504,7 +521,51 @@
       </div>
       <!-- /.modal -->
  </div>
+ <div class="modal fade" id="modal-seccion">
+        <div class="modal-dialog">
+          <div class="modal-content">
 
+            <div class="modal-header">
+              <h4 class="modal-title"></h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              
+            <form role="form" method="post" action="" id="form_secc">
+            <div id="divpreg">
+              <?php echo '
+                
+                 <input type="hidden" name="idplan" id="idplan" value="'.$idplan.'"> 
+                
+                ';
+            ?>
+              <p> Escribe el motivo </p>
+              <input type="text"  name="observacionessec" id="observacionessec" style="width: 450px;" value="<?php $supMuesCon->valSeccion["vas_observaciones"]?>">
+              <p>  </p>
+
+              <button type="button" class="btn btn-primary" onclick="<?php 
+              
+                  echo "javascript: document.getElementById('divcanc').style.display='block'; document.getElementById('divpreg').style.display='none'"; 
+                 ?>">Actualizar</button>
+              </div>
+              <div id="divcanc" style="display: none">
+              <p>¿Desea cancelar el informe?</p>
+              <?php 
+              echo '<button type="button" class="btn btn-secondary" onclick="javascript:noaceptarsec(\'index.php?action=supinformecli01&admin=aceptar&pan=1&indice='.$idmes.'&idrec='.$idrec.'&cli='.$idcli.'&id='.$idinf.'&sec=4&eta=2&acep=0&noa=0\',\'si\')">Sí</button>
+               <button type="button" class="btn btn-primary" onclick="javascript:noaceptarsec(\'index.php?action=supinformecli01&admin=aceptar&pan=1&indice='.$idmes.'&idrec='.$idrec.'&cli='.$idcli.'&id='.$idinf.'&sec=4&eta=2&acep=0&noa=0\',\'no\')">No</button>';
+             ?> </div>
+            </form>
+
+
+            </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+      <!-- /.modal -->
+    </div>
 <script>
 /* Initiate Magnify Function
 with the id of the image, and the strength of the magnifier glass:*/
