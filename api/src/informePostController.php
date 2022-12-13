@@ -33,7 +33,7 @@ class InformePostController{
         $indice=$campos[ContratoVisitas::INDICE];
       
         //TODO lo pongo en una transaccion
-       
+      
         $pdo->beginTransaction();
         if(isset($visita))
         {   
@@ -54,7 +54,7 @@ class InformePostController{
                DatosProductoExhibido::insertaru($lisfotos_ex,$cverecolector,$indice,"producto_exhibido",$pdo);
                
            }
-        
+       
       // echo "insertar imagenes";
        //die();
             if(isset($imagenes_det))
@@ -67,29 +67,40 @@ class InformePostController{
         if(isset($informe_det))
         foreach ($informe_det as $detalle)
         { 
+          
             $datosInfdet2=new DatosInformeDetalle();
            $resp= $datosInfdet2->getInformesDetxid($detalle[ContratoInformesDet::ID],$indice,$cverecolector,"informe_detalle");
-         //  var_dump($resp);
+         
          //  die();
           // echo "<br>".$resp[ContratoInformesDet::ID]."--".$detalle[ContratoInformesDet::ID];
-               
+          
            if($resp!=null&&$resp[ContratoInformesDet::ID]==$detalle[ContratoInformesDet::ID]){
            }else
            {
+            
                 $datosInfdet->insertar($detalle,$cverecolector,$indice,"informe_detalle",$pdo);
                 //actualizo la lista de compra
                 $datosInfdet->sumaCompradosLista($detalle[ContratoInformesDet::COMPRASID],$detalle[ContratoInformesDet::COMPRASDETID],1,"pr_listacompradetalle");
+               
+                 //veo si es    x un informe cancelado
+                 $datosinf3=new DatosInformeDetalle();
+                 $respc=$datosinf3->getCancelada($detalle[ContratoInformesDet::COMPRASID],$detalle[ContratoInformesDet::COMPRASDETID],2,"informe_detalle");
+               
+               if($respc!=null)
+                   $datosinf3->actualizarCancelada($respc["ind_indice"],$respc["ind_recolector"],$respc["ind_id"],4,"informe_detalle");
+               
            }
         }
         $datosInf2=new DatosInforme();
         $resp= $datosInf2->getInformexid($indice,$cverecolector,$informe[ContratoInformes::ID],"informes");
        // var_dump($resp);
-       // die();
+      
         if($resp!=null&&$resp[ContratoInformes::ID]==$informe[ContratoInformes::ID]){
         }else
          $this->datosInf->insertar($informe,$cverecolector,$indice,"informes",$pdo);
        // echo "rrrrrrrrrr".$visita[ContratoVisitas::TIENDAID];
         //reviso si es una tienda nueva para insertarla
+       
         if($visita[ContratoVisitas::TIENDAID]==null||$visita[ContratoVisitas::TIENDAID]==0){
         //      echo "estoy aqui"; 
                 //es tienda nueva
@@ -106,14 +117,16 @@ class InformePostController{
            // die();
             $datosui=new DatosUneImagenes();
             if($idtienda>0)
-            { foreach ($fotos_ex as $lisfotos_ex)
+            { 
+               //ahora lo hace el supervisor 
+               /* foreach ($fotos_ex as $lisfotos_ex)
                 {
                     if($lisfotos_ex["imagenId"]>0)
                     $datosui->insertar($lisfotos_ex,$idtienda,$cverecolector,$indice, "ca_uneimagenes");
                    
-                }
+                }*/
               
-                if(isset($informe))
+               /* if(isset($informe))
                 {  $resp=$datosui->getUneImagenxCli($idtienda, $informe[ContratoInformes::CLIENTESID], "ca_uneimagenes");
                     if($resp!=null){
                          
@@ -122,7 +135,7 @@ class InformePostController{
                         //insertar
                         $datosui->insertarTicket($informe,$idtienda,$cverecolector,$indice, "ca_uneimagenes");
                     
-                }
+                }*/
                 
               //  echo "estoy aqui"; 
                     //actualizo en la visita
@@ -160,7 +173,7 @@ class InformePostController{
             }
             
             
-            $datosuneim=new DatosUneImagenes();
+           /* $datosuneim=new DatosUneImagenes();
             if(isset($informe))
             $resp=$datosuneim->getUneImagenxCli($tiendaid, $informe[ContratoInformes::CLIENTESID], "ca_uneimagenes");
             if($resp==null){
@@ -173,7 +186,7 @@ class InformePostController{
                 if(isset($informe))
                     $datosuneim->actualizarTicket($informe, $idtienda, $cverecolector, $indice, "ca_uneimagenes");
                     
-            }
+            }*/
         }
         $pdo->commit();
         
@@ -209,7 +222,7 @@ class InformePostController{
                     //   var_dump($datostienda);
                     $idtienda=$this->datosInf->insertarUnegocio($datostienda, "ca_unegocios",$pdo);
                     //inserto las fotos
-                    $datosui=new DatosUneImagenes();
+                  /*  $datosui=new DatosUneImagenes();
                     foreach ($fotos_ex as $lisfotos_ex)
                     {
                         
@@ -218,7 +231,7 @@ class InformePostController{
                         if(isset($informe))
                             $datosui->actualizarTicket($informe, $idtienda, $cverecolector, $indice, "ca_uneimagenes");
                             
-                    }
+                    }*/
                    // echo $idtienda;
                     if($idtienda>0)
                         //actualizo la visita
@@ -317,9 +330,9 @@ class InformePostController{
         $datosModel["cxy"]=$tiendarem[ContratoVisitas::GEOLOCALIZACION];
         $datosModel["puncaruneg"]=$tiendarem[ContratoVisitas::PUNTOCARDINAL];
         $datosModel["cadcomuneg"]=0;
-        $datosModel["une_fotofachada"]=$tiendarem[ContratoVisitas::FOTOFACHADA];
-        $datosModel["une_facrecolector"]=$recolector;
-        $datosModel["une_facindice"]=$indice;
+      //  $datosModel["une_fotofachada"]=$tiendarem[ContratoVisitas::FOTOFACHADA];
+      //  $datosModel["une_facrecolector"]=$recolector;
+      //      $datosModel["une_facindice"]=$indice;
         if($causa==4)
         $datosModel["estatusuneg"]=2;
         else 

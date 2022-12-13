@@ -35,7 +35,18 @@ class solCorreccionController{
         $rs = $this->datosInf->getValidacionFotos($indice,$recolector, $etapa,1, "sup_validacion");
           // var_dump($rs);
          //  die();
-      
+      //actualizo estatus a leido
+        foreach ($rs as $solic){
+           // var_dump($solic);
+            $datosController= array("idval"=>$solic["id"],
+                "idimg"=>$solic["numFoto"],
+            "est"=>5
+            
+            );
+        // var_dump($idval);
+        //  var_dump($datosController);
+         //    $this->actualizaValidacionimg($datosController, "sup_validafotos");
+        }
             
         $this->listasolicitudesi=$rs;
        
@@ -52,9 +63,10 @@ class solCorreccionController{
         $this->listacanceladas=$rs;
         //actualizo el estatus a leido
         foreach ($this->listacanceladas as $muestra){
-            DatosInformeDetalle::actualizarEstatus($muestra["ind_id"], $recolector, $indice, 4, "informe_detalle");
+            DatosInformeDetalle::actualizarEstatus($muestra["ind_id"], $recolector, $indice, 5, "informe_detalle");
             
         }
+       
      
     }
    
@@ -85,6 +97,22 @@ class solCorreccionController{
         return json_encode($response);
     }
     
+    public function actualizaValidacionimg($datosModel, $tabla){
+        try {
+            // busca el id de validacion
+            $stmt = Conexion::conectar()-> prepare("UPDATE $tabla SET `vai_estatus`=:estatus WHERE `vai_id`=:idval and `vai_numfoto`=:numimg");
+            
+            $stmt->bindParam(":idval", $datosModel["idval"], PDO::PARAM_INT);
+            $stmt->bindParam(":estatus", $datosModel["est"], PDO::PARAM_INT);
+            $stmt->bindParam(":numimg", $datosModel["idimg"], PDO::PARAM_INT);
+            
+            $stmt-> execute();
+            return "success";
+        } catch (Exception $ex) {
+            
+            return "error";
+        }
+    }
     
     
 }
