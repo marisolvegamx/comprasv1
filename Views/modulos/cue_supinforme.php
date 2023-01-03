@@ -1,8 +1,10 @@
 <?php 
+
 include "Controllers/geocercaServController.php";
 
 $informeCont=new SupInformesController();
         $informeCont->vistaSupInformeComController();
+       
         $cliente= $informeCont->getcliente();  
         $planta= $informeCont->getplanta();
         $idrec=$informeCont->getidrec();
@@ -61,8 +63,9 @@ $informeCont=new SupInformesController();
            $nomimg=$informeCont->getnombreimg(); 
            $descest=$informeCont->getdescest();
            //$nomciudad= $informeCont->getnomciudad();
-
+      
       include "Utilerias/leevar.php";
+    
       $nomciudad=$_GET["idciu"];
       if(isset($_GET["admin"])){
           $admin=$_GET["admin"];
@@ -89,7 +92,8 @@ $informeCont=new SupInformesController();
            } else if ($admin=="edic"){
  
           }
-        }     
+        }
+      
           //en este controller se piden las coordenadas para la geocerca x ciudad de residencia
         $geoserv=new GeocercaServController();
        // die($informeCont->idciudadres);
@@ -312,9 +316,9 @@ function mandarDir(direccion, informe, idrec, mesas,idtienda, tabla){
 
                 <div class="col-md-3 tituloSupBotones" ><a href="index.php?action=supinforme&idmes='.$idmes.'&idrec='.$idrec.'&id='.$nunminf.'&sec=1&eta=2"><img src="Views/dist/img/Retrocede-1-off.jpg"></a>
                 </div>
-                <div class="col-md-3 tituloSupBotones" ><a href="index.php?action=supinforme02&idmes='.$idmes.'&idrec='.$idrec.'&id='.$nunminf.'&sec=1&eta=2&idsup='.$idsup.'&idciu='.$nomciudad.'"><img src="Views/dist/img/Avanza-1.jpg"></a>
+                <div class="col-md-3 tituloSupBotones" ><a href="index.php?action=supinforme02&idmes='.$idmes.'&idrec='.$idrec.'&id='.$nunminf.'&sec=2&eta=2&idsup='.$idsup.'&idciu='.$nomciudad.'"><img src="Views/dist/img/Avanza-1.jpg"></a>
                 </div>
-                <div class="col-md-3 tituloSupBotones" ><a href="index.php?action=supinforme02&idmes='.$idmes.'&idrec='.$idrec.'&id='.$nunminf.'&sec=1&eta=2&idsup='.$idsup.'&idciu='.$nomciudad.'"><img src="Views/dist/img/Avanza-Final.jpg"></a>
+                <div class="col-md-3 tituloSupBotones" ><a href="index.php?action=supinforme03&idmes='.$idmes.'&idrec='.$idrec.'&id='.$nunminf.'&sec=3&eta=2&idsup='.$idsup.'&idciu='.$nomciudad.'"><img src="Views/dist/img/Avanza-Final.jpg"></a>
                 </div>';
                 ?>
               </div>
@@ -333,7 +337,7 @@ function mandarDir(direccion, informe, idrec, mesas,idtienda, tabla){
       </div>
       <div class="col-md-3 labelAzulDato"><?php echo $recolector ?>
       </div>
-      <div class="col-md-1 labelAzul1">TIENDA  <?php echo $numtienda  ?>
+      <div class="col-md-1 labelAzul1">VISITA  <?php echo $numtienda  ?>
       </div>
       <div class="col-md-1 ">
         <div class="row">

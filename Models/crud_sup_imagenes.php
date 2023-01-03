@@ -12,7 +12,7 @@ class DatosImgInformes extends Conexion{
 		$stmt->bindParam(":idimg", $datosModel["idinf"], PDO::PARAM_INT);
 		$stmt->bindParam(":idrec", $datosModel["idrec"], PDO::PARAM_INT);
 		$stmt-> execute();
-
+//$stmt->debugDumpParams();
 		return $stmt->fetchall();
 
     }

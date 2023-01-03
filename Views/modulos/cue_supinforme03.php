@@ -85,8 +85,8 @@ $informeCont=new SupInformesController();
             $informeCont->aceptarsec1();   
           } else if ($admin=="noap"){
             $informeCont->noaplicasec1();
-          } else if ($admin=="solcor"){  
-            $informeCont->solcorreccion();
+          } else if ($admin=="noac"){  
+            $informeCont->noaceptarsec();
           } else if ($admin=="actcat"){  
             $informeCont->actcatalogoimg();  
           
@@ -132,7 +132,7 @@ $informeCont=new SupInformesController();
       </div>
       <div class="col-md-3 labelAzulDato"><?php echo $recolector ?>
       </div>
-      <div class="col-md-1 labelAzul1">TIENDA  <?php echo $numtienda  ?>
+      <div class="col-md-1 labelAzul1">VISITA  <?php echo $numtienda  ?>
       </div>
       <div class="col-md-1 ">
         <div class="row">
@@ -595,6 +595,7 @@ $informeCont=new SupInformesController();
     <div class="row">
     <div class="col-md-2 areaBoton" > 
       <?php
+      //var_dump($stimg);
       if ($stimg==1){
           $clase= "btn-informesActivado";
           
@@ -711,7 +712,7 @@ $informeCont=new SupInformesController();
             </div>
             <div class="modal-body">
             
-            <form role="form" method="post" action="index.php?action=supinforme&admin=cor&sec=3&eta=2&est=1&pan=3&idmes='.<?php echo $informeCont->getidmes(); ?>.'&idrec='.<?php echo $informeCont->getidrec(); ?> .'&id='.<?php echo $nunminf ?>">
+            <form role="form" method="post" action="index.php?action=supinforme03&admin=noac&sec=3&eta=2&est=1&pan=3&idmes='.<?php echo $informeCont->getidmes(); ?>.'&idrec='.<?php echo $informeCont->getidrec(); ?> .'&id='.<?php echo $nunminf ?>">
               <?php echo '
                  <input type="hidden" name="id" id="id" value='.$nunminf.'>
                  

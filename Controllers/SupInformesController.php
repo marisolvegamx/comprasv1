@@ -214,12 +214,13 @@ foreach($respetapas as $row => $item){
                   //var_dump($resp2);
                       foreach($resp2 as $row => $item2){
                           $idetapa= $item2["red_idetapa"];
+                          $idrec= $item2["lis_idrecolector"];
                            //var_dump($idetapa);
                           if ($idetapa) {  // si existe accion
                       
                         // verifica si ya tiene supervision
                            $enc_cli = '<td align="center">
-                           <a href="index.php?action=suppreparacion&idmes='.$this->idmes.'&idrec=1&idplan='.$idplan.'&cli='.$i.'&numdet=1&eta=1"><i class="fa fa-circle fa-2x" style="color:'.$nomestatus.';"></i></a>
+                           <a href="index.php?action=suppreparacion&idmes='.$this->idmes.'&idrec='.$idrec.'&idplan='.$idplan.'&cli='.$i.'&numdet=1&eta=1"><i class="fa fa-circle fa-2x" style="color:'.$nomestatus.';"></i></a>
                              </td>  '; 
                           }else{
                              $enc_cli = '<td align="center"> </td>';
@@ -331,13 +332,15 @@ public function vistaSupInformeComController(){
                          "idrec"=>$this->rec_id,
                                );
       
-	  $respuesta =DatosSupInformes::vistaSupInformeDetalleModel($datosCont, "informes");
-			//var_dump($respuesta);
+	  //$respuesta =DatosSupInformes::vistaSupInformeDetalleModel($datosCont, "informes");
+	  $respuesta =DatosSupvisita::vistaSupInfvisModel($datosCont, "visitas");
+		//	var_dump($respuesta);
 			foreach($respuesta as $row => $item){
 			//	$this->consec= $item["inf_consecutivo"];
          $this->numsup=$item["n5_supervisor"];
 				$this->cliente= $item["n5_idn1"];
-				$this->visid=$item["inf_visitasIdlocal"];
+				//$this->visid=$item["inf_visitasIdlocal"];
+				$this->visid=$item["vi_idlocal"];
 			//	$this->idrec=$item["inf_+usuario"];
 				$logemail= $_SESSION['Usuario'];
         //var_dump($logemail);
@@ -398,6 +401,7 @@ public function vistaSupInformeComController(){
              }
 
         $this->indice = $mesnom." - ".$soloanio;
+      //  die($this->indice);
         $this->dirimagen = $solomes."_".$soloanio; 
 				$this->recolector= $item["rec_nombre"];
 			    }  
@@ -492,12 +496,12 @@ public function vistaSupInformeComController(){
                          "idrec"=>$this->rec_id,
       );
 
-      //var_dump($datosCont2);
+    //  var_dump($datosCont3);
       $respuesta4 =DatosImgInformes::vistaImgInfModel($datosCont3, "imagen_detalle");
       foreach($respuesta4 as $row => $item4){
          $this->nombreimg= $item4["imd_ruta"];
       }
-     // var_dump($this->nombreimg);
+  //    var_dump($this->nombreimg);
       //busca foto fachada de catalogo;
       $datosCont5= array("idinf"=>$this->fotofacc,
                          "idmes"=>$this->mesas,
@@ -515,9 +519,9 @@ public function vistaSupInformeComController(){
                          "idrec"=>$this->rec_id,
       ); 
     // die($this->visid);
-      //  var_dump($datosCont6);
+    //    var_dump($datosCont6);
       $respuesta6 =DatosSupInformes::leeticketinforme($datosCont6, "informes");  
-    //  var_dump($respuesta6);
+      //var_dump($respuesta6);
      $i=0;
         foreach($respuesta6 as $row => $item6){
           $nimg=$item6["inf_ticket_compra"];
@@ -528,7 +532,8 @@ public function vistaSupInformeComController(){
          if ($nimg>0){
            //  echo "****".$nimg[$i];
              $this->nimgs=$nimg;
-             $this->nclis=$ncli; 
+             $this->nclis=$ncli;
+           
              break;
           }
           $i++;
@@ -539,14 +544,14 @@ public function vistaSupInformeComController(){
                          "idrec"=>$this->rec_id,
                          //"iddesc"=>$this->"ticket compra",
        ); 
-    //  var_dump($datosCont7);
+     // var_dump($datosCont7);
       $respuesta7=DatosImgInformes::vistaImgInfModel($datosCont7, "imagen_detalle");
 
       foreach($respuesta7 as $row => $item7){
          $this->nomimgticketf= $item7["imd_ruta"];
       }
 
-      //var_dump($this->nomimgticketf);
+     // var_dump($respuesta7);
       $datosCont8= array("idinf"=>$this->idtienda,
                          "idmes"=>$this->mesas,
                          "idrec"=>$this->rec_id,
@@ -2143,7 +2148,7 @@ public function noaceptarimg(){
                   <td>'.$item["rec_nombre"].'</td>
 
                     <td  style="text-align: center;">
-           <a href="index.php?action=supnvacorreccion&idmes='.$idmes.'&idrec='.$idrec.'&id='.$id.'&numf='.$idf.'&idi='.$id.'&idciu='.$idciu.'&idsup='.$idsup.'">'.$estatus.'</a></td>  
+           <a href="index.php?action=supnvacorreccion&idmes='.$idmes.'&idrec='.$idrec.'&id='.$ids.'&numf='.$idf.'&idi='.$id.'&idciu='.$idciu.'&idsup='.$idsup.'">'.$estatus.'</a></td>  
                     
              
 

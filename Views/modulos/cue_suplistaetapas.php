@@ -68,16 +68,16 @@ $idmes=$_GET["idmes"];
         <td style="width: 40%">SUPERVISOR : <?php echo $nomsup ?></td>
         <td style="width: 30%">INDICE : <?php echo $mesasignacion ?></td>
         <td style="width: 30%">CIUDAD : <?php echo $idciu ?></td>
+        <td style="width: 10%">
+          <?php echo
+            '<button  class="btn btn-default float-sm-right" ><a href="index.php?action=suplistainformes&supervisor='.$idsup.'&indiceinf='.$idmes.'">   Regresar  </a></button>';
+            ?>
+        </td>
       </tr>
-      <tr>
-        
-        <td style="width: 30%" colspan="2"><td style="width: 10%">
-            <button  class="btn btn-default float-sm-right" ><a href="index.php?action=suplistainformes">   Regresar  </a></button>
-</td>  </td>
-      </tr>
+      
 </table>
          <div class="box-body table-responsive no-padding">
-              <table class="table table-hover">
+              <table class="table table-bordered table-hover">
                 
 <?php
              // busca encabezados de plantas

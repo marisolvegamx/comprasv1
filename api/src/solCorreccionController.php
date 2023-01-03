@@ -31,7 +31,7 @@ class solCorreccionController{
     
     public function getNuevos($indice,$recolector, $etapa){
         
-       if($etapa==3)//para compras
+       if($etapa==2)//para compras
        {
         $rs = $this->datosInf->getValidacionFotos($indice,$recolector, $etapa,1, "sup_validacion");
           // var_dump($rs);
@@ -50,7 +50,7 @@ class solCorreccionController{
         }
        // $this->listasolicitudesi=$rs;
         $rs2 = $this->datosInf->getValidacionFotosVis($indice,$recolector, $etapa,1, "sup_validacion");
-       //  var_dump($rs2);
+         //var_dump($rs2);
         //  die();
         //actualizo estatus a leido
         foreach ($rs2 as $solic){

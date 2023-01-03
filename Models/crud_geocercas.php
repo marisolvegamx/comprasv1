@@ -1,4 +1,5 @@
 <?php
+
 class DatosGeocercas extends Conexion{
     public $catPuntos=[ 'C'=>"Centro",
     'N'=>"Norte",

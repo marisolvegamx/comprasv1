@@ -15,8 +15,7 @@ include_once  'Controllers/supCorreccionController.php';
       <?php
       echo '      
         <div class="col-md-1 tituloSupCorreciones" >
-<a href="index.php?action=suplistacorrecciones&idmes='.$idmes.'&idrec='.$idrec.'&id='.$idi.'&sec=4&cli='.$cli.'&op=3&eta=2&idsup='.$idsup.'&idciu='.$idciu.'"><img src="Views/dist/img/Retrocede-Final.jpg"></a>
-  
+<a href="index.php?action=suplistacorrecciones&idmes='.$idmes.'&idrec='.$idrec.'&id='.$idi.'&sec=4&cli=4&op='.$supCorCon->valfoto["vai_descripcionfoto"].'&eta=2&idsup='.$idsup.'&idciu='.$idciu.'"><img src="Views/dist/img/Retrocede-Final.jpg"></a>
     </div>';
       ?> 
     </div>

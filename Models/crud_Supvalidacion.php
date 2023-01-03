@@ -215,12 +215,26 @@ public function LeeImgticket($uneid, $recid, $indice, $tabla){
 		$stmt->bindParam(":ideta", $datosModel["ideta"], PDO::PARAM_INT);
 		$stmt->bindParam(":idsec", $datosModel["idsec"], PDO::PARAM_INT);
 		$stmt-> execute();
-//$stmt->debugDumpParams();
+
 	return $stmt->fetchall();
 
 	}
 
+    public function LeeEstatusSecTien($datosModel, $tabla){
 
+	// busca el id de validacion
+	$stmt = Conexion::conectar()-> prepare("SELECT vas_aprobada, vas_noaplica FROM $tabla inner join sup_validasecciones on val_id=vas_id where val_vis_id=:idinf and val_rec_id=:valrec and val_indice = :indice  and val_etapa=:ideta and vas_idseccion=:idsec;");
+
+		$stmt->bindParam(":indice", $datosModel["idmes"], PDO::PARAM_STR);
+		$stmt->bindParam(":idinf", $datosModel["idinf"], PDO::PARAM_INT);
+		$stmt->bindParam(":valrec", $datosModel["idrec"], PDO::PARAM_INT);
+		$stmt->bindParam(":ideta", $datosModel["ideta"], PDO::PARAM_INT);
+		$stmt->bindParam(":idsec", $datosModel["idsec"], PDO::PARAM_INT);
+		$stmt-> execute();
+
+	return $stmt->fetchall();
+
+	}
 
 public function LeeEstatusFoto($datosModel, $tabla){
 
@@ -260,7 +274,7 @@ public function LeeEstatusinforme($datosModel, $tabla){
 	    
 	    // busca el id de validacion
 	    $sql='INSERT INTO `sup_validafotos`(`vai_id`, `vai_numfoto`, `vai_descripcionfoto`, `vai_estatus`, `vai_observaciones`,vai_fecha,vai_consecutivoinf)
- VALUES ('.$datosModel["idval"].','.$datosModel["idimg"].','.$datosModel["desimg"].','.$datosModel["est"].',"'.$datosModel["observ"].'", now(),'.$datosModel["cons"].');';
+ VALUES ('.$datosModel["idval"].','.$datosModel["idimg"].','.$datosModel["desimg"].','.$datosModel["est"].',"'.$datosModel["observ"].'", curdate(),'.$datosModel["cons"].');';
 	    //	echo $sql;
 	    $stmt = Conexion::conectar()-> prepare($sql);
 	    
@@ -285,6 +299,54 @@ FROM `sup_validafotos` where vai_id=:idval");
 	    
 	    return $stmt->fetch();
 	    
+	}
+
+
+public function LeeEstatusFotoTien($datosModel, $tabla){
+
+	// busca el id de validacion
+	$stmt = Conexion::conectar()-> prepare("SELECT `vai_id`, `vai_numfoto`, `vai_descripcionfoto`, `vai_observaciones`, `vai_estatus` FROM `sup_validafotos` INNER JOIN sup_validacion ON sup_validacion.val_id= sup_validafotos.vai_id WHERE val_indice=:indice AND val_rec_id=:idrec and val_etapa =:ideta and val_vis_id=:idinf and vai_numfoto = :idfoto;
+");
+
+		$stmt->bindParam(":indice", $datosModel["idmes"], PDO::PARAM_STR);
+		$stmt->bindParam(":idinf", $datosModel["idinf"], PDO::PARAM_INT);
+		$stmt->bindParam(":idrec", $datosModel["idrec"], PDO::PARAM_INT);
+		$stmt->bindParam(":ideta", $datosModel["ideta"], PDO::PARAM_INT);
+		$stmt->bindParam(":idfoto", $datosModel["idfoto"], PDO::PARAM_INT);
+		$stmt-> execute();
+
+	return $stmt->fetchall();
+
+	}
+
+    public function InsertaValidacionTien($datosModel, $tabla){
+
+		// consulta 
+    $stmt = Conexion::conectar()-> prepare("INSERT INTO $tabla (`val_vis_id`, `val_rec_id`, `val_indice`, `val_etapa`, `val_estatus`) VALUES (:idinf,:idrec,:indice,:etapa, :estatus)");
+
+    	$stmt->bindParam(":indice", $datosModel["indice"], PDO::PARAM_STR);
+		$stmt->bindParam(":idinf", $datosModel["id"], PDO::PARAM_INT);
+		$stmt->bindParam(":idrec", $datosModel["idrec"], PDO::PARAM_INT);
+		$stmt->bindParam(":estatus", $datosModel["estatus"], PDO::PARAM_INT);
+		$stmt->bindParam(":etapa", $datosModel["ideta"], PDO::PARAM_INT);
+		$stmt-> execute();
+//$stmt->debugDumpParams();
+	}
+
+public function LeeIdValidacionTien($datosModel, $tabla){
+
+
+	// busca el id de validacion
+	$stmt = Conexion::conectar()-> prepare("SELECT `val_id`, `val_estatus` FROM $tabla WHERE  `val_vis_id`=:idinf and  `val_rec_id`=:valrec and `val_indice`=:indice and `val_etapa`=:ideta");
+
+		$stmt->bindParam(":indice", $datosModel["indice"], PDO::PARAM_STR);
+		$stmt->bindParam(":idinf", $datosModel["id"], PDO::PARAM_INT);
+		$stmt->bindParam(":valrec", $datosModel["idrec"], PDO::PARAM_INT);
+		$stmt->bindParam(":ideta", $datosModel["ideta"], PDO::PARAM_INT);
+		$stmt-> execute();
+
+	return $stmt->fetchall();
+
 	}
 
 
