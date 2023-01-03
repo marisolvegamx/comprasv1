@@ -457,7 +457,21 @@ WHERE `cus_usuario` = :usuario";
 	    
 	}
 	
-
+	public static function getUltimo($tabla){
+	    $sql2 = "select max(CAST(cus_usuario AS UNSIGNED)) from $tabla 
+where cus_usuario REGEXP '^[0-9]+$'=1";
+	    try{
+	        $stmt = Conexion::conectar()-> prepare($sql2);
+	       
+	        
+	        $stmt-> execute();
+	        return $stmt->fetch();
+	    }catch(PDOException $ex){
+	        throw new Exception("Error al borrar usuario");
+	    }
+	    
+	    
+	}
 }
 
 

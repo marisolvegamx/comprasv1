@@ -163,7 +163,7 @@ where cnfg_permisos.cpe_grupo=:grupous and men_nivel=1";
     	if($grupo=="muh"||$grupo=="mui")
     		$sql.=" order by men_orden";
     	else 
-    		$sql.=" order by cnfg_menu.men_claveopcion;";
+    		$sql.=" order by men_orden;";
     	
     	
     	$con=Conexion::conectar();

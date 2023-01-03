@@ -22,10 +22,10 @@
 </table>
          <div class="box-body table-responsive no-padding">
               <table class="table table-bordered table-hover">
-                <th style="background-color: #8596b0; text-align: center; color: #FFFFFF; width: 10%; " >No. Informe</th>
+                <th style="background-color: #8596b0; text-align: center; color: #FFFFFF; width: 10%; " >No. Visita/Informe</th>
                 <th style="background-color: #8596b0; text-align: center; color: #FFFFFF; width: 25%; " >Recolector</th>
                 <th style="background-color: #8596b0; text-align: center; color: #FFFFFF; width: 25%; " >Estatus</th>
-                <th style="background-color: #8596b0; text-align: center; color: #FFFFFF; width: 40%; " >Observaciones</th>
+                <th style="background-color: #8596b0; text-align: center; color: #FFFFFF; width: 40%; " >Motivo</th>
                 
                             
 <?php

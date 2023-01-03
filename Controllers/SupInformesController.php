@@ -1,6 +1,5 @@
 <?php
-//error_reporting(E_ERROR|E_NOTICE|E_WARNING);
-//ini_set("display_errors", 1); 
+
 class SupInformesController{
 
   public $i;
@@ -321,6 +320,7 @@ public function vistaSupInformeComController(){
      $this->mesas=$_GET["idmes"];
      $this->rec_id=$_GET["idrec"];
      $this->sec=$_GET["sec"];
+     //var_dump($this->sec);
      $this->eta=$_GET["eta"];
      $this->idsup=$_GET["idsup"];
      $this->idciu=$_GET["idciu"];
@@ -351,7 +351,7 @@ public function vistaSupInformeComController(){
         		//$this->numsup= $numsup1;
             
 
-				$mes_asig= $item["inf_indice"];
+				$mes_asig= $this->mesas;
 
 				$aux = explode(".", $mes_asig);
                        
@@ -468,7 +468,7 @@ public function vistaSupInformeComController(){
                          "idsec"=>$this->sec,
       ); 
         //var_dump($datosCont2);
-        $respuesta4 =DatosValidacion::LeeEstatusSec($datosCont2, "sup_validacion");
+        $respuesta4 =DatosValidacion::LeeEstatusSecTien($datosCont2, "sup_validacion");
         //var_dump($respuesta4);
         foreach($respuesta4 as $row => $item4){
        
@@ -577,7 +577,7 @@ public function vistaSupInformeComController(){
                          "idfoto"=>$this->fotof,
       );
       // var_dump($datosCont3);
-      $respuesta5 =DatosValidacion::LeeEstatusFoto($datosCont3, "sup_validacion");
+      $respuesta5 =DatosValidacion::LeeEstatusFotoTien($datosCont3, "sup_validacion");
         //var_dump($respuesta4);
         foreach($respuesta5 as $row => $item5){
             $this->estfotfac= $item5["vai_estatus"];      
@@ -591,7 +591,7 @@ public function vistaSupInformeComController(){
             "idfoto"=>$this->nimgs,
         );
         // var_dump($datosCont3);
-        $respuesta5 =DatosValidacion::LeeEstatusFoto($datosCont3, "sup_validacion");
+        $respuesta5 =DatosValidacion::LeeEstatusFotoTien($datosCont3, "sup_validacion");
         //var_dump($respuesta4);
         foreach($respuesta5 as $row => $item5){
             $this->estfottik= $item5["vai_estatus"];
@@ -1140,11 +1140,11 @@ public function SuplistaTiendasController(){
 					 <a href="index.php?action=supinforme&idmes='.$this->idmes.'&idrec='.$idrec.'&id='.$idt.'&sec=1&eta=2&idsup='.$this->idsup.'&idciu='.$this->idciu.'"><i class="fa fa-circle fa-2x" style="color:'.$nomesttien.';"></i></a>
                     
         ';
-            $datosCont2= array("idinf"=>$idinf,
+            $datosCont2= array("idinf"=>$idt,
                       "idmes"=>$this->idmes,
                       "idrec"=>$idrec,
                      );
-
+            //var_dump($datosCont2);
           $resp4=DatosSupInformes::verificaalertatien($datosCont2, "sup_validacion");
 
                  if ($resp4) {
@@ -1153,7 +1153,7 @@ public function SuplistaTiendasController(){
                     }   
                        
                    echo '       
-                <a href="index.php?action=suplistacorrecciones&idmes='.$this->idmes.'&idrec='.$idrec.'&id='.$idinf.'&cli=4&op='.$op.'&sec=4&eta=2&idciu='.$this->idciu.'&idsup='.$this->idsup.'" style="margin-right:-19px"><i class="fa fa-bell fa-1x" style="color:red;"></i></a>';
+                <a href="index.php?action=suplistacorrecciones&idmes='.$this->idmes.'&idrec='.$idrec.'&id='.$idt.'&cli=4&op='.$op.'&sec=4&eta=2&idciu='.$this->idciu.'&idsup='.$this->idsup.'" style="margin-right:-19px"><i class="fa fa-bell fa-1x" style="color:red;"></i></a>';
                  }    
            echo '</td>  ';      
         // AQUI VA LA BUSQUEDA DE OPCIONES DE PLANTA
@@ -1217,9 +1217,14 @@ public function SuplistaTiendasController(){
                 
                      $resp2=DatosSupInformes::verificaalerta($datosCont2, "sup_validacion");
 
-                     if ($resp2) {       
+                     if ($resp2) {
+
+                    foreach($resp2 as $row => $item4){
+                   $op=$item4["vai_descripcionfoto"];   
+                    }   
+                       
                        echo '       
-                    <a href="index.php?action=suplistacorrecciones&idmes='.$this->idmes.'&idrec='.$idrec.'&id='.$id.'&cli=4&sec=4&eta=2&idciu='.$this->idciu.'&idsup='.$this->idsup.'" style="margin-right:-19px"><i class="fa fa-bell fa-1x" style="color:red;"></i></a>';
+                    <a href="index.php?action=suplistacorrecciones&idmes='.$this->idmes.'&idrec='.$idrec.'&id='.$id.'&cli=4&sec=4&op='.$op.'&eta=2&idciu='.$this->idciu.'&idsup='.$this->idsup.'" style="margin-right:-19px"><i class="fa fa-bell fa-1x" style="color:red;"></i></a>';
                      }    
                   //   echo '</td>';
                } else {
@@ -1356,13 +1361,13 @@ public function aceptarsec1(){
                 "ideta"=>$eta,
                                );
     
-       $respuesta =DatosValidacion::LeeIdValidacion($datosController, "sup_validacion");
+       $respuesta =DatosValidacion::LeeIdValidacionTien($datosController, "sup_validacion");
        // valido si se encuentra
        if (sizeof($respuesta)>0) {
           foreach($respuesta as $row => $item){
              $idval= $item["val_id"];
           }
-           //var_dump($idval);
+          // var_dump($idval);
          // valida si existe validacion en seccion
          // revisa si ya existe
           $datosController= array("idval"=>$idval,
@@ -1414,7 +1419,7 @@ public function aceptarsec1(){
                                );
 
            // inserta validacion detalle
-           DatosValidacion::InsertaValidacion($datosController, "sup_validacion");
+           DatosValidacion::InsertaValidacionTien($datosController, "sup_validacion");
            // busca numero de validacion
            $datosController= array("id"=>$id,
                 "idrec"=>$idrec,
@@ -1422,7 +1427,7 @@ public function aceptarsec1(){
                 "ideta"=>$eta,
                                );
     
-          $respuesta =DatosValidacion::LeeIdValidacion($datosController, "sup_validacion");
+        $respuesta =DatosValidacion::LeeIdValidacionTien($datosController, "sup_validacion");
 
            if (sizeof($respuesta)>0) {
               foreach($respuesta as $row => $item){
@@ -1462,72 +1467,59 @@ public function aceptarsec1(){
   }
 }
 
+public function noaceptarsec(){
+    
+  include "Utilerias/leevar.php";
+   try{
 
-public function noaceptarsec1(){
-		
-	include "Utilerias/leevar.php";
-      
-	try{
-
-   if ($pan) {
+      //echo "entre a noaceptarsec";
+    if ($pan) {
     $pan= "0".$pan;
    }
-		if ($cancelar){
-			$estatus=3;
-
-		} else {
-			$estatus=1; 
-		}
-    // echo "entre a solicitar correccion";
-    //var_dump($idsup);
-    //var_dump($idciu);
-		$regresar="index.php?action=supinforme".$pan."&idmes=".$indice."&idrec=".$idrec."&id=".$id."&sec=".$sec."&eta=2&idsup=".$idsup."&idciu=".$idciu;
-
-    if ($sec==1){
-        $descrip="ubicacion de la tienda";
-    }else if ($sec==2){
-        $descrip="direccion en ticket";
-    }
-    
-	    //echo $regresar;
-		if ($admin=="cor"){
-		   // busca si el registro ya existe
-		   $datosController= array("id"=>$id,
-								"idrec"=>$idrec,
-								"indice"=>$indice,
+   //var_dump($sec);
+    $regresar="index.php?action=supinforme".$pan."&idmes=".$indice."&idrec=".$idrec."&id=".$id."&sec=".$sec."&eta=2&idsup=".$idsup."&idciu=".$idciu;
+       $datosController= array("id"=>$id,
+                "idrec"=>$idrec,
+                "indice"=>$indice,
                 "ideta"=>$eta,
                                );
-         //var_dump($datosController);
-		   $respuesta =DatosValidacion::LeeIdValidacion($datosController, "sup_validacion");
-
-		   if (sizeof($respuesta)>0) {
-		      echo "lo encontre";
-		   	 	foreach($respuesta as $row => $item){
-					$idval= $item["val_id"];
-				  }
-          $datosController1= array("idval"=>$idval,
-                "idsec"=>$sec,
-                               );
     
-	         // valida si existe la seccion
-          $respuestaS =DatosValidacion::LeeIdImgValidacion($datosController1, "sup_validasecciones");
+       $respuesta =DatosValidacion::LeeIdValidacionTien($datosController, "sup_validacion");
+       // valido si se encuentra
+       if (sizeof($respuesta)>0) {
+          foreach($respuesta as $row => $item){
+             $idval= $item["val_id"];
+          }
+          // var_dump($idval);
+         // valida si existe validacion en seccion
+         // revisa si ya existe
+          $datosController= array("idval"=>$idval,
+                "idsec"=>$sec, 
+                  );
+            //var_dump($datosController);
+          $respuestaS =DatosValidacion::LeeIdImgValidacion($datosController, "sup_validasecciones");
           //var_dump($respuestaS);
-           if (sizeof($respuestaS)>0) {   
-          
-		   	  // actualiza validacion
-		   	      $datosController= array("idval"=>$idval,
-								"idsec"=>$sec,
-								"idaprob"=>0,
+           if (sizeof($respuestaS)>0) { 
+             // echo "lo encontre";  
+               $datosController= array("idval"=>$idval,
+                "idsec"=>$sec,
+                "idaprob"=>0,
                 "noap"=>0,
-								"observ"=>$solicitud,
-								"estatus"=>$est,
-                               );
-		   	  //var_dump($datosController);
-				     DatosValidacion::actualizaValidacionsec($datosController,"sup_validasecciones");
-            } else {
-              // ingresa seccion
-              //echo "no existe seccion";
-                $datosController2= array("idval"=>$idval,
+                "observ"=>$solicitud,
+                "estatus"=>$est,
+              );
+              DatosValidacion::actualizaValidacionsec($datosController,"sup_validasecciones");
+           }else{
+               //echo "no esta la seccion";
+              if ($sec==1){
+                  $descrip=1;
+               }else{
+                 if ($sec==2){
+                    $descrip=2;
+                 }
+                }
+        
+                  $datosController2= array("idval"=>$idval,
                       "idsec"=>$sec,
                       "descrip"=>$descrip,
                       "idaprob"=>0,
@@ -1536,71 +1528,75 @@ public function noaceptarsec1(){
                       "estatus"=>$est,
                                    );
                 //var_dump($datosController2);
-                DatosValidacion::ingresaregvalsec($datosController2, "sup_validasecciones");
+                DatosValidacion::ingresaregvalsec($datosController2, "sup_validasecciones");           
+            }  // if validacion de seccion
 
-            }  
-
-		   }else {
-		       echo "no hay nada"; 	
-		       // inserta validacion
-		       		$datosController= array("id"=>$id,
-								"idrec"=>$idrec,
-								"indice"=>$indice,
-								"estatus"=>$est,
+       }else {
+           //echo "no hay nada";  
+           // inserta validacion
+              $datosController= array("id"=>$id,
+                "idrec"=>$idrec,
+                "indice"=>$indice,
+                "estatus"=>1,
                 "ideta"=>$eta,
                                );
 
-		       // inserta validacion detalle
-		       DatosValidacion::InsertaValidacion($datosController, "sup_validacion");
-		       // busca numero de validacion
-		       $datosController= array("id"=>$id,
-								"idrec"=>$idrec,
-								"indice"=>$indice,
+           // inserta validacion detalle
+           DatosValidacion::InsertaValidacionTien($datosController, "sup_validacion");
+           // busca numero de validacion
+           $datosController= array("id"=>$id,
+                "idrec"=>$idrec,
+                "indice"=>$indice,
                 "ideta"=>$eta,
                                );
-		
-		   		$respuesta =DatosValidacion::LeeIdValidacion($datosController, "sup_validacion");
+    
+        $respuesta =DatosValidacion::LeeIdValidacionTien($datosController, "sup_validacion");
 
-				   if (sizeof($respuesta)>0) {
-				   	 	foreach($respuesta as $row => $item){
-							$idval= $item["val_id"];
-						}
-					}	
-
-
-					$datosController2= array("idval"=>$idval,
-											"idsec"=>$sec,
-											"descrip"=>1,
-											"idaprob"=>0,
-											"noap"=>0,
-											"observ"=>$solicitud,
-											"estatus"=>$est,
-			                             );
-          //var_dump($datosController2);
-				DatosValidacion::ingresaregvalsec($datosController2, "sup_validasecciones");
-		   }
-		   //var_dump($respuesta);
-        if ($est==3){
-          DatosValidacion::actualizaValidacionpr($datosController,"sup_validacion");
-        }
-
-		echo "
+           if (sizeof($respuesta)>0) {
+              foreach($respuesta as $row => $item){
+              $idval= $item["val_id"];
+            }
+          } 
+         // var_dump($idval);
+          if ($sec==1){
+                  $descrip=1;
+          }else{
+             if ($sec==2){
+                $descrip=2;
+             }
+          }
+          $datosController2= array("idval"=>$idval,
+                      "idsec"=>$sec,
+                      "descrip"=>$descrip,
+                      "idaprob"=>0,
+                      "noap"=>0,
+                      "observ"=>$solicitud,
+                      "estatus"=>$est,
+                                   );
+         //var_dump($datosController2);
+        DatosValidacion::ingresaregvalsec($datosController2, "sup_validasecciones");
+       
+           
+       }  // if existe en validacion
+        echo "
             <script type='text/javascript'>
               window.location='$regresar'
                 </script>
                   ";
-      }
 
-	}catch(Exception $ex){
-		echo Utilerias::mensajeError($ex->getMessage());
-	}			
+
+   }catch(Exception $ex){
+    echo Utilerias::mensajeError($ex->getMessage());
+  }
 }
+
+
 
 
 public function noaplicasec1(){
     
   include "Utilerias/leevar.php";
-  //echo "entre a noaplicasec";
+
   $estatus="1";
    try{
     if ($pan) {
@@ -1621,7 +1617,7 @@ public function noaplicasec1(){
      // var_dump($datosController);
 
 
-      $respuesta =DatosValidacion::LeeIdValidacion($datosController, "sup_validacion");
+      $respuesta =DatosValidacion::LeeIdValidacionTien($datosController, "sup_validacion");
        //var_dump($respuesta);
        // valido si se encuentra
        if (sizeof($respuesta)>0) {
@@ -1650,10 +1646,10 @@ public function noaplicasec1(){
             DatosValidacion::actualizaValidacionsec($datosController,"sup_validasecciones");
            }else{
               if ($sec==1){
-                  $descrip="ubicacion de la tienda";
+                  $descrip=1;
                }else{
                  if ($sec==2){
-                    $descrip="direccion en ticket";
+                    $descrip=2;
                  }
                 }
            
@@ -1681,7 +1677,7 @@ public function noaplicasec1(){
                                );
             //  var_dump($datosController);
            // inserta validacion detalle
-           DatosValidacion::InsertaValidacion($datosController, "sup_validacion");
+           DatosValidacion::InsertaValidacionTien($datosController, "sup_validacion");
            // busca numero de validacion
            $datosController= array("id"=>$id,
                 "idrec"=>$idrec,
@@ -1689,7 +1685,7 @@ public function noaplicasec1(){
                 "ideta"=>$eta,
                                );
     
-          $respuesta =DatosValidacion::LeeIdValidacion($datosController, "sup_validacion");
+          $respuesta =DatosValidacion::LeeIdValidacionTien($datosController, "sup_validacion");
 
            if (sizeof($respuesta)>0) {
               foreach($respuesta as $row => $item){
@@ -1983,7 +1979,7 @@ public function noaceptarimg(){
     $regresar="index.php?action=supinforme".$pan."&idmes=".$indice."&idrec=".$idrec."&id=".$id."&sec=".$sec."&eta=2&idsup=".$idsup."&idciu=".$idciu;
 
     if ($sec==4){
-        $descrip="foto anaquel";
+        $descrip=3;
     }else if ($action=="supinforme02"){
         $descrip=1;//"foto de fachada";
     }else if ($action=="supinforme03"){
@@ -1999,14 +1995,15 @@ public function noaceptarimg(){
                 "indice"=>$indice,
                 "ideta"=>$eta,
                                );
-
-       $respuesta =DatosValidacion::LeeIdValidacion($datosController, "sup_validacion");
+        $respuesta =DatosValidacion::LeeIdValidacionTien($datosController, "sup_validacion");
+       //$respuesta =DatosValidacion::LeeIdValidacion($datosController, "sup_validacion");
 
        if (sizeof($respuesta)>0) {
           //echo "lo encontre en principal";
           foreach($respuesta as $row => $item){
           $idval= $item["val_id"];
           }
+          //var_dump($idval);
           $datosController1= array("idval"=>$idval,
                 "idcli"=>$cli,
                         );
@@ -2034,13 +2031,15 @@ public function noaceptarimg(){
                     $consec=$resp[0]+1;
                     
                 }
+
+                //var_dump($consec);
                 $datosController2= array("idval"=>$idval,
                       "idcli"=>0,
                       "observ"=>$observ,
                       "est"=>$est,
                       "idimg"=>$img,
-                    "desimg"=>$descrip,
-                    "cons"=>$consec                );
+                      "desimg"=>$descrip,
+                      "cons"=>$consec                );
                 //var_dump($datosController2);
                 DatosValidacion::ingresaValidacionimg2($datosController2, "sup_validafotos");
 
@@ -2055,9 +2054,9 @@ public function noaceptarimg(){
                 "estatus"=>$est,
                 "ideta"=>$eta,
                                );
-            //    var_dump($datosController);
-           // inserta validacion detalle
-           DatosValidacion::InsertaValidacion($datosController, "sup_validacion");
+                //    var_dump($datosController);
+                // inserta validacion detalle
+                DatosValidacion::InsertaValidacionTien($datosController, "sup_validacion");
            // busca numero de validacion
              $datosController= array("id"=>$id,
                 "idrec"=>$idrec,
@@ -2065,13 +2064,16 @@ public function noaceptarimg(){
                 "ideta"=>$eta,
                                );
 
-       $respuesta =DatosValidacion::LeeIdValidacion($datosController, "sup_validacion");
+       $respuesta =DatosValidacion::LeeIdValidacionTien($datosController, "sup_validacion");
 
            if (sizeof($respuesta)>0) {
               foreach($respuesta as $row => $item){
-              $idval= $item["val_id"];
-            }
-          } 
+                 $idval= $item["val_id"];
+               }
+            } 
+            //var_dump($idval);
+
+
           $resp=DatosValidacion::getUltimoConsInf($idval,"sup_validafotos");
           // var_dump($resp);
           // die();
@@ -2132,11 +2134,16 @@ public function noaceptarimg(){
             $ids=$item["val_id"];
             $idf=$item["vai_numfoto"];
 
-            echo '<tr><td>'.$item["VAL_INF_ID"].'</td>
+            if ($op<3){
+              $numinfv=$item["val_vis_id"];
+            } else{
+              $numinfv=$item["VAL_INF_ID"];
+            } 
+            echo '<tr><td>'.$numinfv.'</td>
                   <td>'.$item["rec_nombre"].'</td>
 
                     <td  style="text-align: center;">
-           <a href="index.php?action=supnvacorreccion&idmes='.$idmes.'&idrec='.$idrec.'&id='.$ids.'&numf='.$idf.'&idi='.$id.'&idciu='.$idciu.'&idsup='.$idsup.'">'.$estatus.'</a></td>  
+           <a href="index.php?action=supnvacorreccion&idmes='.$idmes.'&idrec='.$idrec.'&id='.$id.'&numf='.$idf.'&idi='.$id.'&idciu='.$idciu.'&idsup='.$idsup.'">'.$estatus.'</a></td>  
                     
              
 

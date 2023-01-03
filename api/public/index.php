@@ -232,7 +232,7 @@ $app->post('/informes/create', function (Request $request, Response $response) {
 
     $campos = $request->getParsedBody();
     $this->get('logger')
-        ->addInfo('InforemesPend: Llegaron varios informes' . $request->getBody());
+        ->addInfo('InformesPend: Llegaron varios informes' . $request->getBody());
 
     try {
         $informeContrl = new InformePostController();
@@ -243,7 +243,7 @@ $app->post('/informes/create', function (Request $request, Response $response) {
             'data' => 'Informes guardados correctamente.'
         );
         $this->get('logger')
-            ->addInfo('InforemesPend: Respuesta Informes guardados correctamente');
+            ->addInfo('InformesPend: Respuesta Informes guardados correctamente');
         return $response->withJson($datos, 200);
     } catch (Exception $e) {
         $datos = array(
@@ -251,7 +251,7 @@ $app->post('/informes/create', function (Request $request, Response $response) {
             'data' => $e->getMessage()
         );
         $this->get('logger')
-            ->addInfo('InforemesPend: hubo un error ' . $e->getMessage());
+            ->addInfo('InformesPend: hubo un error ' . $e->getMessage());
 
         return $response->withJson($datos, 500);
     }

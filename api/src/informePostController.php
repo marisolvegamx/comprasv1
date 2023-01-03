@@ -209,7 +209,7 @@ class InformePostController{
             $lisfotos_ex=$campos["productosEx"]; //es array
             $cverecolector=$campos[ContratoVisitas::CVEUSUARIO];
             $indice=$campos[ContratoVisitas::INDICE];
-         //   $imagenes_det=$campos["imagenDetalles"]; //es array
+            $imagenes_det=$campos["imagenDetalles"]; //es array
           
             $pdo->beginTransaction();
             //TODO lo pongo en una transaccion
@@ -244,8 +244,8 @@ class InformePostController{
             foreach ($lisfotos_ex as $fotos_ex)
                 DatosProductoExhibido::insertaru($fotos_ex,$cverecolector,$indice,"producto_exhibido",$pdo);
             
-           // foreach ($imagenes_det as $imagen)
-           //     DatosImagenDetalle::insertar($imagen,$cverecolector,$indice,"imagen_detalle");
+            foreach ($imagenes_det as $imagen)
+                DatosImagenDetalle::insertar($imagen,$cverecolector,$indice,"imagen_detalle",$pdo);
             $datosInfdet=new DatosInformeDetalle();
                 
             foreach ($lisinforme_det as $detalle)

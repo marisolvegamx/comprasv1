@@ -3,7 +3,7 @@ session_start();
 //echo $_SESSION['Usuario'];
 
 //error_reporting(E_ERROR|E_NOTICE|E_WARNING);
-//ini_set("display_errors", 1); 
+ini_set("display_errors", 0); 
 
 
 require_once "Controllers/usuarioController.php";

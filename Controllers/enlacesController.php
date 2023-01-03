@@ -8,7 +8,7 @@ public function listaopciones(){
          $grupo=UsuarioController::Obten_Grupo();
                      
      
-        $respuesta = EnlacesModel::listaOpcionesMenu($grupo, "grupospermisos");
+        $respuesta = EnlacesModel::listaOpcionesMenu($grupo, "cnfg_permisos");
         
         foreach($respuesta as $row => $item){  
 

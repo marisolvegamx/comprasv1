@@ -6,6 +6,19 @@
   include "Utilerias/leevar.php";
   $supPrepCon=new SupPreparaController();
   $supPrepCon->vistaPreparacion();
+  if(isset($_SESSION["misup"]))
+      $idsup=$_SESSION["misup"];
+  else 
+  {
+      $_SESSION["misup"]=$idsup;
+  }
+  if(isset($_SESSION["miciu"]))
+      $idciu=$_SESSION["miciu"];
+      else
+      {
+          $_SESSION["misup"]=$idciu;
+      }
+  //var_dump($supPrepCon->listaimagenes);
 // var_dump($supPrepCon->informe);
 // var_dump($supPrepCon->infdetalle);
   // $enlacesModel == "suppreparacion" ||
@@ -51,32 +64,11 @@
       </div>
       <div class="col-md-3 labelAzulDato"><?php echo $supPrepCon->informe["n5_nombre"]?>
       </div>
-      <div class="col-md-1 labelAzul1">FOTO <?php echo $supPrepCon->numdet?>
+      <div class="col-md-1 labelAzul1">
       </div>
-      <div class="col-md-1 ">
-      <div class="row">
-                <div class="col-md-3 tituloSupBotones" >
-               
-                <a href="<?php 
-                if($supPrepCon->numdet>1)
-                echo "index.php?action=suppreparacion&idmes=".$supPrepCon->mesas."&idrec=".$supPrepCon->rec_id."&id=".$id."&eta=".$supPrepCon->etapa."&cli=".$supPrepCon->idcli."&numdet=1"?>">
-           <?php if ($supPrepCon->numdet==1) echo '<img src="Views/dist/img/Retrocede-Final-off.jpg">'; 
-           else echo '  <img src="Views/dist/img/Retrocede-Final.jpg">';  ?>
-              
-                
-                </a>
-                </div>
-                <div class="col-md-3 tituloSupBotones" ><a href="<?php if ($supPrepCon->numdet>1) echo "index.php?action=suppreparacion&idmes=".$supPrepCon->mesas."&idrec=".$supPrepCon->rec_id."&id=".$id."&eta=".$supPrepCon->etapa."&cli=".$supPrepCon->idcli."&numdet=".($supPrepCon->numdet-1)?>"><img src="Views/dist/img/Retrocede-1.jpg"></a>
-                </div>
-                <div class="col-md-3 tituloSupBotones" ><a href="<?php if($supPrepCon->numdet<sizeof($supPrepCon->infdetalles))echo "index.php?action=suppreparacion&idmes=".$supPrepCon->mesas."&idrec=".$supPrepCon->rec_id."&id=".$id."&eta=".$supPrepCon->etapa."&cli=".$supPrepCon->idcli."&numdet=".($supPrepCon->numdet+1)?>"><img src="Views/dist/img/Avanza-1.jpg"></a>
-                </div>
-                <div class="col-md-3 tituloSupBotones" ><a  href="<?php 
-                if(sizeof($supPrepCon->infdetalles)>1) echo "index.php?action=suppreparacion&idmes=".$supPrepCon->mesas."&idrec=".$supPrepCon->rec_id."&id=".$id."&eta=".$supPrepCon->etapa."&cli=".$supPrepCon->idcli."&numdet=".sizeof($supPrepCon->infdetalles)?>">
-                <?php if(sizeof($supPrepCon->infdetalles)<2) echo '<img src="Views/dist/img/Avanza-Final-off.jpg">';
-                else echo ' <img src="Views/dist/img/Avanza-Final.jpg">';?>
-               </a>
-                </div>
-              </div>
+     <div class="col-md-1 labelAzulDato">
+     <a href="<?="index.php?action=suplistaetapas&admin=li&idmes=".$idmes."&idsup=".$idsup."&idciu=".$idciu."&eta=1&idc=".$idc?>"><img src="Views/dist/img/Retrocede-Final.jpg"></a>
+         
       </div>
     </div>
     <div class="row">
@@ -123,23 +115,26 @@
    
          ?>
          <div class="row">
-<div class="col-md-6 areaImagen areaScrollP6">
+
+ <div class="col-md-6 areaImagen areaScrollP6">
   <div >
 
 <div >
 
 <?php 
 $idimagen=1;
-
+foreach($supPrepCon->imagenes as $imagen){
     echo '<div class="img-magnifier-container">
-				    <img id="myimage'.$idimagen.'" src="'.$supPrepCon->dirimagen.'\\'.$supPrepCon->imagenes["ruta"].'"class="d-block w-100"  >
+				    <img id="myimage'.$idimagen.'" src="'.$supPrepCon->dirimagen.'\\'.$imagen["ruta"].'" class="d-block w-100"  >
 				    </div>';
- 
-?>
+    $idimagen++;
+}?>
 				</div> 	</div>
 <!---Termina carrusel-->	    
 	  
   </div>
+	  
+  
       <div class="col-md-6 areaImagen areaScrollP6">
 <!---Inicia listado-->	 
 
@@ -184,7 +179,7 @@ $idimagen=1;
        
       }
       ?>
-      <div class="<?= $claseboton?> areaBoton"><a href="<?= $supPrepCon->liga.'&admin=solcor&est=2&numimg='.$supPrepCon->imagenes["id"]?>" class="btn <?= $clase?> btn-sm btn-block ">CANCELAR</a>
+      <div class="<?= $claseboton?> areaBoton"><a href="<?= $supPrepCon->liga.'&admin=solcor&est=2&numimg='.$supPrepCon->imagenes[0]["id"]?>" class="btn <?= $clase?> btn-sm btn-block ">CANCELAR</a>
       </div>
       <?php if ($supPrepCon->correccionFoto["vai_estatus"]==3){
           $clase= "btn-informesActivado";
@@ -194,7 +189,7 @@ $idimagen=1;
        
       }
       ?>
-      <div class="<?= $claseboton?> areaBoton"><a href="<?= $supPrepCon->liga.'&admin=solcor&est=3&numimg='.$supPrepCon->imagenes["id"] ?>" class="btn <?= $clase?> btn-sm btn-block ">ACEPTAR</a>
+      <div class="<?= $claseboton?> areaBoton"><a href="<?= $supPrepCon->liga.'&admin=solcor&est=3&numimg='.$supPrepCon->imagenes[0]["id"] ?>" class="btn <?= $clase?> btn-sm btn-block ">ACEPTAR</a>
       </div>
     <?php  if($pan!=9){ ?>
         <div class="col-md-6 vacio">
@@ -264,13 +259,13 @@ $idimagen=1;
             <form role="form" method="post" action=
 
         <?php
-              echo $supPrepCon->liga.'&admin=solcor&est=1&numimg='.$supPrepCon->imagenes["id"];
+              echo $supPrepCon->liga.'&admin=solcor&est=1&numimg='.$supPrepCon->imagenes[0]["id"];
             ?>
               >
               
               <p> Escribe el motivo de corrección</p>
               <?php echo '
-                  <input type="hidden" name="img" id="img" value='.$supPrepCon->imagenes["id"].'>';
+                  <input type="hidden" name="img" id="img" value='.$supPrepCon->imagenes[0]["id"].'>';
               ?>
               <input type="text"  name="observ" id="observ" style="width: 450px;">
               <p>  </p>
@@ -298,7 +293,7 @@ $idimagen=1;
             </div>
             <div class="modal-body">
               
-            <form role="form" method="post" action="<?php echo $supPrepCon->liga.'&admin=noaceptarsec&sec='.$numsec.'&vasid='.$supPrepCon->idval.'&iddet='.$supPrepCon->infdetalle["ied_id"]; ?>">
+            <form role="form" method="post" action="<?php echo $supPrepCon->liga.'&admin=noaceptarsec&sec='.$numsec.'&vasid='.$supPrepCon->idval ?>">
               <?php echo '
                 
                  <input type="hidden" name="idplan" id="idplan" value="'.$idplan.'"> 
@@ -323,11 +318,11 @@ $idimagen=1;
     
  <script type="text/javascript">
    
-   <?php 
+   <?php $idimagen=1; foreach($supPrepCon->imagenes as $imagen){
     /* Initiate Magnify Function
     with the id of the image, and the strength of the magnifier glass:*/
-   echo  'magnify("myimage1", 3);';
-  
-   
+   echo  'magnify("myimage'.$idimagen.'", 2);';
+   $idimagen++;
+   }
    ?>
     </script>

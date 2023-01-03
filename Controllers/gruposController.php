@@ -23,7 +23,7 @@ class GruposController
             case "actualizar" :
                 $this->actualizarGrupo();
                 break;
-            case "nuevo":
+            case "nvo":
                 $this->titulo1="AGREGAR GRUPO";
                 $this->titulo2="Nuevo grupo";
                 $this->admin="insertar";
@@ -31,12 +31,7 @@ class GruposController
             case "editar":
                 $this->editarGrupo();
                 break;
-            case "permisos" :
-               // include('./MESpermiso.php');
-                break;
-            case "usuarios" :
-             //   include('./MESusuarios.php');
-                break;
+          
                 
           
                
@@ -47,8 +42,7 @@ class GruposController
     
     public function vistaListaGrupos(){
         
-       $ssql="SELECT *
-				 FROM cnfg_grupos";
+    
        $rs=DatosGrupo::vistaGrupos("cnfg_grupos");
         $cont=0;
        
@@ -71,12 +65,8 @@ class GruposController
             $cont++;
             $this->listaGrupos[]=$grupo;            
         }
-        $navegacion=new Navegacion();
-        $navegacion->iniciar();
-        $navegacion->borrarRutaActual("grupos");
-        $rutaact = $_SERVER['REQUEST_URI'];
-        // echo $rutaact;
-        $navegacion::agregarRuta("grupos", "index.php?action=slistagrupos", "GRUPOS");
+    
+     
         
     }
     
@@ -85,16 +75,14 @@ class GruposController
     
        
         // genera clave de servicio, la consulta debe estar agrupada y debera presentar el numero maximo para obtenerlo
-        $ssql="SELECT max(cgr_clavegrupo) as clavegroup
-		 FROM cnfg_grupos;";
+      
         try{
         $numgroup=DatosGrupo::ultimoGrupo("cnfg_grupos");
-     
+    
         $numgroup++;
         
         //procedimiento de insercion del servicio
         //$sSQL= "insert into cnfg_grupos (cgr_clavegrupo,cgr_nombregrupoesp,cgr_nombregrupoing) values ('$numgroup','$nomesp','$noming')";
-        $sSQL= "insert into cnfg_grupos (cgr_clavegrupo,cgr_nombregrupo) values ('$numgroup','$nomesp')";
         DatosGrupo::insertarGrupo($numgroup,$nomesp,"cnfg_grupos");
         $this->mensaje='<div class="alert alert-success">La información se guardó correctamente</div>';
        $this->NOMESP="";
@@ -140,9 +128,7 @@ class GruposController
        $this->admin="actualizar";
         $op2=$id;
       
-        $sqle="SELECT *
-			 FROM cnfg_grupos
-			WHERE cgr_clavegrupo = '".$op2."'";
+      
         $row=DatosGrupo::getGrupo($op2,"cnfg_grupos");
         
             $this->IDS=$id;

@@ -14,8 +14,10 @@ include_once  'Controllers/supCorreccionController.php';
       </div>
       <?php
       echo '      
-        <div class="col-md-1 tituloSupCorreciones" ><a href="index.php?action=suplistacorrecciones&idmes='.$idmes.'&idrec='.$idrec.'&id='.$idi.'&sec=4&cli='.$cli.'&eta=2&idsup='.$idsup.'&idciu='.$idciu.'"><img src="Views/dist/img/Retrocede-Final.jpg"></a>
-            </div>';
+        <div class="col-md-1 tituloSupCorreciones" >
+<a href="index.php?action=suplistacorrecciones&idmes='.$idmes.'&idrec='.$idrec.'&id='.$idi.'&sec=4&cli='.$cli.'&op=3&eta=2&idsup='.$idsup.'&idciu='.$idciu.'"><img src="Views/dist/img/Retrocede-Final.jpg"></a>
+  
+    </div>';
       ?> 
     </div>
     <div class="row">
@@ -32,7 +34,7 @@ include_once  'Controllers/supCorreccionController.php';
     </div>
    
 
-
+<?php if($supCorCon->valfoto["clienteNombre"]!=""){?>
     <div class="row">
       <div class="col-md-2 labelAzul1">CLIENTE:
       </div>
@@ -55,6 +57,22 @@ include_once  'Controllers/supCorreccionController.php';
       <div class="col-md-4 labelAzulDato"><?php echo $supCorCon->valfoto["fecha"]?>
       </div>
     </div>
+    <?php }
+    else {
+        ?>
+    <div class="row">
+      <div class="col-md-2 labelAzul1">FECHA SOLICITUD:
+      </div>
+      <div class="col-md-4 labelAzulDato"><?php echo $supCorCon->valfoto["fecha"]?>
+      </div>
+       <div class="col-md-2 labelAzul1">TIENDA:
+      </div>
+      <div class="col-md-4 labelAzulDato"><?php echo $supCorCon->valfoto["nombreTienda"]?>
+      </div>
+     
+    </div><?php
+        
+    }?>
     <div class="row">
       <div class="col-md-2 labelAzul1">ÍNDICE:
       </div>

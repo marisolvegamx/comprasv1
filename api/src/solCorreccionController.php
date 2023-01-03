@@ -31,7 +31,8 @@ class solCorreccionController{
     
     public function getNuevos($indice,$recolector, $etapa){
         
-       
+       if($etapa==3)//para compras
+       {
         $rs = $this->datosInf->getValidacionFotos($indice,$recolector, $etapa,1, "sup_validacion");
           // var_dump($rs);
          //  die();
@@ -47,9 +48,43 @@ class solCorreccionController{
         //  var_dump($datosController);
          //    $this->actualizaValidacionimg($datosController, "sup_validafotos");
         }
-            
-        $this->listasolicitudesi=$rs;
+       // $this->listasolicitudesi=$rs;
+        $rs2 = $this->datosInf->getValidacionFotosVis($indice,$recolector, $etapa,1, "sup_validacion");
+       //  var_dump($rs2);
+        //  die();
+        //actualizo estatus a leido
+        foreach ($rs2 as $solic){
+            // var_dump($solic);
+            $datosController= array("idval"=>$solic["id"],
+                "idimg"=>$solic["numFoto"],
+                "est"=>5
+                
+            );
+            // var_dump($idval);
+            //  var_dump($datosController);
+            //    $this->actualizaValidacionimg($datosController, "sup_validafotos");
+        }
+        
+        $this->listasolicitudesi=array_merge($rs,$rs2);
        
+       }else{
+           $rs = $this->datosInf->getValidacionFotosEta($indice,$recolector, $etapa,1, "sup_validacion");
+           // var_dump($rs);
+           //  die();
+           //actualizo estatus a leido
+           foreach ($rs as $solic){
+               // var_dump($solic);
+               $datosController= array("idval"=>$solic["id"],
+                   "idimg"=>$solic["numFoto"],
+                   "est"=>5
+                   
+               );
+               // var_dump($idval);
+               //  var_dump($datosController);
+               //    $this->actualizaValidacionimg($datosController, "sup_validafotos");
+           }
+           $this->listasolicitudesi=$rs;
+       }
         
        
         
@@ -82,7 +117,8 @@ class solCorreccionController{
         $this->getNuevos($indice,$recolector, $etapa);
         
        // $this->getUpdate($fecha, $recolector,$indice);
-       $this->getCanceladas($indice, $recolector,2);
+       if($etapa==3)
+            $this->getCanceladas($indice, $recolector,2);
         if(sizeof($this->listasolicitudesi)>0||sizeof($this->listacanceladas)>0)
         { 
             $response["inserts"]=$this->listasolicitudesi;

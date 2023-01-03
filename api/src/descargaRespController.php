@@ -93,14 +93,17 @@ class DescargaRespController
             //  echo "<br>".TAG."->buscando prodexh".$informe["id"];
             $informeDetsenv=\DatosInfEtapaDet::getAll($indice,$recolector,$informe["id"],\ConsTablas::INFORMEETAPADET);
             
-           
+            foreach ($informeDetsenv as $detalles){
+                
+                $informeDetallesenv[]=$detalles;
+            }
            
         }
         
         if(sizeof($informeenv)>0)
                 $envio->setInformeEtapa($informeenv);
                 if(sizeof($informeDetsenv)>0)
-                    $envio->setInformeEtapaDet($informeDetsenv);
+                    $envio->setInformeEtapaDet($informeDetallesenv);
                     
              return $envio;
     }

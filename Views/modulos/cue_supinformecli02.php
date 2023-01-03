@@ -380,7 +380,7 @@
 
         } else {
              echo '
-            <a href="index.php?action=supinformecli02&admin=edI&idmes='.$supMuesCon->mesas."&idsup=".$supMuesCon->idsup.'&idrec='.$supMuesCon->rec_id.'&id='.$id.'&cli='.$supMuesCon->idcli.'&pan='.$pan.'&nummues='.$nummues.'" class="btn btn-informes btn-block ">EDITAR</a>';
+            <a href="'.$supMuesCon->liga.'&admin=edI" class="btn btn-informes btn-block ">EDITAR</a>';
         } 
         ?>
      

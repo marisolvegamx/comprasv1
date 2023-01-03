@@ -1,6 +1,6 @@
 <?php
 //error_reporting(E_ERROR|E_NOTICE|E_WARNING);
-ini_set("display_errors", 0); 
+//ini_set("display_errors", 0); 
 include "Models/crud_informesDetalle.php";
 include 'Models/crud_imagenesDetalle.php';
 include 'Models/crud_supvalseccion.php';

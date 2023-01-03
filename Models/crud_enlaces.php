@@ -8,7 +8,9 @@ class EnlacesModel extends Conexion{
 	#---------------------------------------------
 	public function listaOpcionesMenu($gpo, $tabla){
 
-		$stmt = Conexion::conectar()-> prepare("SELECT idgrupo, grupospermisos.idpermiso, nombrepermiso FROM $tabla inner join permisos on grupospermisos.idpermiso=permisos.idpermiso where idgrupo=:gpo");
+		$stmt = Conexion::conectar()-> prepare("select * from  $tabla 
+inner join cnfg_menu on cpe_claveopcion=men_claveopcion
+where cpe_grupo='adm'");
 
 		$stmt->bindParam(":gpo", $gpo, PDO::PARAM_STR);
 

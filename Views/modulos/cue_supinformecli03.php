@@ -126,7 +126,7 @@ function prepararMotivo(){
     </div>
     
       <?php   if ($admin=="edI"){
-             echo '<form role="form" method="post" action="index.php?action=supinformecli03&admin=act&idmes='.$supMuesCon->mesas.'&idrec='.$supMuesCon->rec_id.'&id='.$supMuesCon->idinf.'&cli='.$supMuesCon->idcli.'&nummues='.$supMuesCon->numuestra.'&numpant='.$numpant.'">';
+             echo '<form role="form" method="post" action="index.php?action=supinformecli03&admin=act&idmes='.$supMuesCon->mesas.'&idrec='.$supMuesCon->rec_id.'&id='.$supMuesCon->idinf.'&cli='.$supMuesCon->idcli.'&nummues='.$supMuesCon->numuestra.'&pan=6">';
           }?>
 
 
@@ -332,7 +332,7 @@ function prepararMotivo(){
 
         } else {
              echo '
-            <a href="index.php?action=supinformecli03&admin=edI&idmes='.$supMuesCon->mesas.'&idrec='.$supMuesCon->rec_id.'&id='.$supMuesCon->idinf.'&cli='.$supMuesCon->idcli.'&numpant='.$numpant.'&nummues='.$nummues.'" class="btn btn-informes btn-sm btn-block ">EDITAR</a>';
+            <a href="'.$supMuesCon->liga2.'&admin=edI" class="btn btn-informes btn-sm btn-block ">EDITAR</a>';
         } 
         ?>
 

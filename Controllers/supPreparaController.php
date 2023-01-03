@@ -3,10 +3,10 @@
 //ini_set("display_errors", 1); 
 include "Models/crud_informesetapa.php";
 include 'Models/crud_infetapadet.php';
-include 'Models/crud_informesDetalle.php';
+//include 'Models/crud_informesDetalle.php';
 
 include 'Models/crud_supvalmuestras.php';
-include 'Models/crud_supvalseccion.php';
+//include 'Models/crud_supvalseccion.php';
 
 class SupPreparaController
 {
@@ -40,10 +40,10 @@ class SupPreparaController
         //$vis=$_GET["id"]; //si es el del informe
         $this->mesas=$_GET["idmes"];
         $this->rec_id=$_GET["idrec"];
-      //  $this->idcli=$_GET["cli"];
+       // $this->id=$_GET["id"];
         $this->idplan=$_GET["idplan"];
     
-        $this->numdet=$_GET["numdet"];
+       // $this->numdet=$_GET["numdet"];
         $admin=$_GET["admin"];
       
         $this->indiceletra=Utilerias::indiceConLetra($this->mesas);
@@ -54,7 +54,7 @@ class SupPreparaController
             $this->idinf=$this->informe["ine_id"];
         }
        
-        $this->liga="index.php?action=suppreparacion&idmes=".$this->mesas."&idrec=".$this->rec_id."&idplan=".$this->idplan.'&cli='.$this->idcli.'&numdet='. $this->numdet.'&eta='.$this->etapa;
+        $this->liga="index.php?action=suppreparacion&idmes=".$this->mesas."&id=".$this->idinf."&idrec=".$this->rec_id."&idplan=".$this->idplan.'&cli='.$this->idcli.'&eta='.$this->etapa;
     
         $aux = explode(".", $this->mesas);
         
@@ -82,7 +82,7 @@ class SupPreparaController
         );
         $this->buscarSeccion($datosController,$this->pantalla["pa_seccion"]);
         $datoscorr=array("idval"=>$this->idval,
-            "idfoto"=>$this->imagenes["id"]
+            "idfoto"=>$this->imagenes[0]["id"]
         );
         
         $this->buscarCorreccionFoto($datoscorr);
@@ -105,16 +105,10 @@ class SupPreparaController
     public function buscarDetalles(){
        // var_dump($_SESSION["supdetalleta"]);
        
-        if(!isset($_SESSION["supdetalleta"]))//reviso si ya tengo la consulta si no no la hago
-        { 
-            
+        
             $this->infdetalles=DatosInfEtapaDet::getInfEtapaDetxInf(  $this->mesas,    $this->rec_id,$this->idinf,$this->etapa, "informes_etapadet");
          
-            //guardo en session
-        $_SESSION["supdetalleta"]=$this->infdetalles;
-          
-        }else
-        $this->infdetalles= $_SESSION["supdetalleta"];
+           // var_dump($this->infdetalles);
         
             
     }
@@ -125,12 +119,12 @@ class SupPreparaController
         
         $result=DatosImagenDetalle::getImagen($this->mesas,$this->rec_id,$detalle["ied_rutafoto"],"imagen_detalle");
         
-        $this->imagenes=$result;
+        $this->imagenes[]=$result;
         }
         
         
        
-      //  var_dump($this->imagenes);
+     //   var_dump($this->imagenes);
         
     }
     
@@ -149,7 +143,7 @@ class SupPreparaController
         try{
            
             $estatus=$na=0;
-              $datosController= array("id"=>$d,
+              $datosController= array("id"=>$id,
                 "idrec"=>$idrec,
                   "indice"=>$idmes,
                 "ideta"=>$eta,
@@ -171,10 +165,10 @@ class SupPreparaController
                         "noap"=>0,
                         "observ"=>$observacionessec,
                         "estatus"=>$estatus,
-                        "nummuestra"=>$iddet
+                        "nummuestra"=>0
                     );
-                  //  var_dump($datosController);
-                   // die();
+                   // var_dump($datosController);
+                 
                     DatosValSeccion::actualizaValidacionsecmues($datosController,"sup_validasecciones");
                   //  die();
             }else{
@@ -183,7 +177,7 @@ class SupPreparaController
                 {
                 
                
-                    echo "no hay nada";
+                  //  echo "no hay nada";
                     // inserta validacion
                     $datosController= array("id"=>$id,
                         "idrec"=>$idrec,
@@ -225,9 +219,9 @@ class SupPreparaController
                     "noap"=>$na,
                     "observ"=>$observacionessec,
                     "estatus"=>$estatus,
-                    "nummuestra"=>$iddet
+                    "nummuestra"=>0
                 );
-               // var_dump($datosController2);
+                //var_dump($datosController2);
                 DatosValSeccion::ingresaregvalsecmues($datosController2, "sup_validasecciones");
                 $datosController= array("idval"=>$this->idval,
                     "idsec"=>$sec,
@@ -254,7 +248,7 @@ class SupPreparaController
             { */
             //todo ver primero si la muestra ya se acepto o se rechazo para antes de sumar o restar
          
-         
+        
         
                 echo "
             <script type='text/javascript'>
@@ -280,17 +274,18 @@ class SupPreparaController
                     // actualiza g
                    // echo "encontre la foto";
                     $datosController= array("idval"=>$this->idval,
-                        "numimg"=>$numimg,
-                        "estatus"=>$est
+                        "idimg"=>$numimg,
+                        "est"=>$est
                        
                     );
                  //   var_dump($idval);
-                 //   var_dump($datosController);
+                //    var_dump($datosController);
                     $ex= DatosValidacion::actualizaValidacionimg($datosController, "sup_validafotos");
                     $datoscorr=array("idval"=>$this->idval,
                         "idfoto"=>$numimg
                     );
                     $this->buscarCorreccionFoto($datoscorr);
+                   // die();
                     
                 } else {
                     if ($this->idval==0) {
@@ -334,13 +329,13 @@ class SupPreparaController
                         $numfoto= $this->pantalla["pa_foto1"];
                     $datosController= array("idval"=>$this->idval,
                         "idimg"=>$numimg,
-                        "desimg"=>$numfoto,
+                        "desimg"=>10,
                         "est"=>$est,
                         "observ"=>$observ,
-                        "cli"=>$cli
+                        "cli"=>$cli,
+                        "cons"=>1
                     );
-                //    var_dump($datosController);
-                    DatosValidacion::ingresaValidacionimg($datosController, "sup_validafotos");
+                    DatosValidacion::ingresaValidacionimg2($datosController, "sup_validafotos");
                     $datoscorr=array("idval"=>$this->idval,
                         "idfoto"=>$numimg
                     );
@@ -348,10 +343,10 @@ class SupPreparaController
                 
             }
             
-          /*  echo "
+            echo "
             <script type='text/javascript'>
-              window.location='$regresar'
-                </script>  ";*/
+              window.location='$this->liga'
+                </script>  ";
         }catch(Exception $ex){
             echo Utilerias::mensajeError($ex->getMessage());
         }
@@ -384,7 +379,7 @@ class SupPreparaController
             // revisa si ya existe
             $datosController= array("idval"=>$this->idval,
                 "idsec"=>$sec,
-                "nummuestra"=>$this->infdetalle["ied_id"]
+                "nummuestra"=>0
             );
            // var_dump($this->muestra);
           //  var_dump($datosController);

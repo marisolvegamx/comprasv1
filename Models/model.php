@@ -152,12 +152,12 @@ class EnlacesPaginas{
 			//$enlacesModel=="listaconsultaRep"||
 			//$enlacesModel=="resumenresultados"||
 		    //seccion de configuracion
-		    //$enlacesModel=="slistagrupos"||
-		    //$enlacesModel=="slistapermisos" ||
-		    //$enlacesModel=="slistausuarios"||
-		    //$enlacesModel=="snuevogrupo"||
-		    //$enlacesModel=="snuevopermiso" ||
-		    //$enlacesModel=="snuevousuario"||
+		    $enlacesModel=="slistagrupos"||
+		    $enlacesModel=="slistapermisos" ||
+		    $enlacesModel=="slistausuarios"||
+		    $enlacesModel=="snuevogrupo"||
+		    $enlacesModel=="snuevopermiso" ||
+		    $enlacesModel=="snuevousuario"||
 		    //$enlacesModel=="srangosgraffrec"||
 		    //$enlacesModel=="ssecciongrafica" ||
 		    //$enlacesModel=="snuevorango"||

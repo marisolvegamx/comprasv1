@@ -21,9 +21,6 @@ Private $admin;
 			    }	
 			}
 
-
-
-
         echo '<div class="box-body table-responsive no-padding">
               <table class="table table-hover">
                 <tr>
@@ -35,8 +32,6 @@ Private $admin;
                   <th style="width: 10%">BORRAR</th>
                 </tr>';
   
-
-
 			$respuesta =DatosRecolector::vistarecModel("ca_recolectores");
 			foreach($respuesta as $row => $item){
 				$nump= $item["rec_pais"];
@@ -60,10 +55,6 @@ Private $admin;
 	                </tr>';
 
 	        }        
-
-
-
-
 
 		}
 
@@ -220,8 +211,60 @@ public function insertar(){
                                );
 		 
 		DatosRecolector::insertarRec($datosController, "ca_recolectores");
-			
-		
+			//busca recolector id
+    $res=DatosRecolector::vistarecxnombre($nomrec, "ca_recolectores");
+    foreach ($res as $row) {
+       $idrec=$row["rec_id"];   
+    } 
+		//lee las etapas
+    $resp=DatosCatalogoDetalle::listaCatalogoDetalleAsc(19, "ca_catalogosdetalle");
+    
+      foreach($resp as $row => $item){
+          $this->numeta = $item["cad_idopcion"];
+          $datosControllerdet= array("idrec"=>$idrec,
+                                "idcli"=>4,
+                                "ideta"=>$this->numeta,
+                            );
+          $nomchkp="chkpepsi".$item["cad_idopcion"];
+          $opchkp=${$nomchkp};  
+          //var_dump($opchkp);
+          if ($opchkp) {   //opc es verdadera
+            //echo "esta activado";
+               // ingresa registro
+                DatosRecolector::insertaetaparecolector($datosControllerdet, "ca_recolectoresdetalle");
+          }
+          
+          // valido peñafiel
+           $datContdetpen= array("idrec"=>$idrec,
+                                "idcli"=>5,
+                                "ideta"=>$this->numeta,
+                            );
+           
+           $nomchkpen="chkpena".$item["cad_idopcion"];
+          $opchkpen=${$nomchkpen};  
+
+          if ($opchkpen) {
+                DatosRecolector::insertaetaparecolector($datContdetpen, "ca_recolectoresdetalle");
+              
+          }
+
+          // valido electropura
+           $datContdetpen= array("idrec"=>$idrec,
+                                "idcli"=>6,
+                                "ideta"=>$this->numeta,
+                            );
+           
+           $nomchkele="chkelec".$item["cad_idopcion"];
+           $opchkele=${$nomchkele};  
+
+          if ($opchkele) {
+                   // ingresa registro
+                DatosRecolector::insertaetaparecolector($datContdetpen, "ca_recolectoresdetalle");
+                
+              
+          }
+      }    
+
 		echo "
             <script type='text/javascript'>
               window.location='$regresar'
@@ -366,15 +409,78 @@ public function editaRecolector(){
                       }else{
                       	echo '<input type="checkbox"  class="form-control" name="chkpepsi" value="si" >';
                       }	
-                  echo ' 
-                  </div>
+                      //busca etapa y valida 
+                      $resp=DatosCatalogoDetalle::listaCatalogoDetalleAsc(19, "ca_catalogosdetalle");
+                      foreach($resp as $row => $item){
+                            $this->numeta= $item["cad_idopcion"];
+
+                            $this->nometa= $item["cad_descripcionesp"];
+                            // busca valor en recolector detalle
+                            $datosControllerdet= array("idrec"=>$nrec,
+                                              "idcli"=>4,
+                                              "ideta"=>$this->numeta,
+                                          );
+
+                       $respuesta1=DatosRecolector::leeetaparecolector($datosControllerdet, "ca_recolectoresdetalle");
+
+                     //var_dump($datosControllerdet);  
+                     //var_dump($respuesta1);
+                          if (($respuesta1))
+                            $estatuseta="checked";
+                          else
+                            $estatuseta="";
+
+                   $namechk='chkpepsi'.$this->numeta;   
+                   //var_dump($estatuseta); 
+                  echo '
+                    <div class="row">
+                    <div class="col-1">
+
+                      <input type="checkbox"  name="'.$namechk.'"  '.$estatuseta.'> 
+                    </div>
+                    <div class="col-2">
+                    <label>'.$this->nometa.'</label>
+                    </div>
+                  </div>';
+                }
+
+                  echo '</div>
                   <div class="col-3">
                     <label>PEÑAFIEL</label>';
                     if  ($respuesta["rec_ser_penafiel"]){
                         echo '<input type="checkbox"  class="form-control" name="chkpenaf" value="si" checked>';
                     }else{
                     	echo '<input type="checkbox"  class="form-control" name="chkpenaf" value="si">';
-                    }    
+                    }
+
+                         //busca etapa y valida 
+                      $resp=DatosCatalogoDetalle::listaCatalogoDetalleAsc(19, "ca_catalogosdetalle");
+                      foreach($resp as $row => $item){
+                            $this->numeta= $item["cad_idopcion"];
+                            $this->nometa= $item["cad_descripcionesp"];
+                            // busca valor en recolector detalle
+                            $datosControllerdet= array("idrec"=>$nrec,
+                                              "idcli"=>5,
+                                              "ideta"=>$this->numeta,
+                                          );
+                        $respuesta1=DatosRecolector::leeetaparecolector($datosControllerdet, "ca_recolectoresdetalle");         
+                     // var_dump($etasel["red_idetapa"]);
+                          if (($respuesta1))
+                       
+                            $estatuseta="checked";
+                          else
+                            $estatuseta=" ";
+                        
+                  echo '
+                    <div class="row">
+                    <div class="col-1">
+                      <input type="checkbox"  name="chkpena'.$this->numeta.'"  '.$estatuseta.'> 
+                    </div>
+                    <div class="col-2">
+                    <label>'.$this->nometa.'</label>
+                    </div>
+                  </div>';
+                }    
                     echo '
                   </div>
                   <div class="col-3">
@@ -383,7 +489,37 @@ public function editaRecolector(){
                         echo '<input type="checkbox" class="form-control" name="chkelectro" value="si" checked>';
                     }else{
  						echo '<input type="checkbox" class="form-control" name="chkelectro" value="si" >';
-                    }   
+                    }
+                         //busca etapa y valida 
+                      $resp=DatosCatalogoDetalle::listaCatalogoDetalleAsc(19, "ca_catalogosdetalle");
+                      foreach($resp as $row => $item){
+                            $this->numeta= $item["cad_idopcion"];
+                            $this->nometa= $item["cad_descripcionesp"];
+                            // busca valor en recolector detalle
+                            $datosController= array("idrec"=>$nrec,
+                                              "idcli"=>6,
+                                              "ideta"=>$this->numeta,
+                                          );
+                            $respuesta1=DatosRecolector::leeetaparecolector($datosController, "ca_recolectoresdetalle");
+
+             
+                     // var_dump($etasel["red_idetapa"]);
+                          if ($respuesta1)
+                       
+                            $estatuseta="checked";
+                          else
+                            $estatuseta=" ";
+                        
+                  echo '
+                    <div class="row">
+                    <div class="col-1">
+                      <input type="checkbox"  name="chkelec'.$this->numeta.'" value="si" '.$estatuseta.'> 
+                    </div>
+                    <div class="col-2">
+                    <label>'.$this->nometa.'</label>
+                    </div>
+                  </div>';
+                }   
                     echo ' 
                   </div>
                 </div>
@@ -436,7 +572,7 @@ public function actualizar(){
 
 		$regresar="index.php?action=listarecolector";
 
-		  if  ($chkpepsi=="si"){
+		  if  ($chkpepsi){
                 $chekpepsi=-1;
               } else {
                 $chekpepsi=0;
@@ -475,6 +611,86 @@ public function actualizar(){
 		 
 		//var_dump($datosController); 
 		DatosRecolector::actualizaRec($datosController, "ca_recolectores");
+
+    //lee las etapas
+    $resp=DatosCatalogoDetalle::listaCatalogoDetalleAsc(19, "ca_catalogosdetalle");
+
+
+      foreach($resp as $row => $item){
+          $this->numeta = $item["cad_idopcion"];
+          $datosControllerdet= array("idrec"=>$ideditar,
+                                "idcli"=>4,
+                                "ideta"=>$this->numeta,
+                            );
+          $nomchkp="chkpepsi".$item["cad_idopcion"];
+          $opchkp=${$nomchkp};  
+          if ($opchkp) {   //opc es verdadera
+            //echo "est activado";
+              $respuesta=DatosRecolector::leeetaparecolector($datosControllerdet, "ca_recolectoresdetalle");
+
+               if ($respuesta) {
+                // no hace nada
+               }else{
+                   // ingresa registro
+                DatosRecolector::insertaetaparecolector($datosControllerdet, "ca_recolectoresdetalle");
+                
+               } 
+          } else {
+                  // elimina registro
+            //echo "esta desactivado";
+                  DatosRecolector::borraetaparecolector($datosControllerdet, "ca_recolectoresdetalle");
+          }
+          
+          // valido peñafiel
+           $datContdetpen= array("idrec"=>$ideditar,
+                                "idcli"=>5,
+                                "ideta"=>$this->numeta,
+                            );
+           
+           $nomchkpen="chkpena".$item["cad_idopcion"];
+          $opchkpen=${$nomchkpen};  
+
+          if ($opchkpen) {
+              $respuesta=DatosRecolector::leeetaparecolector($datContdetpen, "ca_recolectoresdetalle");
+
+               if ($respuesta) {
+                // no hace nada
+               }else{
+                   // ingresa registro
+                DatosRecolector::insertaetaparecolector($datContdetpen, "ca_recolectoresdetalle");
+                
+               } 
+          } else {
+                  // elimina registro
+                  DatosRecolector::borraetaparecolector($datContdetpen, "ca_recolectoresdetalle");
+          }
+
+          // valido electropura
+           $datContdetpen= array("idrec"=>$ideditar,
+                                "idcli"=>6,
+                                "ideta"=>$this->numeta,
+                            );
+           
+           $nomchkele="chkelec".$item["cad_idopcion"];
+           $opchkele=${$nomchkele};  
+
+          if ($opchkele) {
+              $respuesta=DatosRecolector::leeetaparecolector($datContdetpen, "ca_recolectoresdetalle");
+
+               if ($respuesta) {
+                // no hace nada
+               }else{
+                   // ingresa registro
+                DatosRecolector::insertaetaparecolector($datContdetpen, "ca_recolectoresdetalle");
+                
+               } 
+          } else {
+                  // elwqimina registro
+                  DatosRecolector::borraetaparecolector($datContdetpen, "ca_recolectoresdetalle");
+          }
+      }    
+
+
 		
 		echo "
             <script type='text/javascript'>
@@ -497,11 +713,11 @@ public function eliminar(){
 		$datosController =	DatosRecolector::eliminaRec($nrec, "ca_recolectores");
 		
 		
-		echo "
-            <script type='text/javascript'>
-              window.location='$regresar'
-                </script>
-                  ";
+		//echo "
+    //        <script type='text/javascript'>
+    //          window.location='$regresar'
+    //            </script>
+    //              ";
 	//}catch(Exception $ex){
 		//echo Utilerias::mensajeError($ex->getMessage());
 	//}

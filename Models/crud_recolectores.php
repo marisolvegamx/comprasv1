@@ -119,6 +119,21 @@ public function vistarecdetModel($numrec, $tabla){
     return $stmt->fetchAll();
 
   }
+
+public function vistarecxnombre($nomrec, $tabla){
+
+    $stmt = Conexion::conectar()-> prepare("SELECT rec_id, rec_nombre FROM $tabla where rec_nombre=:nomrec");
+    $stmt->bindParam(":nomrec", $nomrec,PDO::PARAM_STR);      
+    $stmt-> execute();
+    return $stmt->fetchAll();
+
+  }
+
+
+
+
+
+
   public function vistarecxCliente($cliente, $tabla){
       
       $sql="SELECT rec_id, rec_nombre,
@@ -139,6 +154,53 @@ public function vistarecdetModel($numrec, $tabla){
                   return $stmt->fetchAll();
                   
   }
+
+   public function vistaetaparecModel($datosModel, $tabla){
+
+    $stmt = Conexion::conectar()-> prepare("SELECT red_idetapa FROM `ca_recolectoresdetalle` where red_id=:recid and red_idcliente=:idcli and red_idetapa=ideta;");
+
+    $stmt->bindParam(":recid", $datosModel["idrec"], PDO::PARAM_INT);
+    $stmt->bindParam(":idcli", $datosModel["idcli"], PDO::PARAM_INT);
+    $stmt->bindParam(":ideta", $datosModel["ideta"], PDO::PARAM_INT);      
+    $stmt-> execute();
+    return $stmt->fetch();
+
+  }
+
+public function borraetaparecolector($datosModel, $tabla){
+    //var_dump($datosModel);
+    $stmt = Conexion::conectar()-> prepare("DELETE FROM `ca_recolectoresdetalle` WHERE red_id=:recid and red_idcliente=:idcli and red_idetapa=:ideta;");
+
+    $stmt->bindParam(":recid", $datosModel["idrec"], PDO::PARAM_INT);
+    $stmt->bindParam(":idcli", $datosModel["idcli"], PDO::PARAM_INT);
+    $stmt->bindParam(":ideta", $datosModel["ideta"], PDO::PARAM_INT);      
+    $stmt-> execute();
+
+  }
+
+public function leeetaparecolector($datosModel, $tabla){
+
+    $stmt = Conexion::conectar()-> prepare("SELECT `red_id`, `red_idcliente`, `red_idetapa` FROM `ca_recolectoresdetalle` WHERE red_id=:recid and red_idcliente=:idcli and red_idetapa=:ideta;");
+
+    $stmt->bindParam(":recid", $datosModel["idrec"], PDO::PARAM_STR);
+    $stmt->bindParam(":idcli", $datosModel["idcli"], PDO::PARAM_INT);
+    $stmt->bindParam(":ideta", $datosModel["ideta"], PDO::PARAM_STR);      
+    $stmt-> execute();
+    return $stmt->fetch();
+  }
+
+
+  public function insertaetaparecolector($datosModel, $tabla){
+     //var_dump($datosModel);
+    $stmt = Conexion::conectar()-> prepare("INSERT INTO `ca_recolectoresdetalle`(`red_id`, `red_idcliente`, `red_idetapa`) VALUES (:recid,:idcli,:ideta)");
+
+    $stmt->bindParam(":recid", $datosModel["idrec"], PDO::PARAM_INT);
+    $stmt->bindParam(":idcli", $datosModel["idcli"], PDO::PARAM_INT);
+    $stmt->bindParam(":ideta", $datosModel["ideta"], PDO::PARAM_INT);      
+    $stmt-> execute();
+
+  }
+
 
 
 }

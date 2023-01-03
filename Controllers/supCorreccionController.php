@@ -3,7 +3,7 @@
 //ini_set("display_errors", 1); 
 include "Models/crud_supcorrecciones.php";
 include 'Models/crud_supvalfotos.php';
-include 'Models/crud_informesDetalle.php';
+//include 'Models/crud_informesDetalle.php';
 
 class SupCorreccionController
 {
@@ -36,12 +36,23 @@ class SupCorreccionController
        // var_dump($_GET);
         $this->indiceletra=Utilerias::indiceConLetra($this->mesas);
         
-        $respval=DatosValFotos::getValidacionxId($this->mesas,$this->rec_id,$this->idval,$this->numfoto);
+        $respval=DatosValFotos::getValidacionsimxId($this->mesas,$this->rec_id,$this->idval);
+      //  var_dump($respval);
         if($respval!=null)
-        {   $this->valfoto=$respval[0];
-        
+        { 
+            if($respval["val_inf_id"]==0)  //es correccion de tienda
+                $respvas=DatosValFotos::getValidacionVisxId($this->mesas,$this->rec_id,$this->idval,$this->numfoto);
+            else    
+                $respvas=DatosValFotos::getValidacionxId($this->mesas,$this->rec_id,$this->idval,$this->numfoto);
+                
         }
-        //var_dump($this->valfoto);
+      //  var_dump($respvas);
+        if($respvas!=null)
+        {
+            $this->valfoto=$respvas[0];
+        }
+        
+       // var_dump($this->valfoto);
         $resp=DatosRecolector::vistarecolectorDetalle($this->rec_id,"ca_recolectores");
         if($resp!=null)
         $this->recolector=$resp[0];
@@ -218,7 +229,7 @@ class SupCorreccionController
     
     public function buscarFotoOriginal($idfoto1){
         
-       // var_dump($datosController);
+       
         $respuesta = DatosImagenDetalle::getImagen($this->mesas,$this->rec_id,$idfoto1,"imagen_detalle");
        
         // valido si se encuentra

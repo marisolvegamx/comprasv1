@@ -9,7 +9,7 @@
 $idimagen=1;
 foreach($supMuesCon->listaimagenes as $imagen){
     echo '<div class="img-magnifier-container">
-				    <img id="myimage'.$idimagen.'" src="'.$supMuesCon->dirimagen.'\\'.$imagen["ruta"].'"class="d-block w-100"  >
+				    <img id="myimage'.$idimagen.'" src="'.$supMuesCon->dirimagen.'\\'.$imagen["ruta"].'" class="d-block w-100"  >
 				    </div>';
     $idimagen++;
 }?>
