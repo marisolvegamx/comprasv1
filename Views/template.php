@@ -162,191 +162,26 @@ function magnify(imgID, zoom) {
     <!-- Sidebar -->
     <div class="sidebar">
       <!-- Sidebar user (optional) -->
+     <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+        <div class="image">
+             <img src="Views/dist/img/User-Icon.jpg" class="img-circle" alt="User Image">
+           
+        </div>
+        <div class="info">
+          <a href="#" class="d-block"> <?php
+              $datini=UsuarioController::Obten_NomUsuario();
+                echo $datini;               
+                 ?> </a>
+        </div>
+      </div>
      
 
       
       <!-- Sidebar Menu -->
-      <nav class="mt-2">
-        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-          <!-- Add icons to the links using the .nav-icon class
-               with font-awesome or any other icon font library -->
-          <li class="nav-item">
-            <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-tachometer-alt"></i>
-              <p>
-                Catalogos
-                <i class="right fas fa-angle-left"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="index.php?action=listan1" class="nav-link">
-                  <i class="nav-icon far fa-circle text-info"></i>
-                  <p>Clientes</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="index.php?action=listan2&admin=lis" class="nav-link">
-                  <i class="nav-icon far fa-circle text-info"></i>
-                  <p>Regiones</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="index.php?action=listan3&admin=lis" class="nav-link">
-                  <i class="nav-icon far fa-circle text-info"></i>
-                  <p>Paises</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="index.php?action=listaciures" class="nav-link">
-                  <i class="nav-icon far fa-circle text-info"></i>
-                  <p>Ciudades con Geocercas</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="index.php?action=listan4&admin=lis" class="nav-link">
-                  <i class="nav-icon far fa-circle text-info"></i>
-                  <p>Ciudades</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="index.php?action=listan5&admin=lis" class="nav-link">
-                  <i class="nav-icon far fa-circle text-info"></i>
-                  <p>Plantas</p>
-                </a>
-              </li>
-<li class="nav-item">
-                <a href="index.php?action=listan6&admin=lis" class="nav-link">
-                  <i class="nav-icon far fa-circle text-info"></i>
-                  <p>Siglas de Planta</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="index.php?action=listamesas&op=mes&admin=lis" class="nav-link">
-                  <i class="nav-icon far fa-circle text-info"></i>
-                  <p>Indices</p>
-                </a>
-              </li>
+  <?php
+  include "modulos/enlaces.php"
 
-               
-
-              <li class="nav-item">
-                <a href="index.php?action=listarecolector" class="nav-link">
-                  <i class="nav-icon far fa-circle text-info"></i>
-                  <p>Recolectores</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="index.php?action=listaunegocio" class="nav-link">
-                  <i class="nav-icon far fa-circle text-info"></i>
-                  <p>Tiendas</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="index.php?action=listaprod" class="nav-link">
-                  <i class="nav-icon far fa-circle text-info"></i>
-                  <p>Productos</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="index.php?action=listaatributos" class="nav-link">
-                  <i class="nav-icon far fa-circle text-info"></i>
-                  <p>Daños</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="index.php?action=listasustitucion" class="nav-link">
-                  <i class="nav-icon far fa-circle text-info"></i>
-                  <p>Listas de Sustitución</p>
-                </a>
-              </li>
-               <li class="nav-item">
-                <a href="index.php?action=listacausas" class="nav-link">
-                  <i class="nav-icon far fa-circle text-info"></i>
-                  <p>Causas de NO Compra</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="index.php?action=listacatalogos&admin=1" class="nav-link">
-                  <i class="nav-icon far fa-circle text-info"></i>
-                  <p>Generales</p>
-                </a>
-              </li>
-
-            </ul>
-          </li>
-          <li class="nav-item">
-            <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-book"></i>
-              <p>
-                Planeación
-                <i class="fas fa-angle-left right"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="index.php?action=listacompra" class="nav-link">
-                  <i class="far fa-circle nav-icon text-warning"></i>
-                  <p>Listas de Compra</p>
-                </a>
-              </li>
-              
-              
-            </ul>
-          </li>
-
-          <li class="nav-item">
-            <a href="#" class="nav-link">
-              <i class="nav-icon far fa-thumbs-up"></i>
-              <p>
-                Supervisión
-                <i class="fas fa-angle-left right"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="index.php?action=suplistainformes" class="nav-link">
-                  <i class="far fa-circle nav-icon text-warning"></i>
-                  <p>Asignación</p>
-                </a>
-              </li>
-
-              <li class="nav-item">
-                <a href="index.php?action=suplistainformes" class="nav-link">
-                  <i class="nav-icon far fa-circle text-info"></i>
-                  <p>Reportes</p>
-                </a>
-                <ul class="nav nav-treeview">
-                  <li class="nav-item">
-                    <a href="index.php?action=pantalla-6" class="nav-link">
-                      <i class="far fa-circle nav-icon"></i>
-                      <p>Pantalla 6</p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="index.php?action=pantalla-7" class="nav-link">
-                      <i class="far fa-circle nav-icon"></i>
-                      <p>Pantalla 7</p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="index.php?action=pantalla-8" class="nav-link">
-                      <i class="far fa-circle nav-icon"></i>
-                      <p>Pantalla 8</p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="index.php?action=pantalla-9" class="nav-link">
-                      <i class="far fa-circle nav-icon"></i>
-                      <p>Pantalla 9</p>
-                    </a>
-                  </li>
-                </ul>
-              </li>
-           
-          
-        </ul>
-      </nav>
+?>
       <!-- /.sidebar-menu -->
     </div>
     <!-- /.sidebar -->
