@@ -99,6 +99,7 @@ class EnlacesPaginas{
             $enlacesModel == "suppreparacion" ||
             $enlacesModel == "suplistacorrecciones"  ||
 		    $enlacesModel == "supnvacorreccion"  ||
+		    $enlacesModel == "supnvacorreccioneta"  ||
             //$enlacesModel == "indindicadoresgrid"  ||
             //$enlacesModel == "indcumplimientoestabl" ||
             //$enlacesModel == "indindicadores" ||

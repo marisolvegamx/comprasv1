@@ -54,8 +54,9 @@ echo '
             <div class="box-body ">
               <table class="table table-striped stacktable" id="tabla1">
                 <tr>
-                  <th style="width: 70%">MES DE ASIGNACION HABILITADO</th>
-                  <th style="width: 15%" align="center">BORRAR</th>
+                  <th style="width: 60%">MES DE ASIGNACION HABILITADO</th>
+                     <th style="width: 20%">CLIENTE</th>
+                  <th style="width: 20%" align="center">BORRAR</th>
                 </tr>
               
 <?php

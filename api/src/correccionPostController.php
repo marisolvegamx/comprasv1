@@ -17,11 +17,11 @@ class CorreccionPostController{
        
         try{
             $correccion=$campos["correccion"]; //es array
+         
             $cverecolector=$campos[ContratoVisitas::CVEUSUARIO];
             $indice=$campos[ContratoVisitas::INDICE];
             //   $imagenes_det=$campos["imagenDetalles"]; //es array
-            
-        
+          
            // var_dump($correccion);
         $resp= $this->datosCor->getCorreccionxid($indice,$cverecolector,$correccion[ContratoCorreccion::ID],$this->tabla);
       
@@ -57,11 +57,44 @@ class CorreccionPostController{
     }
     
     //se insertan pendientes es una lista
-    public function insertarPend($lista){
+    public function insertarPend($campos){
         try{
-            foreach($lista as $campos){
-                $this->insertarTodo($campos);     
+           
+            $lista=$campos["correcciones"]; //es array
+            $cverecolector=$campos[ContratoVisitas::CVEUSUARIO];
+            $indice=$campos[ContratoVisitas::INDICE];
+            //   $imagenes_det=$campos["imagenDetalles"]; //es array
+        
+            foreach($lista as $correccion){
+                $resp= $this->datosCor->getCorreccionxid($indice,$cverecolector,$correccion[ContratoCorreccion::ID],$this->tabla);
+                
+                // die();
+                if($resp!=null&&$resp["cor_id"]==$correccion[ContratoCorreccion::ID]){
+                    
+                    //actualizo
+                    //veo el estatus que no esté revisada
+                    $resp2=$this->LeeIdvalidafoto($correccion[ContratoCorreccion::VALID],$correccion[ContratoCorreccion::NUMFOTO],"sup_validafotos");
+                    // var_dump($resp2);
+                    if($resp2!=null&&$resp2[0]["vai_estatus"]==2||$resp2[0]["vai_estatus"]==3)
+                        $this->datosCor->update($correccion, $cverecolector, $indice, $this->tabla);
+                }else
+                    $this->datosCor->insertar($correccion,$cverecolector,$indice,$this->tabla);
+                    //actualizo estatus de la solicitud
+                    $datosController= array("idval"=>$correccion[ContratoCorreccion::VALID],
+                        "idimg"=>$correccion[ContratoCorreccion::NUMFOTO],
+                        "est"=>4
+                    );
+                    // var_dump($idval);
+                    //  var_dump($datosController);
+                    $ex= $this->actualizaValidacionimg($datosController, "sup_validafotos");
+                    
             }
+            // var_dump($correccion);
+          
+                
+      
+        
+          
             
         }catch(Exception $ex){
             throw new Exception($this->TAG."*Hubo un error al insertar ".$ex->getMessage());

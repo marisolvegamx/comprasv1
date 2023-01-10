@@ -1,12 +1,12 @@
 <?php
 //error_reporting(E_ERROR|E_NOTICE|E_WARNING);
 //ini_set("display_errors", 1); 
+
 include "Models/crud_informesetapa.php";
 include 'Models/crud_infetapadet.php';
-//include 'Models/crud_informesDetalle.php';
 
 include 'Models/crud_supvalmuestras.php';
-//include 'Models/crud_supvalseccion.php';
+include 'Models/crud_supcorrecciones.php';
 
 class SupPreparaController
 {
@@ -34,6 +34,7 @@ class SupPreparaController
     public $numpan;
     public $numdet;
     public $idplan;
+    public $totalsol;
    
      
     public function vistaPreparacion(){
@@ -139,7 +140,7 @@ class SupPreparaController
     public function aceptarsec($aprob){
         
         include "Utilerias/leevar.php";
-      //  var_dump($_GET);
+       // var_dump($_GET);
         try{
            
             $estatus=$na=0;
@@ -183,7 +184,7 @@ class SupPreparaController
                         "idrec"=>$idrec,
                         "indice"=>$idmes,
                         "estatus"=>1,
-                        "ideta"=>2,
+                        "ideta"=>1,
                     );
                     
                     // inserta validacion detalle
@@ -193,7 +194,7 @@ class SupPreparaController
                     $datosController= array("id"=>$id,
                         "idrec"=>$idrec,
                         "indice"=>$idmes,
-                        "ideta"=>2
+                        "ideta"=>1
                     );
                     
                     $respuesta =DatosValidacion::LeeIdValidacion($datosController, "sup_validacion");
@@ -233,23 +234,52 @@ class SupPreparaController
                //     $this->valSeccion=$respuestaS[0];   
               //  }
                 
-            }  // if existe en validacion
-            //inserto la muestra en la tabla de supervision para poner el resultado
-            
-          //  $respmue=DatosValMuestra::getValidacionMuestra($idval,$this->numuestra,"sup_validainfdetalles");
-                 
-         //  var_dump($respmue);
-          
-           /* if($respmue!=null&&sizeof($respmue)>0){
-                //actualizo
-                $respmue["vam_estatus"]=$estatus;
-                DatosValMuestra::UpdateValidacion($respmue,"sup_validainfdetalles");
-            }else //inserto
-            { */
-            //todo ver primero si la muestra ya se acepto o se rechazo para antes de sumar o restar
-         
+            } 
+            if($estatus==1)//se acepta el informe reviso que los demas estén aceptados
+            {
+                $ban=0;
+                //busco las lista que tiene el recolector y el indice
+                $resplis=DatosListaCompra::getListaComRec($idrec,$idmes,"pr_listacompra");
+               // var_dump($resplis);
+                foreach($resplis as $row){
+               //     echo "<br>--".$row["lis_idplanta"];
+                    //para cada planta reviso que ya esté aceptada
+                    $resprev=DatosCorreccion::getPrepPlanta($idmes,$idrec,$row["lis_idplanta"],$sec,1,"informes_etapa");
+                    
+                  //  var_dump($resprev);
+                    if($resprev!=null)//ya está aprovada
+                    {
+                        $ban=1;
+                        
+                    }
+                    else 
+                    {$ban=0;
+                    break; //con uno no aprobado o uno que falte no puedo continuar
+                    }
+                   
+                }
+                //echo "***".$ban;
+                if($ban==1)//ya están todas las plantas
+                {
+                    DatosRecolector::actualizarEtapa($idrec,2,"ca_recolectores");
+                }
+                
+            }
+            // if existe en validacion
+            if($estatus==2&&$can==1)//si se cancela
+            {
+                //busco el informe estapa
+                DatosInformeEtapa::updateEstatus($id,2,$idrec,$idmes,"informes_etapa");
+                $datosController2= array("idval"=> $this->idval,
+                    
+                    "estatus"=>2,
+                    
+                );
+                DatosValidacion::actualizaValidacionpr($datosController2,"sup_validacion");
+                
+            }
         
-        
+        //die();
                 echo "
             <script type='text/javascript'>
               window.location='$this->liga'
@@ -368,7 +398,7 @@ class SupPreparaController
     public function buscarSeccion($datosController,$sec){
        // var_dump( $datosController);
         $respuesta =DatosValidacion::LeeIdValidacion($datosController, "sup_validacion");
-    //  var_dump($respuesta);
+     // var_dump($respuesta);
         // valido si se encuentra
         if (sizeof($respuesta)>0) {
             foreach($respuesta as $row => $item){
@@ -403,7 +433,7 @@ class SupPreparaController
             }
             
         }
-        //var_dump($this->opcsel);
+       // var_dump($this->valSeccion);
     }
     
  
@@ -414,7 +444,7 @@ class SupPreparaController
     public function getListaCompra($planta){
        // echo $idcompra;
         $respuesta =DatosListaCompra::getListaComDetxPlanRec($planta,$this->rec_id,$this->mesas,"pr_listacompradetalle");
-       
+        $this->totalsol=0;
      
         if($respuesta!=null){
             $listanueva=array();
@@ -459,6 +489,7 @@ class SupPreparaController
                     "cnptipana"=>$item["lid_idtipoanalisis"],
                 );
                 $nuevaitem["codigosnop"]= $this->getCodigosNoPerm($datosCont);
+                $this->totalsol=$item["lid_cantidad"]+$this->totalsol;
                 $listanueva[]=$nuevaitem;
                 
             }
@@ -491,19 +522,16 @@ class SupPreparaController
   
     
     public function buscarTotMuestras($idlistacompra,$listalcd){
-        
+       
         $listanueva=array();
         foreach ($listalcd as $lcdo ) {
             // Log.d(Constantes.TAG, "revisando nuevos codigos " +lcd.getNvoCodigo());
             $nuevaitem= $lcdo;
             
             $comprados = $this->getNumMuestra($idlistacompra,$lcdo["lid_idprodcompra"]);
-           
-                
-                $nuevaitem["comprados"]=$comprados;
-                
-               
-            
+              
+            $nuevaitem["comprados"]=$comprados;
+                  
             $listanueva[]=$nuevaitem;
         }
         return $listanueva;
@@ -532,8 +560,8 @@ class SupPreparaController
                         $nuevaitem["completado"]=true;
                 }
                 $listanueva[]=$nuevaitem;
-            }
-            return $listanueva;
+        }
+        return $listanueva;
     }
     
    

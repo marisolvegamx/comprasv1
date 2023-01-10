@@ -135,6 +135,22 @@ INNER JOIN (SELECT cad_idopcion as idtipm, cad_descripcionesp as desctipm, cad_o
       return $stmt->fetchAll();
       
   }
+  
+  public function getListaComRec( $cverecolector, $indice, $tabla){
+      
+      $stmt = Conexion::conectar()-> prepare("SELECT *
+ FROM  $tabla 
+ where  lis_idrecolector=:recolector and lis_idindice=:indice");
+      
+   
+     
+      $stmt->bindParam(":recolector", $cverecolector,PDO::PARAM_INT);
+      $stmt->bindParam(":indice", $indice,PDO::PARAM_STR);
+      $stmt-> execute();
+      // $stmt->debugDumpParams();
+      return $stmt->fetchAll();
+      
+  }
 
 }
 ?>	

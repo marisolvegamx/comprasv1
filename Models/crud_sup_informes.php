@@ -156,19 +156,19 @@ public function vistaFirtstiendaModel($datosModel, $tabla){
 		$stmt-> execute();
 	}
 
-	public function leeticketinforme($datosModel, $tabla){
-	    
-	    // actualiza tienda
-	    $stmt = Conexion::conectar()-> prepare("SELECT inf_ticket_compra, n5_idn1 as cliente FROM `informes` inner join ca_nivel5 ON n5_id=inf_plantasid
- where inf_indice=:indice and inf_usuario=:numrec and inf_visitasIdlocal=:numvis order by n5_idn1;");
-	    
-	    $stmt->bindParam(":indice", $datosModel["idmes"], PDO::PARAM_STR);
-	    $stmt->bindParam(":numrec", $datosModel["idrec"], PDO::PARAM_INT);
-	    $stmt->bindParam(":numvis", $datosModel["numvis"], PDO::PARAM_INT);
-	    $stmt-> execute();
-	    //$stmt->debugDumpParams();
-	    return $stmt->fetchall();
+    public function leeticketinforme($datosModel, $tabla){
+
+	// actualiza tienda
+    $stmt = Conexion::conectar()-> prepare("SELECT inf_ticket_compra, n5_idn1 as cliente FROM `informes` inner join ca_nivel5 ON n5_id=inf_plantasid
+ where inf_indice=:indice and inf_usuario=:numrec and inf_visitasIdlocal=:numvis and n5_idn1=4 order by n5_idn1;");
+
+    	$stmt->bindParam(":indice", $datosModel["idmes"], PDO::PARAM_STR);
+		$stmt->bindParam(":numvis", $datosModel["numvis"], PDO::PARAM_INT);
+		$stmt-> execute();
+		//$stmt->debugDumpParams();
+		return $stmt->fetchall();
 	}
+
    public function ActualizaComentinf($datosModel, $tabla){
 
 	// actualiza tienda
@@ -199,15 +199,18 @@ public function vistaFirtstiendaModel($datosModel, $tabla){
 	public function BuscaEtapasPlanta($datosModel, $tabla){
 
 	// actualiza tienda
-    $stmt = Conexion::conectar()-> prepare("SELECT red_idetapa, lis_idrecolector FROM `pr_listacompra` inner join ca_recolectoresdetalle on lis_idrecolector=red_id and lis_idcliente=red_idcliente 
-	where lis_idindice=:indice and lis_idplanta=:idplanta and red_idetapa=:ideta and red_idcliente=:cliente;");
+    $stmt = Conexion::conectar()-> prepare("  
+SELECT red_idetapa, ine_indice, ine_plantasid, val_estatus,ine_cverecolector FROM `informes_etapa` inner join ca_recolectoresdetalle 
+on ine_cverecolector=red_id and ine_clientesid=red_idcliente and ine_etapa=red_idetapa left join sup_validacion 
+on val_inf_id=ine_id and val_rec_id=ine_cverecolector and val_etapa=ine_etapa where ine_indice=:indice and ine_plantasid=:idplanta and ine_etapa=:ideta and ine_clientesid=:cliente;
+");
 
        	$stmt->bindParam(":cliente", $datosModel["idcli"], PDO::PARAM_INT);
     	$stmt->bindParam(":indice", $datosModel["idmes"], PDO::PARAM_STR);
     	$stmt->bindParam(":idplanta", $datosModel["idpla"], PDO::PARAM_INT);
-		$stmt->bindParam(":ideta", $datosModel["ideta"], PDO::PARAM_INT);
-		$stmt-> execute();
-		return $stmt->fetchall();
+	$stmt->bindParam(":ideta", $datosModel["ideta"], PDO::PARAM_INT);
+	$stmt-> execute();
+return $stmt->fetchall();
 
 	}
 	
@@ -230,7 +233,7 @@ public function vistaFirtstiendaModel($datosModel, $tabla){
 
 	// actualiza tienda
     $stmt = Conexion::conectar()-> prepare("
-    SELECT val_id, VAL_INF_ID, vai_numfoto, vai_descripcionfoto, val_indice, val_rec_id, vai_estatus, vai_observaciones, rec_nombre FROM sup_validafotos inner join sup_validacion on val_id=vai_id inner join ca_recolectores on val_rec_id=rec_id where val_indice=:indice and val_rec_id=:idrec and val_inf_id=:idinf and (vai_descripcionfoto>2) and (vai_estatus=1 or vai_estatus=4 or vai_estatus=5);");
+    SELECT val_id, val_inf_id, vai_numfoto, val_indice, val_rec_id, vai_descripcionfoto, vai_estatus, vai_observaciones, rec_nombre, n5_nombre, n1_nombre, vi_unedesc FROM sup_validafotos inner join sup_validacion on val_id=vai_id inner join informes on val_inf_id=inf_id and val_indice=inf_indice and val_rec_id=inf_usuario inner join visitas on inf_visitasidlocal=vi_idlocal and inf_usuario=vi_cverecolector and inf_indice=vi_indice inner join ca_recolectores on val_rec_id=rec_id inner join ca_nivel5 on inf_plantasid=n5_id inner join ca_nivel1 on n5_idn1=n1_id where val_indice=:indice and val_rec_id=:idrec and val_inf_id=:idinf and (vai_estatus=1 or vai_estatus=4 or vai_estatus=5);");
 
 
 
@@ -247,7 +250,7 @@ public function vistaFirtstiendaModel($datosModel, $tabla){
 
 	// actualiza tienda
     $stmt = Conexion::conectar()-> prepare("
-      SELECT val_id, VAL_INF_ID, val_vis_id, vai_descripcionfoto, vai_numfoto, val_indice, val_rec_id, vai_estatus, vai_observaciones, rec_nombre FROM sup_validafotos inner join sup_validacion on val_id=vai_id inner join ca_recolectores on val_rec_id=rec_id where val_indice=:indice and (vai_descripcionfoto=1 or vai_descripcionfoto=2) and val_rec_id=:idrec and val_vis_id=:idinf and (vai_estatus=1 or vai_estatus=4 or vai_estatus=5);");
+      SELECT val_id, val_vis_id, vai_numfoto, vi_unedesc, val_indice, val_rec_id, vai_estatus, vai_observaciones, rec_nombre FROM sup_validafotos inner join sup_validacion on val_id=vai_id INNER JOIN visitas on vi_cverecolector=val_rec_id and vi_idlocal=val_vis_id and vi_indice=val_indice inner join ca_recolectores on val_rec_id=rec_id where val_indice=:indice and val_rec_id=:idrec and val_vis_id=:idinf and (vai_estatus=1 or vai_estatus=4 or vai_estatus=5);");
 
 
 

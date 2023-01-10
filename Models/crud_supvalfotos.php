@@ -82,7 +82,7 @@ order  by val_vis_id");
 	    
 	}
 	
-	public function getValidacionFotosEta($indice,$recolector,$etapa,$estatus, $tabla){
+	public function getValidacionEtaxId($indice,$recolector,$valid,$numfoto, $tabla){
 	    
 	    // consulta
 	    
@@ -90,17 +90,18 @@ order  by val_vis_id");
 val_estatus, val_etapa, i.ine_plantasid as plantasId ,
  cn.n5_nombre as plantaNombre  ,
 cn2.n1_nombre clienteNombre,  n5_idn1 as clientesId,
-vai_descripcionfoto descripcionId,cc.cad_descripcionesp descripcionFoto,vai_numfoto numFoto,
-val_etapa etapa,vai_estatus as estatus,vai_fecha createdAt, vai_numcorreccion as contador,vai_observaciones motivo,
+vai_descripcionfoto,cc.cad_descripcionesp descripcionFoto,vai_numfoto numfoto,
+val_etapa etapa,vai_estatus ,vai_consecutivoinf,date_format(vai_fecha, '%d-%m-%Y')  fecha, vai_numcorreccion ,vai_observaciones ,
 CASE
     WHEN cad_descripcionesp='foto_atributoa' THEN 'FOTO POSICION 1'
      WHEN cad_descripcionesp='foto_atributob' THEN 'FOTO POSICION 2'
       WHEN cad_descripcionesp='foto_atributoc' THEN 'FOTO POSICION 3'
     WHEN cad_descripcionesp = 'etiqueta_evaluacion' THEN 'ETIQUETA EVALUACION'
      WHEN cad_descripcionesp = 'foto_codigo_produccion' THEN 'FOTO CODIGO DE PRODUCCION'
-    ELSE UPPER(cad_descripcionesp)
+    WHEN cad_descripcionesp = 'foto_preparacion' THEN 'FOTO PREPARACION'
+   ELSE UPPER(cad_descripcionesp)
 END as descMostrar
-FROM $tabla
+FROM sup_validacion sv 
 INNER JOIN sup_validafotos ON val_id=vai_id
 inner join ca_catalogosdetalle cc on cc.cad_idopcion =vai_descripcionfoto and cc.cad_idcatalogo =20
 inner join informes_etapa  i on i.ine_id=val_inf_id and val_rec_id=i.ine_cverecolector 
@@ -109,14 +110,15 @@ inner join ca_nivel5 cn on cn.n5_id =ine_plantasid
 inner join ca_nivel1 cn2 on cn2.n1_id =cn.n5_idn1
 WHERE val_rec_id=:rec
 AND val_indice=:indice
-AND val_etapa=:etapa and (vai_estatus=:estatus or vai_estatus=5)");
+ and val_id=:valid and vai_numfoto=:numfoto");
 	    
 	    $stmt->bindParam(":rec",$recolector , PDO::PARAM_INT);
 	    $stmt->bindParam(":indice",  $indice, PDO::PARAM_STR);
-	    $stmt->bindParam(":etapa", $etapa, PDO::PARAM_INT);
-	    $stmt->bindParam(":estatus", $estatus, PDO::PARAM_INT);
+	   // $stmt->bindParam(":etapa", $etapa, PDO::PARAM_INT);
+	    $stmt->bindParam(":numfoto", $numfoto, PDO::PARAM_INT);
+	    $stmt->bindParam(":valid", $valid, PDO::PARAM_INT);
 	    $stmt-> execute();
-	  //  $stmt->debugDumpParams();
+	   // $stmt->debugDumpParams();
 	    return $stmt->fetchall(PDO::FETCH_ASSOC);
 	    
 	}
@@ -283,5 +285,29 @@ and v.vi_indice =val_indice
 	    
 	}
 	
-
+	
+	public function getEtapaCanceladas($indice,$recolector,$estatus){
+	    
+	    // consulta
+	    /***busca en la lista de compra si ya están aceptadas todas**/
+	    $stmt = Conexion::conectar()->prepare("select ine_id as inf_id, vas_observaciones
+,vas_fecha
+from informes_etapa i 
+inner join sup_validacion sv on sv.val_indice =ine_indice
+and sv.val_rec_id =ine_cverecolector and sv.val_etapa =1 and sv.val_inf_id =ine_id
+inner join sup_validasecciones sv2 on val_id=sv2.vas_id 
+ and vas_idseccion in (22)
+ where ine_indice=:indice and ine_cverecolector =:rec and (ine_estatus=:estatus or ine_estatus=5)");
+	    
+	    $stmt->bindParam(":rec",$recolector , PDO::PARAM_INT);
+	    $stmt->bindParam(":indice",  $indice, PDO::PARAM_STR);
+	    
+	    $stmt->bindParam(":estatus", $estatus, PDO::PARAM_INT);
+	    $stmt-> execute();
+	    //	$stmt->debugDumpParams();
+	    return $stmt->fetchall(PDO::FETCH_ASSOC);
+	    
+	}
+	
+	
 }	

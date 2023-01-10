@@ -101,7 +101,7 @@ public function actualizacatalogotkt($datosModel, $tabla){
     }
 
 public function vistaUnegociohabilitada($idun, $tabla){
-        $stmt = Conexion::conectar()-> prepare("SELECT * FROM $tabla WHERE une_id=:idun;");
+        $stmt = Conexion::conectar()-> prepare("SELECT * FROM $tabla inner join ca_nivel1 on n1_id=une_idcliente WHERE une_id=:idun;");
         
         $stmt-> bindParam(":idun", $idun, PDO::PARAM_INT);
         $stmt->execute();
@@ -214,7 +214,7 @@ LIKE :opbusqueda ";
 
     public function UnegocioCompleta($iduneg, $tabla) {
 
-        $stmt = Conexion::conectar()->prepare("SELECT une_descripcion, une_direccion, une_dir_referencia, une_cla_pais, une_cla_ciudad, une_estatus, une_coordenadasxy, une_puntocardinal, une_tipotienda, une_cadenacomercial FROM ca_unegocios WHERE une_id=:iduneg;");
+        $stmt = Conexion::conectar()->prepare("SELECT une_descripcion, une_direccion, une_dir_referencia, une_cla_pais, une_cla_ciudad, une_estatus, une_coordenadasxy, une_puntocardinal, une_tipotienda, une_cadenacomercial, une_estatuspen, une_estatuselec, une_estatusgen FROM ca_unegocios WHERE une_id=:iduneg;");
 
         $stmt->bindParam(":iduneg", $iduneg, PDO::PARAM_STR);
         $stmt->execute();
@@ -230,7 +230,7 @@ LIKE :opbusqueda ";
 
 //procedimiento de insercion de  la cuenta	   
           
-            $sSQL = "UPDATE ca_unegocios SET une_descripcion=:descuneg, une_direccion=:dirtien, une_dir_referencia=:refer, une_cla_pais=:pais, une_cla_ciudad=:ciudad, une_estatus=:estatus, une_coordenadasxy=:cxy, une_puntocardinal=:puncar, une_tipotienda=:tipo, une_cadenacomercial=:cadcom WHERE une_id=:idt";
+            $sSQL = "UPDATE ca_unegocios SET une_descripcion=:descuneg, une_direccion=:dirtien, une_dir_referencia=:refer, une_cla_pais=:pais, une_cla_ciudad=:ciudad, une_estatus=:estatus, une_estatuspen=:estatuspen, une_estatuselec=:estatuselec, une_coordenadasxy=:cxy, une_puntocardinal=:puncar, une_tipotienda=:tipo, une_cadenacomercial=:cadcom WHERE une_id=:idt";
 
             $stmt = Conexion::conectar()->prepare($sSQL);
 
@@ -240,6 +240,8 @@ LIKE :opbusqueda ";
             $stmt->bindParam(":pais", $datosModel["pais"]);
             $stmt->bindParam(":ciudad", $datosModel["ciudad"]);
             $stmt->bindParam(":estatus", $datosModel["estatus"]);
+            $stmt->bindParam(":estatuspen", $datosModel["estatuspen"]);
+            $stmt->bindParam(":estatuselec", $datosModel["estatuselec"]);
             $stmt->bindParam(":cxy", $datosModel["cxy"]);
             $stmt->bindParam(":puncar", $datosModel["puncar"]);
             $stmt->bindParam(":tipo", $datosModel["tipo"]);
@@ -772,9 +774,11 @@ AND cer_solicitud.sol_idsolicitud =:reporte";
 	 public function insertarUnegocio($datosModel, $tabla) {
         try {
            
+           //var_dump($datosModel);
             $stmt = null;
 //procedimiento de insercion de  la cuenta	   
-            $sSQL = "INSERT INTO ca_unegocios(une_descripcion, une_direccion, une_dir_referencia, une_cla_pais, une_cla_ciudad, une_estatus, une_coordenadasxy, une_puntocardinal, une_tipotienda, une_cadenacomercial) VALUES (:nomuneg, :dirtien, :refer, :paisuneg, :ciudaduneg, :estatusuneg, :cxy, :puncaruneg,:tipouneg,:cadcomuneg)";
+            $sSQL = "INSERT INTO ca_unegocios(une_descripcion, une_direccion, une_dir_referencia, une_cla_pais, une_cla_ciudad,  une_estatus, une_estatuspen, une_estatuselec, une_coordenadasxy, une_puntocardinal, une_tipotienda, une_cadenacomercial) VALUES (:nomuneg, :dirtien, :refer, :paisuneg, :ciudaduneg, :estatusuneg, :estatuspen, :estatuselec, :cxy, :puncaruneg, :tipouneg, :cadcomuneg)";
+
             $stmt = Conexion::conectar()->prepare($sSQL);
 
             $stmt->bindParam(":nomuneg", $datosModel["nomuneg"], PDO::PARAM_STR);
@@ -786,7 +790,9 @@ AND cer_solicitud.sol_idsolicitud =:reporte";
             $stmt->bindParam(":puncaruneg", $datosModel["puncaruneg"], PDO::PARAM_INT);
             $stmt->bindParam(":cadcomuneg", $datosModel["cadcomuneg"], PDO::PARAM_INT);
             $stmt->bindParam(":estatusuneg", $datosModel["estatusuneg"], PDO::PARAM_INT);
-            $stmt->bindParam(":tipouneg", $datosModel["tipouneg"], PDO::PARAM_INT);
+            $stmt->bindParam(":estatuspen", $datosModel["estatuspen"], PDO::PARAM_INT);
+           $stmt->bindParam(":estatuselec", $datosModel["estatuselec"], PDO::PARAM_INT);
+           $stmt->bindParam(":tipouneg", $datosModel["tipouneg"], PDO::PARAM_INT);
 
             $res = $stmt->execute();
 
@@ -882,11 +888,12 @@ public function insertarhab($datosModel, $tabla) {
         try {
            
               
-    $sSQL = "INSERT INTO `ca_unegocioshabilitada`(`une_id`, `une_idindice`) VALUES (:idt, :indice)";
+    $sSQL = "INSERT INTO `ca_unegocioshabilitada`(`une_id`, `une_idindice`,une_idcliente) VALUES (:idt, :indice,:cliente)";
             $stmt = Conexion::conectar()->prepare($sSQL);
 
             $stmt->bindParam(":idt", $datosModel["idt"], PDO::PARAM_INT);
             $stmt->bindParam(":indice", $datosModel["indice"], PDO::PARAM_STR);
+            $stmt->bindParam(":cliente", $datosModel["cli"], PDO::PARAM_INT);
             $res = $stmt->execute();
             //$stmt-> execute();    
            if($res)
@@ -933,32 +940,7 @@ public function leefotoex($datosModel){
         
     }
 
-    public function actualizarDirUneg($iduneg,$direc, $tabla) {
-        
-        try {
-            
-            $sSQL = "UPDATE `ca_unegocios` 
-SET `une_direccion`=:dirtien
-  WHERE  `une_id`=:ntien";
-            // var_dump($datosModel);
-            //  echo $sSQL;
-            $stmt = Conexion::conectar()->prepare($sSQL);
-            
-       
-            $stmt->bindParam(":dirtien",  $direc);
-          
-            $stmt->bindParam(":ntien", $iduneg);
-            
-            $stmt->execute();
-            
-            return "success";
-        } catch (Exception $ex) {
-            
-            return "error";
-        }
-    }
-    
-    
+
     
 }
 

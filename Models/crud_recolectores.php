@@ -200,7 +200,26 @@ public function leeetaparecolector($datosModel, $tabla){
     $stmt-> execute();
 
   }
-
+  public function actualizarEtapa($idrec,$etapa,$tabla){
+      try{
+          
+          
+          $sSQL= "UPDATE $tabla SET 
+  rec_etapaactual=:etapa WHERE rec_id=:idrec";
+          
+          $stmt=Conexion::conectar()->prepare($sSQL);
+          $stmt->bindParam(":idrec", $idrec,PDO::PARAM_INT);
+       
+          $stmt->bindParam(":etapa", $etapa,PDO::PARAM_STR);
+          
+          
+          $stmt-> execute();
+          
+      }catch(PDOException $ex){
+          throw new Exception("Hubo un error al actualizar etapa del recolector");
+      }
+      
+  }    
 
 
 }

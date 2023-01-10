@@ -139,7 +139,7 @@ VALUES(:ine_id, :ine_indice, :ine_cverecolector, :ine_plantasid, :ine_clientesid
     }
     
     public function updateInforme($datosModel,$cveusuario,$indice,$tabla,$pdo){
-        $sSQL= "UPDATE comprasdata.informes_etapa
+        $sSQL= "UPDATE informes_etapa
 SET ine_plantasid=:ine_plantasid, ine_clientesid=:ine_clientesid, ine_etapa=:ine_etapa,
  ine_comentarios=:ine_comentarios, ine_totalcajas=:ine_totalcajas, ine_totalmuestras=:ine_totalmuestras,
 
@@ -177,7 +177,32 @@ WHERE ine_id=:ine_id AND ine_indice=:ine_indice AND ine_cverecolector=:ine_cvere
     }
     
     
-  
+    public function updateEstatus($infid,$estatus,$cveusuario,$indice,$tabla){
+        $sSQL= "UPDATE $tabla
+SET  ine_estatus=:estatus
+WHERE ine_id=:ine_id AND ine_indice=:ine_indice AND ine_cverecolector=:ine_cverecolector;";
+        try{
+            $stmt=DatosInformeEtapa::getInstance()->prepare($sSQL);
+            
+            $stmt->bindParam(":ine_id", $infid,PDO::PARAM_INT);
+            $stmt->bindParam(":ine_indice",  $indice,PDO::PARAM_STR);
+            $stmt->bindParam(":ine_cverecolector", $cveusuario, PDO::PARAM_INT);
+            $stmt->bindParam(":estatus", $estatus,PDO::PARAM_INT);
+              
+            if(!$stmt-> execute())
+            {
+                
+                throw new Exception($stmt->errorCode()."-".$stmt->errorInfo()[2]);
+            }
+            //    echo $stmt->debugDumpParams();
+        }catch(PDOException $ex){
+            Utilerias::guardarError("DatosInformeEtapa.actualizar "+$ex->getMessage());
+            
+            throw new Exception("Hubo un error al actualizar el informe");
+        }
+    }
+    
+    
     
     
 }

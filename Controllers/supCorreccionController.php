@@ -3,7 +3,7 @@
 //ini_set("display_errors", 1); 
 include "Models/crud_supcorrecciones.php";
 include 'Models/crud_supvalfotos.php';
-//include 'Models/crud_informesDetalle.php';
+include 'Models/crud_infetapadet.php';
 
 class SupCorreccionController
 {
@@ -225,7 +225,48 @@ class SupCorreccionController
         }
     }
     
-   
+    public function aceptarFotoEta(){
+        
+        include "Utilerias/leevar.php";
+        //  var_dump($_GET);
+        try{
+            if($this->listaimagenOrig!=null){
+                $i=0;
+                foreach ($this->listaimagenOrig as $fotoorig){
+                //reemplazo el archivo
+                //  var_dump($this->imagenOrig);
+                    DatosImagenDetalle::actualizarArchivo($fotoorig["id"],$this->correccionFoto[$i]["cor_rutafoto1"],$this->rec_id,$this->mesas,"imagen_detalle" );
+                //borro el archivo original
+                    if (is_file($this->dirimagen."/".$fotoorig["ruta"]) )
+                    
+                        unlink($this->dirimagen."/".$fotoorig["ruta"]);
+                    //actualizo estatus
+                    
+            
+                }
+                $datosController= array("idval"=>$this->idval,
+                    "idimg"=>$this->numfoto,
+                    "est"=>3
+                    
+                );
+                //   var_dump($idval);
+                //   var_dump($datosController);
+                DatosValidacion::actualizaValidacionimg($datosController, "sup_validafotos");
+                
+            }
+          
+            
+            // die();
+            echo "
+            <script type='text/javascript'>
+              window.location='$this->liga'
+                </script>
+                  ";
+        }catch(Exception $ex){
+            echo Utilerias::mensajeError($ex->getMessage());
+        }
+    }
+    
     
     public function buscarFotoOriginal($idfoto1){
         
@@ -261,6 +302,97 @@ class SupCorreccionController
                
         }
           //  var_dump($this->imagenOrig);
+    }
+    
+    
+    public function buscarFotoOriginaleta($idfoto){
+        
+        
+        $respuesta = DatosImagenDetalle::getImagen($this->mesas,$this->rec_id,$idfoto,"imagen_detalle");
+        //var_dump($respuesta);
+        // valido si se encuentra
+        if (sizeof($respuesta)>0) {
+            
+            $this->listaimagenOrig[]=$respuesta;
+            
+        }
+       
+       // var_dump($this->listaimagenOrig);
+    }
+    
+    public function vistaCorrecEta(){
+        
+        $this->mesas=$_GET["idmes"];
+        $this->rec_id=$_GET["idrec"];
+        //  $this->idcli=$_GET["cli"];
+        
+        $this->numfoto=$_GET["numf"];
+        $this->idval=$_GET["id"];
+        $admin=$_GET["admin"];
+        // var_dump($_GET);
+        $this->indiceletra=Utilerias::indiceConLetra($this->mesas);
+        
+        $respval=DatosValFotos::getValidacionsimxId($this->mesas,$this->rec_id,$this->idval);
+     
+        if($respval!=null)
+        {
+           
+            $respvas=DatosValFotos::getValidacionEtaxId($this->mesas,$this->rec_id,$this->idval,$this->numfoto,"sup_validacion");
+                    
+        }
+       
+        if($respvas!=null)
+        {
+            $this->valfoto=$respvas[0];
+        }
+        
+      //   var_dump($this->valfoto);
+        $resp=DatosRecolector::vistarecolectorDetalle($this->rec_id,"ca_recolectores");
+        if($resp!=null)
+            $this->recolector=$resp[0];
+            $idinf=$respval["val_inf_id"];
+            $etapa=$respval["val_etapa"];
+            if($this->valfoto["vai_estatus"]>3)
+            {//todo depende del estatus busco si hay correccion
+               
+                if($etapa==1) //pueden ser varias correcciones
+                    $resp =DatosCorreccion::getCorxValFoto($this->mesas,$this->rec_id,$this->idval,"sup_correccion");
+                // var_dump($resp);
+                if($resp!=null)
+                {   $this->correccionFoto=$resp;
+                
+                }
+            }
+            // var_dump($this->correccionFoto);
+            
+            $this->liga="index.php?action=supnvacorreccioneta&idmes=".$this->mesas."&idrec=".$this->rec_id."&id=".$this->idval."&numf=".$this->numfoto;
+            
+            $aux = explode(".", $this->mesas);
+            
+            $solomes = $aux[0];
+            $soloanio = $aux[1];
+            $this->dirimagen = "fotografias\\".$solomes."_".$soloanio;
+            
+            //busco las fotos originales
+            $respdet=DatosInfEtapaDet::getInfEtapaDetxId($this->mesas,$this->rec_id,$idinf,"informes_etapadet");
+        //  var_dump($respdet);
+            foreach ($respdet as $detalle){
+             $this->buscarFotoOriginaleta($detalle["ied_rutafoto"]);
+            }
+            //  echo $admin;
+            if($admin=="aceptar"){
+                $this->aceptarFotoEta();
+            }
+            if($admin=="noaceptar"){ //no reemplazar
+                $this->noaceptar();
+            }
+            
+            if($admin=="solcor"){  //nueva correccion
+                
+                $this->solcorreccion();
+            }
+            
+            
     }
     
     public function buscarCorreccionFoto($datosController){

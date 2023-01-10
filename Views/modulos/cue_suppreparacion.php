@@ -37,7 +37,20 @@
        
     	
     	}
-  
+    function noaceptarsec(liga,numsec,idval,op){
+		if(op=="si") //cancelar
+		  ligasub=liga+'&admin=noaceptarsec&can=1&sec='+numsec+'&vasid='+idval;
+		else
+			  ligasub=liga+'&admin=noaceptarsec&sec='+numsec+'&vasid='+idval;
+		 
+		document.getElementById("form_secc").action=ligasub;
+		console.log(ligasub);
+		document.getElementById("form_secc").submit();
+	}
+	function prepararMotivo(){
+		document.getElementById('divcanc').style.display='none';
+		 document.getElementById('divpreg').style.display='block';
+	}
     </script>
   
 <div class="row" style="margin-top: 5px;">
@@ -90,10 +103,13 @@
       </div>
     </div>
     <div class="row">
-     
+     <div class="col-md-1 labelAzul1">TOTAL:
+      </div>
+      <div class="col-md-2 labelAzulDato"><?php echo $supPrepCon->totalsol; ?>
+      </div>
       <div class="col-md-1 labelAzul1">COMENTARIOS:
       </div>
-      <div class="col-md-11 labelAzulDato"><?php echo $supPrepCon->informe["ine_comentarios"]?>
+      <div class="col-md-8 labelAzulDato"><?php echo $supPrepCon->informe["ine_comentarios"]?>
       </div>
     </div>
     <div class="row">
@@ -293,19 +309,25 @@ foreach($supPrepCon->imagenes as $imagen){
             </div>
             <div class="modal-body">
               
-            <form role="form" method="post" action="<?php echo $supPrepCon->liga.'&admin=noaceptarsec&sec='.$numsec.'&vasid='.$supPrepCon->idval ?>">
+            <form role="form" id="form_secc" method="post" action="<?php echo $supPrepCon->liga.'&admin=noaceptarsec&sec='.$numsec.'&vasid='.$supPrepCon->idval ?>">
+              <div id="divpreg">
               <?php echo '
                 
-                 <input type="hidden" name="idplan" id="idplan" value="'.$idplan.'"> 
-              
-                ';
+                 <input type="hidden" name="idplan" id="idplan" value="'.$idplan.'"> ';
             ?>
               <p> Escribe el motivo </p>
               <input type="text"  name="observacionessec" id="observacionessec" style="width: 450px;">
               <p>  </p>
 
-              <button type="submit" class="btn btn-primary">Actualizar</button>
-            </form>
+             <button type="button" class="btn btn-primary" onclick="javascript: document.getElementById('divcanc').style.display='block'; document.getElementById('divpreg').style.display='none'">Actualizar</button>
+                   </div>
+              <div id="divcanc" style="display: none">
+              <p>¿Desea cancelar la muestra?</p>
+              <?php 
+              echo '<button type="button" class="btn btn-secondary" onclick="javascript:noaceptarsec(\''.$supMuesCon->liga.'\',\''.$numsec.'\',\''.$supMuesCon->idval.'\',\'si\')">Sí</button>
+               <button type="button" class="btn btn-primary" onclick="javascript:noaceptarsec(\''.$supMuesCon->liga.'\',\''.$numsec.'\',\''.$supMuesCon->idval.'\',\'no\')">No</button>';
+             ?> </div>
+               </form>
 
 
             </div>

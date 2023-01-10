@@ -49,7 +49,18 @@
                          echo '           
                       </select>
                       </div>
-                  
+                     <div class="form-group col-md-12">
+                     <label>CLIENTE</label>
+                       <select class="form-control" name="cliente">
+                         <option value="">Seleccione una opción</option>';
+                         foreach ($listaCompraContoller->listaClientes as $rowc) {
+                             echo '<option value="'.$rowc["n1_id"].'">'.$rowc["n1_nombre"]."</option>";
+                         
+                         }
+
+                         echo '           
+                      </select>
+                      </div>
                    <button type="submit" class="btn btn-info">GUARDAR</button>';
              
                 

@@ -14,7 +14,7 @@ class solCorreccionController{
     private $listasolicitudesu;
     private $listacanceladas;
    
-    private $datosInf;
+    private $datosVal;
     private $fechaini="";
     private $fechafin="";
  
@@ -26,14 +26,14 @@ class solCorreccionController{
      
        
     //    $this->datosListaCom=new DatosListaCompra();
-        $this->datosInf=new DatosValFotos();
+        $this->datosVal=new DatosValFotos();
     }
     
     public function getNuevos($indice,$recolector, $etapa){
         
        if($etapa==2)//para compras
        {
-        $rs = $this->datosInf->getValidacionFotos($indice,$recolector, $etapa,1, "sup_validacion");
+        $rs = $this->datosVal->getValidacionFotos($indice,$recolector, $etapa,1, "sup_validacion");
           // var_dump($rs);
          //  die();
       //actualizo estatus a leido
@@ -49,7 +49,7 @@ class solCorreccionController{
          //    $this->actualizaValidacionimg($datosController, "sup_validafotos");
         }
        // $this->listasolicitudesi=$rs;
-        $rs2 = $this->datosInf->getValidacionFotosVis($indice,$recolector, $etapa,1, "sup_validacion");
+        $rs2 = $this->datosVal->getValidacionFotosVis($indice,$recolector, $etapa,1, "sup_validacion");
          //var_dump($rs2);
         //  die();
         //actualizo estatus a leido
@@ -68,14 +68,14 @@ class solCorreccionController{
         $this->listasolicitudesi=array_merge($rs,$rs2);
        
        }else{
-           $rs = $this->datosInf->getValidacionFotosEta($indice,$recolector, $etapa,1, "sup_validacion");
+           $rs = $this->datosVal->getValidacionFotosEta($indice,$recolector, $etapa,1, "sup_validacion");
            // var_dump($rs);
            //  die();
            //actualizo estatus a leido
            foreach ($rs as $solic){
                // var_dump($solic);
                $datosController= array("idval"=>$solic["id"],
-                   "idimg"=>$solic["numFoto"],
+                   "idimg"=>$solic["numfoto"],
                    "est"=>5
                    
                );
@@ -92,7 +92,7 @@ class solCorreccionController{
     public function getCanceladas($indice,$recolector){
         
         
-        $rs = $this->datosInf->getMuestrasCanceladas($indice,$recolector, 2);
+        $rs = $this->datosVal->getMuestrasCanceladas($indice,$recolector, 2);
        //  var_dump($rs);
         //  die();
         $this->listacanceladas=$rs;
@@ -104,7 +104,22 @@ class solCorreccionController{
        
      
     }
-   
+    public function getEtaCanceladas($indice,$recolector){
+        
+        
+        $rs = $this->datosVal->getEtapaCanceladas($indice,$recolector, 2);
+        //  var_dump($rs);
+        //  die();
+        $this->listacanceladas=$rs;
+        //actualizo el estatus a leido
+        foreach ($this->listacanceladas as $muestra){
+            DatosInformeEtapa::updateEstatus($muestra["inf_id"], 5,$recolector, $indice,  "informes_etapa");
+            
+        }
+        
+        
+    }
+    
     
     public function getUpdate($indice,$recolector, $etapa){
         
@@ -117,8 +132,10 @@ class solCorreccionController{
         $this->getNuevos($indice,$recolector, $etapa);
         
        // $this->getUpdate($fecha, $recolector,$indice);
-       if($etapa==3)
+       if($etapa==2)
             $this->getCanceladas($indice, $recolector,2);
+       else 
+           $this->getEtaCanceladas($indice, $recolector);
         if(sizeof($this->listasolicitudesi)>0||sizeof($this->listacanceladas)>0)
         { 
             $response["inserts"]=$this->listasolicitudesi;

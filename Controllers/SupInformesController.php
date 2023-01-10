@@ -211,10 +211,10 @@ foreach($respetapas as $row => $item){
                  // var_dump($datosCont1);
                   $resp2=DatosSupInformes::BuscaEtapasPlanta($datosCont1, "pr_listacompra");
                   if ($resp2){
-                  //var_dump($resp2);
+                 // var_dump($resp2);
                       foreach($resp2 as $row => $item2){
                           $idetapa= $item2["red_idetapa"];
-                          $idrec= $item2["lis_idrecolector"];
+                          $idrec= $item2["ine_cverecolector"];
                            //var_dump($idetapa);
                           if ($idetapa) {  // si existe accion
                       
@@ -2120,12 +2120,15 @@ public function noaceptarimg(){
                                  );
 
            // var_dump($op);
+           if($eta!=2)
+               $respuesta=$this->verificaalertaeta($datosController, "sup_validacion");
+           else
         if ($op<3) {
           $respuesta=DatosSupInformes::verificaalertatien($datosController, "sup_validacion");
         }else{
          $respuesta =DatosSupInformes::verificaalerta($datosController, "sup_validacion");
         }
-
+//var_dump($respuesta);
        if (sizeof($respuesta)>0) {
           //echo "lo encontre en principal";
           foreach($respuesta as $row => $item){
@@ -2142,22 +2145,68 @@ public function noaceptarimg(){
             if ($op<3){
               $numinfv=$item["val_vis_id"];
             } else{
-              $numinfv=$item["VAL_INF_ID"];
+              $numinfv=$item["val_inf_id"];
             } 
             echo '<tr><td>'.$numinfv.'</td>
                   <td>'.$item["rec_nombre"].'</td>
 
-                    <td  style="text-align: center;">
-           <a href="index.php?action=supnvacorreccion&idmes='.$idmes.'&idrec='.$idrec.'&id='.$ids.'&numf='.$idf.'&idi='.$id.'&idciu='.$idciu.'&idsup='.$idsup.'">'.$estatus.'</a></td>  
+                    <td  style="text-align: center;">';
+            if($eta==2)
+           echo '<a href="index.php?action=supnvacorreccion&idmes='.$idmes.'&idrec='.$idrec.'&id='.$ids.'&numf='.$idf.'&idi='.$id.'&idciu='.$idciu.'&idsup='.$idsup.'">'.$estatus.'</a></td>';
+            else
+                echo '<a href="index.php?action=supnvacorreccioneta&idmes='.$idmes.'&idrec='.$idrec.'&id='.$ids.'&numf='.$idf.'&idi='.$id.'&idciu='.$idciu.'&idsup='.$idsup.'">'.$estatus.'</a></td>';
+                
                     
              
 
-                  <td>'.$item["vai_observaciones"].'</td></tr>';
+                echo '  <td>'.$item["vai_observaciones"].'</td></tr>';
           }
        }   
     
 
   }
-
+  public function verificaalertaeta($datosModel, $tabla){
+      
+      // actualiza tienda
+      $stmt = Conexion::conectar()-> prepare("
+    SELECT
+	val_id,
+	val_inf_id,
+	vai_numfoto,
+	val_indice,
+	val_rec_id,
+	vai_descripcionfoto,
+	vai_estatus,
+	vai_observaciones,
+	rec_nombre,
+	n5_nombre,
+	n1_nombre
+FROM
+	sup_validafotos
+inner join sup_validacion on
+	val_id = vai_id
+inner join informes_etapa ie on
+	ine_id = val_inf_id
+	and ine_cverecolector = val_rec_id
+	and ine_indice = val_indice
+inner join ca_recolectores on
+	val_rec_id = rec_id
+inner join ca_nivel5 on
+	ine_plantasid = n5_id
+inner join ca_nivel1 on
+	n5_idn1 = n1_id
+ where val_indice=:indice and val_rec_id=:idrec and val_inf_id=:idinf and (vai_estatus=1 or vai_estatus=4 or vai_estatus=5);");
+      
+      
+      
+      $stmt->bindParam(":indice", $datosModel["idmes"], PDO::PARAM_STR);
+      $stmt->bindParam(":idrec", $datosModel["idrec"], PDO::PARAM_INT);
+      $stmt->bindParam(":idinf", $datosModel["idinf"], PDO::PARAM_INT);
+      
+      $stmt-> execute();
+      //$stmt->debugDumpParams();
+      return $stmt->fetchall();
+      
+  }
 
 }

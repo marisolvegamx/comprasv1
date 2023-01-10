@@ -11,7 +11,9 @@
  <div class="listado" style="<?= $clasesel?>" >
                       <div class="row">
                         <div class="col-md-10 listadoTitulo"><?= $detalle["pro_producto"]?></div>
-                        <div class="col-md-2"><?= ($detalle["lid_saldoaceptado"]==""?0:$detalle["lid_saldoaceptado"])."/".($detalle["comprados"]==""?0:$detalle["comprados"])."/".$detalle["lid_cantidad"]?></div>
+                        <div class="col-md-2"><?php if(isset($eta)&&$eta==1){
+                        }else
+                            echo ($detalle["lid_saldoaceptado"]==""?0:$detalle["lid_saldoaceptado"])."/".($detalle["comprados"]==""?0:$detalle["comprados"])."/".$detalle["lid_cantidad"]?></div>
                       </div>
                       <div class="row">
                         <div class="col-md-12 listadoTitulo"><?= $detalle["desctam"]." ".$detalle["descemp"]?></div>

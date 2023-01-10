@@ -11,9 +11,14 @@
             <button  class="btn btn-default float-sm-right" ><a 
             <?php 
             include "Utilerias/leevar.php";
+            if($eta==2)
             echo
               'href="index.php?action=suplistatiendas&admin=li&idmes='.$idmes.'&idsup='.$idsup.'&idciu='.$idciu.'&eta=2&idc='.$id_ciu.'">   Regresar  ';
-                ?>
+            else 
+                
+               echo  'href="index.php?action=suplistaetapas&admin=li&idmes='.$idmes.'&idsup='.$idsup.'&idciu='.$idciu.'&eta='.$eta.'&idc='.$idciu.'&idc='.$id_ciu.'">   Regresar  ';
+                
+            ?>
                 </a>
               </button>
 </td>

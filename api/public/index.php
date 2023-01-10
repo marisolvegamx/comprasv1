@@ -416,12 +416,20 @@ $app->post('/infetapa/create', function (Request $request, Response $response) {
         ->addInfo('CrearCorreccion: Llegó una ' . $request->getBody());
         
         try {
-            
+          //  var_dump($campos["correcciones"]);
             $correcContrl = new CorreccionPostController();
+            $correcciones=$campos["correcciones"]; //es array
+         
+            //   $imagenes_det=$campos["imagenDetalles"]; //es array
+            if($correcciones!=null&&sizeof($correcciones)>0){
+                //Son varias
+                $correcContrl->insertarPend($campos);
+                
+            }else
+         
+            $correcContrl->insertarTodo($campos);
             // var_dump($campos);
             //  die();
-            $correcContrl->insertarTodo($campos);
-            
             $datos = array(
                 'status' => 'ok',
                 'data' => 'Correccion dada de alta correctamente.'

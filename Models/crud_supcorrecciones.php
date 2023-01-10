@@ -65,7 +65,7 @@ VALUES(:cor_id, :cor_indice, :cor_cverecolector, :cor_valid, :cor_rutafoto1, :co
                 
                 throw new Exception($stmt->errorCode()."-".$stmt->errorInfo()[2]);
             }
-       //     echo $stmt->debugDumpParams();
+          // echo $stmt->debugDumpParams();
         }catch(PDOException $ex){
             Utilerias::guardarError("DatosCorreccion.inesertar "+$ex->getMessage());
             
@@ -235,7 +235,58 @@ WHERE val_rec_id=:rec
         
     }
     
-   
+    public function getCorxValFoto($indice,$recolector,$valid,$tabla){
+        
+        // consulta
+        
+        $stmt = Conexion::conectar()->prepare("select sup_correccion.cor_id,
+	sup_correccion.cor_indice,
+	sup_correccion.cor_cverecolector,
+	sup_correccion.cor_valid,
+	sup_correccion.cor_rutafoto1,
+	sup_correccion.cor_rutafoto2,
+	sup_correccion.cor_rutafoto3,
+	sup_correccion.cor_estatus,
+	sup_correccion.cor_createdat,
+	sup_correccion.cor_numfoto FROM $tabla
+WHERE cor_cverecolector=:rec
+ AND cor_indice=:indice
+ and cor_valid=:corid ");
+        
+        $stmt->bindParam(":rec",$recolector , PDO::PARAM_INT);
+        $stmt->bindParam(":indice",  $indice, PDO::PARAM_STR);
+        //   $stmt->bindParam(":etapa", $etapa, PDO::PARAM_INT);
+        $stmt->bindParam(":corid", $valid, PDO::PARAM_INT);
+       // $stmt->bindParam(":numfoto", $numfoto, PDO::PARAM_INT);
+        $stmt-> execute();
+      //  	$stmt->debugDumpParams();
+        return $stmt->fetchall(PDO::FETCH_ASSOC);
+        
+    }
+    
+    public function getPrepPlanta($indice,$recolector,$plan,$seccion,$etapa,$tabla){
+        
+        // consulta
+        
+        $stmt = Conexion::conectar()->prepare("select * from $tabla ie 
+	inner join sup_validacion sv  on sv.val_inf_id =ie.ine_id
+	and ine_cverecolector = val_rec_id
+	and ine_indice = val_indice
+	inner join sup_validasecciones sv2  on sv2.vas_id =val_id where 
+	 vas_idseccion=:secc and vas_aprobada=1 and ine_plantasid =:plan and val_indice =:indice
+	and val_rec_id = :rec and ine_etapa =:etapa ");
+        
+        $stmt->bindParam(":rec",$recolector , PDO::PARAM_INT);
+        $stmt->bindParam(":indice",  $indice, PDO::PARAM_STR);
+          $stmt->bindParam(":secc", $seccion, PDO::PARAM_INT);
+        $stmt->bindParam(":plan", $plan, PDO::PARAM_INT);
+         $stmt->bindParam(":etapa", $etapa, PDO::PARAM_INT);
+        $stmt-> execute();
+         //	$stmt->debugDumpParams();
+        return $stmt->fetchall(PDO::FETCH_ASSOC);
+        
+    }
+    
     
     
 }

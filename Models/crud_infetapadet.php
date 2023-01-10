@@ -16,19 +16,19 @@ class DatosInfEtapaDet{
     }
     
   
-    public  function getInfEtapaDetxId($INDICE,$CVEUSUARIO,$id, $tabla){
+    public  function getInfEtapaDetxId($INDICE,$CVEUSUARIO,$id,$tabla){
         
         
         $sSQL= "SELECT ied_id, ied_indice, ied_cverecolector, ied_infetapaid,
  ied_rutafoto, ied_qr, ied_nummuestra, ied_descripcionid, ied_numcaja
-FROM $tabla where ied_id=:id and ied_indice=:indice and ied_cverecolector=:cverecolector ";
+FROM $tabla where ied_infetapaid=:id and ied_indice=:indice and ied_cverecolector=:cverecolector ";
         
         $stmt=DatosInfEtapaDet::getInstance()->prepare($sSQL);
         $stmt->bindParam(":indice", $INDICE, PDO::PARAM_STR);
         $stmt->bindParam(":cverecolector",  $CVEUSUARIO, PDO::PARAM_INT);
         $stmt->bindParam(":id", $id, PDO::PARAM_STR);
         $stmt-> execute();
-      
+    //  $stmt->debugDumpParams();
         return $stmt->fetchAll(PDO::FETCH_ASSOC); //para que solo devuelva los nombres de columnas
         
         

@@ -42,6 +42,7 @@ private $mensaje;
 private $ciudades;
 private $cadcom;
 public $fecest;
+public $listaClientes;
 
 public function vistaunegocioController() {
   //echo "Entre a unegociocontroller";
@@ -275,6 +276,7 @@ public function vistaNuevouneghabil() {
 
         $rs = DatosMesasignacion::listaMesAsignacion("ca_mesasignacion");       
         $this->listaIndice = null;
+        $this->listaClientes=Datosnuno::vistaN1Model("ca_nivel1");
         $sele="";
         $mesnom="----";
         foreach ($rs as $rowc) {
@@ -394,7 +396,7 @@ echo '<div class="col-sm-4 border-right">
 public function insertar(){
     
   include "Utilerias/leevar.php";
-  //try{
+  try{
     $regresar="index.php?action=listaunegocio";
 
     $datosController= array("nomuneg"=>$nomuneg,
@@ -406,9 +408,12 @@ public function insertar(){
                                "cxy"=>$cxy,
                                "refer"=>$refer,
                                "estatusuneg"=>$estatusuneg,
+                               "estatuspen"=>$estatuspen,
+                               "estatuselec"=>$estatuselec,
                                "tipouneg"=>$tipouneg
                                );
      
+     //var_dump($datosController);
     DatosUnegocio::insertarUnegocio($datosController, "ca_unegocios");
       
     
@@ -417,9 +422,9 @@ public function insertar(){
               window.location='$regresar'
                 </script>
                   ";
-  //}catch(Exception $ex){
-    //echo Utilerias::mensajeError($ex->getMessage());
-  //}
+  }catch(Exception $ex){
+    echo Utilerias::mensajeError($ex->getMessage());
+  }
     
   }
 
@@ -463,6 +468,9 @@ public function vistaEditaUnegocio() {
     $row = DatosUnegocio::UnegocioCompleta($idref, "ca_unegocios");
     //var_dump($row);
     $this->estatus = $row['une_estatus'];
+    $this->estatuspen = $row['une_estatuspen'];
+    $this->estatuselec = $row['une_estatuselec'];
+    $this->estatusgen = $row['une_estatusgen'];
     $this->puncar = $row['une_puntocardinal'];
     $this->cadcom = $row['une_cadenacomercial'];
     $this->TipoTienda = $row['une_tipotienda'];
@@ -627,6 +635,8 @@ public function actualizar(){
                                "cadcom"=>$cadcomuneg,
                                "refer"=>$refer,
                                "estatus"=>$estatusuneg,
+                               "estatuspen"=>$estatuspen,
+                               "estatuselec"=>$estatuselec,
                                "cxy"=>$cxy,
                                "idt"=>$idpv
                                );
@@ -645,6 +655,13 @@ public function actualizar(){
     
   }
 
+function getListaEstatusPEN() {
+   return $this->estatuspen;
+}
+
+function getListaEstatusELEC() {
+   return $this->estatuselec;
+}
 
 function getListaEstatus() {
 return $this->listaEstatus;
@@ -921,7 +938,8 @@ public function vistamesasigController(){
 
      echo '  
     <tr>
-      <td  style="width: 70%">'.$mesasignacion .'</td>
+      <td  style="width: 50%">'.$mesasignacion .'</td>
+ <td  style="width: 20%">'.$row["n1_nombre"].'</td>
       <td align="center"><a type="button" href="index.php?action=listauneghabil&admin=eli&id='.$id.'&idm='.$row["une_idindice"].'" onclick="return dialogoEliminar();"><i class="fa fa-trash-alt fa-lg"></i></a></td>
                     
                 </tr>';    
@@ -936,8 +954,10 @@ public function insertahab(){
     $regresar="index.php?action=listauneghabil&id=".$idtienda;
 
     $datosController= array("idt"=>$idtienda,
-                            "indice"=>$indice);
-    //var_dump($datosController); 
+                            "indice"=>$indice,
+                            "cli"=>$cliente
+    );
+   // var_dump($datosController); 
     DatosUnegocio::insertarhab($datosController, "ca_unegocioshabilitada");
       
     
